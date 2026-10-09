@@ -3382,9 +3382,9 @@ fn bubble_frame(
                 None => content(ui, view, message, cap, reserve, actions),
             };
             if over_picture && let Some(picture) = slot {
-                footer_over_picture(ui, &palette, message, picture);
+                footer_over_picture(ui, view, message, picture, actions);
             } else {
-                footer(ui, &palette, message, slot);
+                footer(ui, view, message, slot, actions);
             }
             if matches!(message.content, Content::Poll { .. }) {
                 super::polls::results_button(
@@ -3856,7 +3856,14 @@ const OVER_PICTURE_INSET: Vec2 = vec2(10.0, 6.0);
 
 /// Paints the time and ticks over the bottom corner of a picture without a
 /// caption, in white on a soft dark scrim so they read on any picture.
-fn footer_over_picture(ui: &mut egui::Ui, palette: &Palette, message: &Message, picture: Rect) {
+fn footer_over_picture(
+    ui: &mut egui::Ui,
+    view: &View<'_>,
+    message: &Message,
+    picture: Rect,
+    actions: &mut Vec<Action>,
+) {
+    let palette = &view.palette;
     let font = theme::regular(11.0);
     let time =
         ui.painter()
@@ -3892,6 +3899,9 @@ fn footer_over_picture(ui: &mut egui::Ui, palette: &Palette, message: &Message, 
         time,
         Color32::WHITE,
     );
+    let status =
+        Rect::from_x_y_ranges(x..=row.right(), row.center().y - 7.5..=row.center().y + 7.5);
+    status_opens_info(ui, view, message, status, actions);
     if let Some(failed) = failed {
         x -= failed.size().x + 6.0;
         let label = Rect::from_min_size(
@@ -3920,12 +3930,58 @@ pub fn footer_id(chat: &str, message: &str) -> egui::Id {
     bubble_id(chat, message).with("footer")
 }
 
+/// Whether "Message info" has receipts to show: our own sent message.
+fn has_message_info(message: &Message) -> bool {
+    message.from_me
+        && !matches!(message.content, Content::Revoked)
+        && !matches!(
+            message.status,
+            Delivery::None | Delivery::Pending | Delivery::Failed
+        )
+}
+
+/// Clicking our time and ticks opens "Message info", as in WhatsApp.
+fn status_opens_info(
+    ui: &mut egui::Ui,
+    view: &View<'_>,
+    message: &Message,
+    status: Rect,
+    actions: &mut Vec<Action>,
+) {
+    if !has_message_info(message) {
+        return;
+    }
+    let label = crate::i18n::gettext(view.locale, "Message info");
+    let response = ui.interact(
+        status.expand(2.0),
+        ui.id().with(("status", &message.id)),
+        Sense::click(),
+    );
+    response.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, true, &label));
+    let response = response
+        .on_hover_cursor(egui::CursorIcon::PointingHand)
+        .on_hover_text(&*label);
+    if response.clicked() {
+        actions.push(Action::ShowDialog(Dialog::MessageInfo {
+            chat: message.chat.clone(),
+            message: message.id.clone(),
+        }));
+    }
+}
+
 fn not_sent(message: &Message) -> bool {
     message.from_me && message.status == Delivery::Failed
 }
 
 /// Paints the time and ticks at the bubble's right edge without widening it.
-fn footer(ui: &mut egui::Ui, palette: &Palette, message: &Message, slot: Option<Rect>) {
+fn footer(
+    ui: &mut egui::Ui,
+    view: &View<'_>,
+    message: &Message,
+    slot: Option<Rect>,
+    actions: &mut Vec<Action>,
+) {
+    let palette = &view.palette;
     let font = theme::regular(11.0);
     let time = ui.painter().layout_no_wrap(
         crate::util::clock(message.timestamp),
@@ -3974,6 +4030,11 @@ fn footer(ui: &mut egui::Ui, palette: &Palette, message: &Message, slot: Option<
         time,
         palette.secondary,
     );
+    let status = Rect::from_x_y_ranges(
+        x..=rect.right(),
+        rect.center().y - 7.5..=rect.center().y + 7.5,
+    );
+    status_opens_info(ui, view, message, status, actions);
     if let Some(edited) = edited {
         x -= edited.size().x + 4.0;
         ui.painter().galley(
@@ -4323,12 +4384,7 @@ fn context_menu(ui: &mut egui::Ui, view: &View<'_>, message: &Message, actions: 
     widgets::menu_separator(ui, &palette);
     // The menu holds actions only. Sent, delivery, and read times, per member
     // in a group, live in "Message info".
-    if message.from_me
-        && !matches!(message.content, Content::Revoked)
-        && !matches!(
-            message.status,
-            Delivery::None | Delivery::Pending | Delivery::Failed
-        )
+    if has_message_info(message)
         && widgets::menu_item(
             ui,
             &palette,
