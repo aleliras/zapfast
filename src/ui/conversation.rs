@@ -4757,10 +4757,9 @@ fn content(
             seconds,
             waveform,
             ..
-        } => {
-            voice_player(ui, view, message, media, *seconds, waveform, width, actions);
-            None
-        }
+        } => voice_player(
+            ui, view, message, media, *seconds, waveform, width, reserve, actions,
+        ),
         Content::Document {
             media,
             file_name,
@@ -7179,8 +7178,9 @@ fn voice_player(
     seconds: Option<u32>,
     waveform: &[u8],
     width: f32,
+    reserve: f32,
     actions: &mut Vec<Action>,
-) {
+) -> Option<Rect> {
     use crate::audio::State;
     let palette = view.palette;
     let status = view.player.status(&message.id);
@@ -7211,7 +7211,8 @@ fn voice_player(
         });
     };
     // Force left-to-right layout at the player's width inside own bubbles.
-    ui.allocate_ui_with_layout(
+    let mut duration = None;
+    let row = ui.allocate_ui_with_layout(
         vec2(width.max(0.0), button),
         Layout::left_to_right(Align::Center),
         |ui| {
@@ -7345,7 +7346,7 @@ fn voice_player(
                         theme::tabular(fastframe_fonts::Weight::Regular, 11.5),
                     ),
                 };
-                theme::text(ui, text, font, palette.secondary);
+                duration = Some(theme::text(ui, text, font, palette.secondary).rect);
             });
             // Speed chip, cycling 1x, 1.5x, and 2x like the phone. The
             // message menu lists every speed, including 1.25x and 1.75x.
@@ -7394,6 +7395,17 @@ fn voice_player(
             message: message.id.clone(),
         });
     }
+    // The time and ticks share the duration's line, as on the phone. A long
+    // error leaves them no room, so they keep a line of their own.
+    let right = row.response.rect.right();
+    duration
+        .filter(|duration| duration.right() + 8.0 + reserve <= right)
+        .map(|duration| {
+            Rect::from_min_max(
+                pos2(right - reserve, duration.center().y - 7.5),
+                pos2(right, duration.center().y + 7.5),
+            )
+        })
 }
 
 /// Voice-recording controls and live waveform.
