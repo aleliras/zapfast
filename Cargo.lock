@@ -1852,6 +1852,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "fastframe-file"
+version = "0.5.0"
+source = "git+https://github.com/crmne/fastframe?tag=v0.5.0#075ba9d4d7b9d2c13ca20d1bdb7cc158dba62c22"
+dependencies = [
+ "windows-sys 0.60.2",
+]
+
+[[package]]
 name = "fastframe-fonts"
 version = "0.5.0"
 source = "git+https://github.com/crmne/fastframe?tag=v0.5.0#075ba9d4d7b9d2c13ca20d1bdb7cc158dba62c22"
@@ -7646,6 +7654,7 @@ dependencies = [
  "emojis",
  "env_logger",
  "fastframe-emoji",
+ "fastframe-file",
  "fastframe-fonts",
  "fastframe-i18n",
  "fastframe-icons",
