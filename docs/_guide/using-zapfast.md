@@ -258,7 +258,13 @@ speed, and Escape puts it back. The built-in player supports H.264 video in MP4 
 open in your system player.
 
 Click a downloaded photo to preview it, with zoom (wheel, Ctrl+wheel, or a
-pinch) and **Copy image**. **Save as…** in a downloaded attachment's
+pinch) and **Copy image**. Hover over the photo to show previous and next
+arrows at its sides; click them or use the Left/Right arrow keys to browse
+downloaded photos and interactive-card images in the loaded conversation.
+Navigation skips unavailable files and stops at either end; it does not
+download attachments or fetch older history. The preview closes when its chat
+is removed, becomes locked outside the unlocked folder, or when you close the
+locked folder. **Save as…** in a downloaded attachment's
 right-click menu keeps a copy wherever you choose.
 
 A motion photo has a play button in its corner. Click it to download the short

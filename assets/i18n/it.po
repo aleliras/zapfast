@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-13 20:54+0200\n"
+"POT-Creation-Date: 2026-10-13 21:04+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Italian\n"
@@ -206,7 +206,7 @@ msgstr "Bloccati"
 msgid "No favorites yet"
 msgstr "Ancora nessun preferito"
 
-#: src/ui/chats.rs:1029 src/app.rs:2146
+#: src/ui/chats.rs:1029 src/app.rs:2149
 msgid "Message yourself"
 msgstr "Invia un messaggio a te stesso"
 
@@ -336,7 +336,7 @@ msgid_plural "{} unread messages"
 msgstr[0] "{} messaggio non letto"
 msgstr[1] "{} messaggi non letti"
 
-#: src/ui/conversation.rs:2324 src/app.rs:2128 src/app.rs:2147
+#: src/ui/conversation.rs:2324 src/app.rs:2131 src/app.rs:2150
 msgid "You"
 msgstr "Tu"
 
@@ -363,7 +363,7 @@ msgid "Reload earlier messages"
 msgstr ""
 
 #: src/ui/conversation.rs:4512 src/ui/image_preview.rs:77
-#: src/ui/image_preview.rs:233
+#: src/ui/image_preview.rs:236
 msgid "Copy image"
 msgstr "Copia immagine"
 
@@ -668,7 +668,7 @@ msgstr ""
 msgid "Wallpaper"
 msgstr "Sfondo"
 
-#: src/ui/settings.rs:348 src/app.rs:2619
+#: src/ui/settings.rs:348 src/app.rs:2622
 msgid "Image"
 msgstr "Immagine"
 
@@ -1188,7 +1188,7 @@ msgstr "Impossibile connettersi"
 msgid "No answer"
 msgstr "Nessuna risposta"
 
-#: src/ui/call.rs:358 src/ui/calls.rs:106 src/app.rs:3338
+#: src/ui/call.rs:358 src/ui/calls.rs:106 src/app.rs:3353
 msgid "Connection lost"
 msgstr "Connessione persa"
 
@@ -1405,33 +1405,33 @@ msgstr "Ancora nessuno"
 msgid "Could not delete the removed account's files"
 msgstr ""
 
-#: src/app.rs:2048
+#: src/app.rs:2051
 #, rust-format
 msgid "A label named “{name}” already exists."
 msgstr "Esiste già un’etichetta chiamata «{name}»."
 
-#: src/app.rs:2127
+#: src/app.rs:2130
 #, rust-format
 msgid "{name} (You)"
 msgstr "{name} (Tu)"
 
-#: src/app.rs:3048
+#: src/app.rs:3063
 msgid "Loading chat history"
 msgstr ""
 
-#: src/app.rs:3142
+#: src/app.rs:3157
 msgid "Could not use this image"
 msgstr "Impossibile usare questa immagine"
 
-#: src/app.rs:3348
+#: src/app.rs:3363
 msgid "Connecting"
 msgstr ""
 
-#: src/app.rs:3723
+#: src/app.rs:3738
 msgid "Not sent: ZapFast is not connected to WhatsApp."
 msgstr "Non inviato: ZapFast non è connesso a WhatsApp."
 
-#: src/app.rs:3727
+#: src/app.rs:3742
 msgid ""
 "Not sent: the message you’re replying to isn’t available on this computer. "
 "Cancel the reply to send without a quote."
@@ -1439,43 +1439,43 @@ msgstr ""
 "Non inviato: il messaggio a cui stai rispondendo non è disponibile su questo "
 "computer. Annulla la risposta per inviare senza citazione."
 
-#: src/app.rs:5639
+#: src/app.rs:5676
 msgid "Added to favorites"
 msgstr "Aggiunto ai preferiti"
 
-#: src/app.rs:5714
+#: src/app.rs:5751
 msgid "Sending the sticker pack…"
 msgstr "Invio del pacchetto di sticker…"
 
-#: src/app.rs:6007 src/ui/labels.rs:247
+#: src/app.rs:6044 src/ui/labels.rs:247
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "Hai {limit} etichette, il massimo che ZapFast conserva."
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:6507
+#: src/app.rs:6544
 #, rust-format
 msgid "{}: {}"
 msgstr ""
 
-#: src/app.rs:6794
+#: src/app.rs:6831
 msgid "App lock password saved"
 msgstr ""
 
-#: src/app.rs:6802
+#: src/app.rs:6839
 msgid "App lock turned off"
 msgstr ""
 
-#: src/app.rs:6927
+#: src/app.rs:6964
 msgid "This video opens in your system player"
 msgstr "Questo video si apre nel lettore di sistema"
 
-#: src/app.rs:7359
+#: src/app.rs:7396
 msgid "Copied image"
 msgstr "Immagine copiata"
 
-#: src/app.rs:7362 src/app.rs:7367
+#: src/app.rs:7399 src/app.rs:7404
 msgid "Failed to copy image"
 msgstr "Impossibile copiare l'immagine"
 
@@ -1810,11 +1810,11 @@ msgctxt "privacy"
 msgid "Silence unknown callers"
 msgstr "Silenzia chiamate sconosciute"
 
-#: src/ui/image_preview.rs:234
+#: src/ui/image_preview.rs:238
 msgid "Save as…"
 msgstr "Salva con nome…"
 
-#: src/ui/image_preview.rs:236
+#: src/ui/image_preview.rs:241
 msgid "Open in another app"
 msgstr "Apri in un'altra app"
 

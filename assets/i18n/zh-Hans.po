@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-13 20:54+0200\n"
+"POT-Creation-Date: 2026-10-13 21:04+0200\n"
 "PO-Revision-Date: 2026-09-25 23:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -206,7 +206,7 @@ msgstr "已锁定"
 msgid "No favorites yet"
 msgstr "还没有收藏"
 
-#: src/ui/chats.rs:1029 src/app.rs:2146
+#: src/ui/chats.rs:1029 src/app.rs:2149
 msgid "Message yourself"
 msgstr "给自己发消息"
 
@@ -329,7 +329,7 @@ msgid "{} unread message"
 msgid_plural "{} unread messages"
 msgstr[0] "{} 条未读消息"
 
-#: src/ui/conversation.rs:2324 src/app.rs:2128 src/app.rs:2147
+#: src/ui/conversation.rs:2324 src/app.rs:2131 src/app.rs:2150
 msgid "You"
 msgstr "你"
 
@@ -356,7 +356,7 @@ msgid "Reload earlier messages"
 msgstr ""
 
 #: src/ui/conversation.rs:4512 src/ui/image_preview.rs:77
-#: src/ui/image_preview.rs:233
+#: src/ui/image_preview.rs:236
 msgid "Copy image"
 msgstr "复制图片"
 
@@ -644,7 +644,7 @@ msgstr "“系统”使用桌面的界面字体。Inter 在每台电脑上都一
 msgid "Wallpaper"
 msgstr "壁纸"
 
-#: src/ui/settings.rs:348 src/app.rs:2619
+#: src/ui/settings.rs:348 src/app.rs:2622
 msgid "Image"
 msgstr "图片"
 
@@ -1155,7 +1155,7 @@ msgstr "无法连接"
 msgid "No answer"
 msgstr "无人接听"
 
-#: src/ui/call.rs:358 src/ui/calls.rs:106 src/app.rs:3338
+#: src/ui/call.rs:358 src/ui/calls.rs:106 src/app.rs:3353
 msgid "Connection lost"
 msgstr "连接已断开"
 
@@ -1364,75 +1364,75 @@ msgstr "还没有人"
 msgid "Could not delete the removed account's files"
 msgstr ""
 
-#: src/app.rs:2048
+#: src/app.rs:2051
 #, rust-format
 msgid "A label named “{name}” already exists."
 msgstr "已存在名为“{name}”的标签。"
 
-#: src/app.rs:2127
+#: src/app.rs:2130
 #, rust-format
 msgid "{name} (You)"
 msgstr "{name}（你）"
 
-#: src/app.rs:3048
+#: src/app.rs:3063
 msgid "Loading chat history"
 msgstr ""
 
-#: src/app.rs:3142
+#: src/app.rs:3157
 msgid "Could not use this image"
 msgstr "无法使用此图片"
 
-#: src/app.rs:3348
+#: src/app.rs:3363
 msgid "Connecting"
 msgstr ""
 
-#: src/app.rs:3723
+#: src/app.rs:3738
 msgid "Not sent: ZapFast is not connected to WhatsApp."
 msgstr "未发送：ZapFast 未连接到 WhatsApp。"
 
-#: src/app.rs:3727
+#: src/app.rs:3742
 msgid ""
 "Not sent: the message you’re replying to isn’t available on this computer. "
 "Cancel the reply to send without a quote."
 msgstr "未发送：你要回复的消息不在这台电脑上。取消回复即可不带引用发送。"
 
-#: src/app.rs:5639
+#: src/app.rs:5676
 msgid "Added to favorites"
 msgstr "已添加到收藏"
 
-#: src/app.rs:5714
+#: src/app.rs:5751
 msgid "Sending the sticker pack…"
 msgstr "正在发送贴图包…"
 
-#: src/app.rs:6007 src/ui/labels.rs:247
+#: src/app.rs:6044 src/ui/labels.rs:247
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "你已有 {limit} 个标签，这是 ZapFast 的上限。"
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:6507
+#: src/app.rs:6544
 #, rust-format
 msgid "{}: {}"
 msgstr ""
 
-#: src/app.rs:6794
+#: src/app.rs:6831
 msgid "App lock password saved"
 msgstr ""
 
-#: src/app.rs:6802
+#: src/app.rs:6839
 msgid "App lock turned off"
 msgstr ""
 
-#: src/app.rs:6927
+#: src/app.rs:6964
 msgid "This video opens in your system player"
 msgstr "此视频将用系统播放器打开"
 
-#: src/app.rs:7359
+#: src/app.rs:7396
 msgid "Copied image"
 msgstr "已复制图片"
 
-#: src/app.rs:7362 src/app.rs:7367
+#: src/app.rs:7399 src/app.rs:7404
 msgid "Failed to copy image"
 msgstr "复制图片失败"
 
@@ -1755,11 +1755,11 @@ msgctxt "privacy"
 msgid "Silence unknown callers"
 msgstr "静音未知来电"
 
-#: src/ui/image_preview.rs:234
+#: src/ui/image_preview.rs:238
 msgid "Save as…"
 msgstr "另存为…"
 
-#: src/ui/image_preview.rs:236
+#: src/ui/image_preview.rs:241
 msgid "Open in another app"
 msgstr "在其他应用中打开"
 

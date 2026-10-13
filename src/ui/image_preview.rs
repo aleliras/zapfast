@@ -201,8 +201,6 @@ pub fn show(app: &mut App, ctx: &egui::Context) {
                     {
                         state.set_fit_scale(size.x / texture.size.x);
                     }
-                    let scroll_id =
-                        ui.make_persistent_id(egui::IdSalt::new("image-preview-scroll"));
                     let trackpad = app.scrolling.from_trackpad();
                     // Read before the scroll area, which would otherwise take the
                     // wheel. The zoom itself is applied by `App` after the frame.
@@ -212,83 +210,110 @@ pub fn show(app: &mut App, ctx: &egui::Context) {
                         let zoomed = display_size(texture.size, canvas, next.is_fit(), next.zoom());
                         Some((factor, pointer, zoomed))
                     });
-                    let output = egui::ScrollArea::both()
-                        .id_salt("image-preview-scroll")
-                        .auto_shrink([false, false])
-                        // egui drags only on touch screens by default.
-                        .scroll_source(egui::scroll_area::ScrollSource {
-                            drag: egui::scroll_area::DragScroll::Always,
-                            ..Default::default()
-                        })
-                        .on_hover_cursor(egui::CursorIcon::Grab)
-                        .on_drag_cursor(egui::CursorIcon::Grabbing)
-                        .show(ui, |ui| {
-                            ui.allocate_ui_with_layout(
-                                canvas.max(size),
-                                Layout::centered_and_justified(egui::Direction::TopDown),
-                                |ui| {
-                                    let image_response = ui.add(
-                                        image.fit_to_exact_size(size).sense(egui::Sense::click()),
-                                    );
-                                    let copy_label = crate::i18n::gettext(app.locale, "Copy image");
-                                    let save_label = crate::i18n::gettext(app.locale, "Save as…");
-                                    let open_label =
-                                        crate::i18n::gettext(app.locale, "Open in another app");
-                                    let menu_width = crate::ui::widgets::menu_width(
-                                        ui,
-                                        &[&copy_label, &save_label, &open_label],
-                                        true,
-                                    )
-                                    .max(180.0);
-                                    egui::Popup::context_menu(&image_response)
-                                        .width(menu_width)
-                                        .frame(crate::ui::widgets::menu_frame(&palette))
-                                        .show(|ui| {
-                                            if crate::ui::widgets::menu_item(
+                    let output = ui
+                        .scope_builder(egui::UiBuilder::new().max_rect(area), |ui| {
+                            egui::ScrollArea::both()
+                                .id_salt(("image-preview-scroll", preview.path()))
+                                .auto_shrink([false, false])
+                                // egui drags only on touch screens by default.
+                                .scroll_source(egui::scroll_area::ScrollSource {
+                                    drag: egui::scroll_area::DragScroll::Always,
+                                    ..Default::default()
+                                })
+                                .on_hover_cursor(egui::CursorIcon::Grab)
+                                .on_drag_cursor(egui::CursorIcon::Grabbing)
+                                .show(ui, |ui| {
+                                    ui.allocate_ui_with_layout(
+                                        canvas.max(size),
+                                        Layout::centered_and_justified(egui::Direction::TopDown),
+                                        |ui| {
+                                            let image_response = ui.add(
+                                                image
+                                                    .fit_to_exact_size(size)
+                                                    .sense(egui::Sense::click()),
+                                            );
+                                            let copy_label =
+                                                crate::i18n::gettext(app.locale, "Copy image");
+                                            let save_label =
+                                                crate::i18n::gettext(app.locale, "Save as…");
+                                            let open_label = crate::i18n::gettext(
+                                                app.locale,
+                                                "Open in another app",
+                                            );
+                                            let menu_width = crate::ui::widgets::menu_width(
                                                 ui,
-                                                &palette,
-                                                Some(Icon::Copy),
-                                                &copy_label,
-                                            ) {
-                                                app.actions.push(Action::CopyImage(
-                                                    preview.path().to_owned(),
-                                                ));
-                                            }
-                                            if crate::ui::widgets::menu_item(
-                                                ui,
-                                                &palette,
-                                                Some(Icon::Download),
-                                                &save_label,
-                                            ) {
-                                                let name = preview
-                                                    .path()
-                                                    .file_name()
-                                                    .and_then(|name| name.to_str())
-                                                    .unwrap_or("image.png")
-                                                    .to_owned();
-                                                app.actions.push(Action::SaveAttachmentAs {
-                                                    path: preview.path().to_owned(),
-                                                    name,
+                                                &[&copy_label, &save_label, &open_label],
+                                                true,
+                                            )
+                                            .max(180.0);
+                                            egui::Popup::context_menu(&image_response)
+                                                .width(menu_width)
+                                                .frame(crate::ui::widgets::menu_frame(&palette))
+                                                .show(|ui| {
+                                                    if crate::ui::widgets::menu_item(
+                                                        ui,
+                                                        &palette,
+                                                        Some(Icon::Copy),
+                                                        &copy_label,
+                                                    ) {
+                                                        app.actions.push(Action::CopyImage(
+                                                            preview.path().to_owned(),
+                                                        ));
+                                                    }
+                                                    if crate::ui::widgets::menu_item(
+                                                        ui,
+                                                        &palette,
+                                                        Some(Icon::Download),
+                                                        &save_label,
+                                                    ) {
+                                                        let name = preview
+                                                            .path()
+                                                            .file_name()
+                                                            .and_then(|name| name.to_str())
+                                                            .unwrap_or("image.png")
+                                                            .to_owned();
+                                                        app.actions.push(
+                                                            Action::SaveAttachmentAs {
+                                                                path: preview.path().to_owned(),
+                                                                name,
+                                                            },
+                                                        );
+                                                    }
+                                                    if crate::ui::widgets::menu_item(
+                                                        ui,
+                                                        &palette,
+                                                        Some(Icon::ExternalLink),
+                                                        &open_label,
+                                                    ) {
+                                                        app.actions.push(Action::OpenFile(
+                                                            preview.path().to_owned(),
+                                                        ));
+                                                    }
                                                 });
-                                            }
-                                            if crate::ui::widgets::menu_item(
-                                                ui,
-                                                &palette,
-                                                Some(Icon::ExternalLink),
-                                                &open_label,
-                                            ) {
-                                                app.actions.push(Action::OpenFile(
-                                                    preview.path().to_owned(),
-                                                ));
-                                            }
-                                        });
-                                    image_response
-                                        .interact_pointer_pos()
-                                        .filter(|_| image_response.double_clicked())
-                                },
-                            )
-                            .inner
-                        });
+                                            (
+                                                ui.layout().align_size_within_rect(
+                                                    size,
+                                                    image_response.rect,
+                                                ),
+                                                image_response
+                                                    .interact_pointer_pos()
+                                                    .filter(|_| image_response.double_clicked()),
+                                            )
+                                        },
+                                    )
+                                    .inner
+                                })
+                        })
+                        .inner;
+                    if preview.can_navigate() {
+                        navigation_overlay(
+                            ui,
+                            area,
+                            output.inner.0.intersect(output.inner_rect),
+                            &palette,
+                            &mut app.actions,
+                        );
+                    }
                     // Stored after the scroll area, which clamps its offset to
                     // this frame's size; the next frame lays out the zoomed size
                     // with the pointed-at pixel still under the pointer.
@@ -302,13 +327,13 @@ pub fn show(app: &mut App, ctx: &egui::Context) {
                             pointer,
                             pointer,
                         );
-                        scroll.store(ctx, scroll_id);
+                        scroll.store(ctx, output.id);
                         app.actions.push(Action::ZoomImageBy(factor));
                     }
                     // The header's Fit/% toggle. The original size opens with the
                     // double-clicked point in the middle: the offset is stored for
                     // the next frame, which lays out the new size.
-                    if let Some(pos) = output.inner {
+                    if let Some(pos) = output.inner.1 {
                         if app
                             .image_preview
                             .as_ref()
@@ -323,7 +348,7 @@ pub fn show(app: &mut App, ctx: &egui::Context) {
                                 pos - area.min,
                                 canvas / 2.0,
                             );
-                            scroll.store(ctx, scroll_id);
+                            scroll.store(ctx, output.id);
                             app.actions.push(Action::ImageActualSize);
                         } else {
                             app.actions.push(Action::FitImage);
@@ -351,6 +376,77 @@ pub fn show(app: &mut App, ctx: &egui::Context) {
         });
     if response.should_close() {
         app.actions.push(Action::CloseImagePreview);
+    }
+}
+
+/// Previous and next buttons over the visible part of the photo, shown while
+/// the pointer is over it. A photo too narrow for both gets a band just wide
+/// enough, centred on it, so the buttons sit at its edges instead of on top of
+/// each other. Neither button checks whether there is an image that way: the
+/// conversation is only searched when one is pressed.
+fn navigation_overlay(
+    ui: &mut egui::Ui,
+    area: Rect,
+    image: Rect,
+    palette: &theme::Palette,
+    actions: &mut Vec<Action>,
+) {
+    const DIAMETER: f32 = 40.0;
+    const INSET: f32 = 12.0;
+    let min_width = 2.0 * (DIAMETER + INSET) + DIAMETER;
+    let mut band = image;
+    if band.width() < min_width {
+        band = Rect::from_center_size(band.center(), vec2(min_width, band.height()));
+    }
+    let band = band.intersect(area);
+    if band.height() < DIAMETER || band.width() < 2.0 * DIAMETER {
+        return;
+    }
+    if ui.input(|input| input.pointer.hover_pos()).is_none() || !ui.rect_contains_pointer(band) {
+        return;
+    }
+    let inset = INSET.min((band.width() - 2.0 * DIAMETER) / 2.0);
+    for (right, icon, hint, action) in [
+        (
+            false,
+            Icon::ChevronLeft,
+            "Previous image (Left arrow)",
+            Action::PreviousImage,
+        ),
+        (
+            true,
+            Icon::ChevronRight,
+            "Next image (Right arrow)",
+            Action::NextImage,
+        ),
+    ] {
+        let x = if right {
+            band.right() - inset - DIAMETER / 2.0
+        } else {
+            band.left() + inset + DIAMETER / 2.0
+        };
+        let rect = Rect::from_center_size(egui::pos2(x, band.center().y), Vec2::splat(DIAMETER));
+        ui.scope_builder(
+            egui::UiBuilder::new()
+                .id_salt(("image-preview-navigation", right))
+                .max_rect(rect)
+                .layout(Layout::left_to_right(Align::Center)),
+            |ui| {
+                if theme::circle_button(
+                    ui,
+                    icon,
+                    DIAMETER,
+                    palette.overlay.gamma_multiply(0.85),
+                    palette.surface_hover,
+                    palette.text,
+                    hint,
+                )
+                .clicked()
+                {
+                    actions.push(action);
+                }
+            },
+        );
     }
 }
 
