@@ -1897,7 +1897,10 @@ msgstr ""
 msgid "Unlink"
 msgstr "Bağlantıyı kaldır"
 
-#: src/notify.rs:301
+#. Translators: the body of a notification that hides who wrote and
+#. what: a message has arrived.
+#: src/notify.rs:306
+msgctxt "notification"
 msgid "New message"
 msgstr "Yeni mesaj"
 
@@ -1930,6 +1933,10 @@ msgstr ""
 #, rust-format
 msgid "{count} unread chats"
 msgstr ""
+
+#: src/notify.rs:301
+msgid "New message"
+msgstr "Yeni mesaj"
 
 #: src/ui/conversation.rs:7765
 msgid "Audio"

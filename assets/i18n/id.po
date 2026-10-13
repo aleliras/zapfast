@@ -1902,7 +1902,10 @@ msgstr ""
 msgid "Unlink"
 msgstr "Putuskan tautan"
 
-#: src/notify.rs:301
+#. Translators: the body of a notification that hides who wrote and
+#. what: a message has arrived.
+#: src/notify.rs:306
+msgctxt "notification"
 msgid "New message"
 msgstr "Pesan baru"
 
@@ -1935,6 +1938,10 @@ msgstr "Tidak tertaut"
 #, rust-format
 msgid "{count} unread chats"
 msgstr "{count} chat belum dibaca"
+
+#: src/notify.rs:301
+msgid "New message"
+msgstr "Pesan baru"
 
 #: src/ui/conversation.rs:7765
 msgid "Audio"

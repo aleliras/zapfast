@@ -1907,10 +1907,12 @@ msgstr ""
 msgid "Unlink"
 msgstr "Online"
 
-#: src/notify.rs:301
-#, fuzzy
+#. Translators: the body of a notification that hides who wrote and
+#. what: a message has arrived.
+#: src/notify.rs:306
+msgctxt "notification"
 msgid "New message"
-msgstr "Nachricht eingeben"
+msgstr "Neue Nachricht"
 
 #: src/settings.rs:340
 msgid "After 1 minute"
@@ -1941,6 +1943,11 @@ msgstr ""
 #, rust-format
 msgid "{count} unread chats"
 msgstr ""
+
+#: src/notify.rs:301
+#, fuzzy
+msgid "New message"
+msgstr "Nachricht eingeben"
 
 #: src/ui/conversation.rs:7765
 msgid "Audio"
