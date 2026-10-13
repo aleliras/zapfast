@@ -458,3 +458,9 @@ archived chats stay quiet while they remain archived. You can change both settin
 
 Press `Ctrl+/` or click the keyboard button under the composer to list all
 shortcuts.
+
+## Screen readers
+
+ZapFast announces confirmations, errors, connection changes and history loading
+through the screen reader without moving focus. While the app is locked, only
+connection and history changes are announced.
