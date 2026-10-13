@@ -742,6 +742,10 @@ pub struct AccountSettings {
     pub save_contacts_to_phone: bool,
     /// This account's copy of the chosen chat wallpaper image.
     pub wallpaper_image: Option<std::path::PathBuf>,
+    /// Whether this account's phone is asked for older history in the
+    /// background. Off by default: it asks the phone for history nobody
+    /// scrolled to, so an account that has never turned it on does not.
+    pub history_prefetch: bool,
 }
 
 impl Default for AccountSettings {
@@ -754,6 +758,7 @@ impl Default for AccountSettings {
             notifications: true,
             save_contacts_to_phone: true,
             wallpaper_image: None,
+            history_prefetch: false,
         }
     }
 }
@@ -768,6 +773,7 @@ impl AccountSettings {
             notifications: settings.notifications,
             save_contacts_to_phone: settings.save_contacts_to_phone,
             wallpaper_image: settings.wallpaper_image.clone(),
+            history_prefetch: false,
         }
     }
 
