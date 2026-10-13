@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-14 00:41+0200\n"
+"POT-Creation-Date: 2026-10-14 00:51+0200\n"
 "PO-Revision-Date: 2026-10-02 03:00+0300\n"
 "Last-Translator: Barış Berke Çetin <brsberkectn@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -184,7 +184,32 @@ msgstr "Kasım"
 msgid "December"
 msgstr "Aralık"
 
-#: src/ui/chats.rs:156 src/ui/chats.rs:455 src/app.rs:3100
+#: src/util.rs:581
+#, rust-format
+msgid "{seconds} s"
+msgstr "{seconds} sn"
+
+#: src/util.rs:582
+#, rust-format
+msgid "{minutes} min"
+msgstr "{minutes} dk"
+
+#: src/util.rs:583
+#, rust-format
+msgid "{minutes} min {seconds} s"
+msgstr "{minutes} dk {seconds} sn"
+
+#: src/util.rs:584
+#, rust-format
+msgid "{hours} h"
+msgstr "{hours} sa"
+
+#: src/util.rs:585
+#, rust-format
+msgid "{hours} h {minutes} min"
+msgstr "{hours} sa {minutes} dk"
+
+#: src/ui/chats.rs:168 src/ui/chats.rs:577 src/app.rs:3105
 msgid "Starred"
 msgstr "Yıldızlı"
 
@@ -204,7 +229,7 @@ msgstr "Ad veya numara ara"
 msgid "Search"
 msgstr "Ara"
 
-#: src/ui/chats.rs:309 src/ui/chats.rs:1799
+#: src/ui/chats.rs:409 src/ui/chats.rs:1903
 msgid "Starred messages"
 msgstr "Yıldızlı mesajlar"
 
@@ -224,11 +249,11 @@ msgstr "Arşivlenmiş"
 msgid "Locked"
 msgstr "Kilitli"
 
-#: src/ui/chats.rs:680
+#: src/ui/chats.rs:784
 msgid "No starred messages"
 msgstr "Yıldızlı mesaj yok"
 
-#: src/ui/chats.rs:683
+#: src/ui/chats.rs:787
 msgid "Right-click a message and choose Star to keep it here."
 msgstr "Bir mesajı burada tutmak için sağ tıklayıp Yıldızla'yı seçin."
 
@@ -263,7 +288,7 @@ msgstr "Gruptan ayrıl"
 msgid "Leave channel"
 msgstr "Kanaldan ayrıl"
 
-#: src/ui/chats.rs:1759 src/ui/labels.rs:166 src/ui/labels.rs:213
+#: src/ui/chats.rs:1759 src/ui/labels.rs:178 src/ui/labels.rs:223
 msgid "Labels"
 msgstr "Etiketler"
 
@@ -591,12 +616,12 @@ msgstr "Geri"
 msgid "Forward"
 msgstr "İlet"
 
-#: src/ui/dialogs.rs:671
+#: src/ui/dialogs.rs:679
 msgid "Messages forwarded many times can be sent to one chat at a time"
 msgstr ""
 "Çok kez iletilen mesajlar tek seferde yalnızca bir sohbete gönderilebilir"
 
-#: src/ui/dialogs.rs:679
+#: src/ui/dialogs.rs:687
 #, rust-format
 msgid "You can forward to up to {count} chat"
 msgid_plural "You can forward to up to {count} chats"
@@ -626,11 +651,11 @@ msgid_plural "{count} selected messages"
 msgstr[0] "{count} mesaj seçildi"
 msgstr[1] "{count} mesaj seçildi"
 
-#: src/ui/dialogs.rs:924 src/ui/dialogs.rs:945
+#: src/ui/dialogs.rs:932 src/ui/dialogs.rs:953
 msgid "this chat"
 msgstr "bu sohbet"
 
-#: src/ui/dialogs.rs:929
+#: src/ui/dialogs.rs:937
 #, rust-format
 msgid ""
 "This deletes your chat with {name}, including all messages, on this computer "
@@ -639,7 +664,7 @@ msgstr ""
 "Bu işlem {name} ile sohbetinizi, tüm mesajlarıyla birlikte bu bilgisayarda "
 "ve telefonunuzda siler. Geri alınamaz."
 
-#: src/ui/dialogs.rs:935
+#: src/ui/dialogs.rs:943
 msgid "Delete chat?"
 msgstr "Sohbet silinsin mi?"
 
@@ -647,7 +672,7 @@ msgstr "Sohbet silinsin mi?"
 msgid "Delete"
 msgstr "Sil"
 
-#: src/ui/dialogs.rs:950
+#: src/ui/dialogs.rs:958
 #, rust-format
 msgid ""
 "This clears every message in your chat with {name}, including downloaded "
@@ -658,11 +683,11 @@ msgstr ""
 "bilgisayarda ve telefonunuzda temizler. Sohbetin kendisi kalır. Geri "
 "alınamaz."
 
-#: src/ui/dialogs.rs:956
+#: src/ui/dialogs.rs:964
 msgid "Clear chat?"
 msgstr "Sohbet temizlensin mi?"
 
-#: src/ui/dialogs.rs:958
+#: src/ui/dialogs.rs:966
 msgid "Clear chat"
 msgstr "Sohbeti temizle"
 
@@ -679,7 +704,7 @@ msgid "Add to my stickers"
 msgstr "Çıkartmalarıma ekle"
 
 #: src/ui/dialogs.rs:1096 src/ui/calls.rs:603 src/ui/message_info.rs:28
-#: src/ui/labels.rs:224 src/ui/info.rs:252
+#: src/ui/labels.rs:234 src/ui/info.rs:252
 msgid "Close"
 msgstr "Kapat"
 
@@ -709,11 +734,11 @@ msgstr "Gönder"
 msgid "Cancel"
 msgstr "İptal"
 
-#: src/ui/dialogs.rs:1247
+#: src/ui/dialogs.rs:1255
 msgid "Start over?"
 msgstr "Baştan başlansın mı?"
 
-#: src/ui/dialogs.rs:1251
+#: src/ui/dialogs.rs:1259
 msgid ""
 "ZapFast keeps your unreadable archive as a separate file, creates a new one, "
 "and asks you to link again. Linking again brings back recent history from "
@@ -725,7 +750,7 @@ msgstr ""
 "geçmiş telefonunuzdan geri gelir. Ardından telefonunuzda Bağlı cihazlar "
 "altındaki eski ZapFast kaydını kaldırın."
 
-#: src/ui/dialogs.rs:1255
+#: src/ui/dialogs.rs:1263
 msgid ""
 "If you can restore the original keyring instead, choose Cancel and Try "
 "again: nothing is lost that way."
@@ -733,7 +758,7 @@ msgstr ""
 "Bunun yerine özgün anahtarlığı geri yükleyebiliyorsanız İptal'i, ardından "
 "“Try again”i seçin: böylece hiçbir şey kaybolmaz."
 
-#: src/ui/dialogs.rs:1258
+#: src/ui/dialogs.rs:1266
 msgid "Start over"
 msgstr "Baştan başla"
 
@@ -786,7 +811,7 @@ msgstr "Herkesten silinsin mi?"
 msgid "Delete for me?"
 msgstr "Benden silinsin mi?"
 
-#: src/ui/dialogs.rs:1341
+#: src/ui/dialogs.rs:1349
 #, rust-format
 msgid ""
 "This deletes \"{name}\" and its stickers from this computer. To use it "
@@ -795,11 +820,11 @@ msgstr ""
 "Bu işlem “{name}” paketini ve çıkartmalarını bu bilgisayardan siler. Yeniden "
 "kullanmak için tekrar içe aktarın."
 
-#: src/ui/dialogs.rs:1347
+#: src/ui/dialogs.rs:1355
 msgid "Remove sticker pack?"
 msgstr "Çıkartma paketi kaldırılsın mı?"
 
-#: src/ui/dialogs.rs:1349 src/ui/dialogs.rs:1407
+#: src/ui/dialogs.rs:1357 src/ui/dialogs.rs:1415
 msgid "Remove"
 msgstr "Kaldır"
 
@@ -807,7 +832,7 @@ msgstr "Kaldır"
 msgid "Unlink this computer?"
 msgstr "Bu bilgisayarın bağlantısı kaldırılsın mı?"
 
-#: src/ui/dialogs.rs:1362
+#: src/ui/dialogs.rs:1370
 msgid ""
 "This removes the device from WhatsApp and deletes the chats stored here. You "
 "can link again with a new code."
@@ -842,11 +867,11 @@ msgstr "Seçtiğiniz bir indirme klasöründeki dosyalar korunur."
 msgid "Clear"
 msgstr "Temizle"
 
-#: src/ui/dialogs.rs:1402
+#: src/ui/dialogs.rs:1410
 msgid "Remove this account?"
 msgstr "Bu hesap kaldırılsın mı?"
 
-#: src/ui/dialogs.rs:1405
+#: src/ui/dialogs.rs:1413
 msgid ""
 "This unlinks the number on this computer and deletes its local chats. Other "
 "accounts stay."
@@ -1704,7 +1729,7 @@ msgid "Hang up the current call first"
 msgstr "Önce mevcut aramayı sonlandırın"
 
 #. Translators: {name} is replaced by the author's name, shown as a link.
-#: src/ui/widgets.rs:861
+#: src/ui/widgets.rs:886
 #, rust-format
 msgid "Built with love by {name}"
 msgstr "{name} tarafından sevgiyle geliştirildi"
@@ -1784,7 +1809,7 @@ msgstr "WhatsApp'a bağlı değil"
 msgid "Enter a valid international phone number"
 msgstr "Geçerli bir uluslararası telefon numarası girin"
 
-#: src/app.rs:1766
+#: src/app.rs:1771
 msgid "Could not delete the removed account's files"
 msgstr "Kaldırılan hesabın dosyaları silinemedi"
 
@@ -1802,19 +1827,19 @@ msgstr "{name} (Siz)"
 msgid "Media cache cleared"
 msgstr "Medya önbelleği temizlendi"
 
-#: src/app.rs:3102
+#: src/app.rs:3107
 msgid "Star removed"
 msgstr "Yıldız kaldırıldı"
 
-#: src/app.rs:3138
+#: src/app.rs:3143
 msgid "Pinned for 7 days"
 msgstr "7 günlüğüne sabitlendi"
 
-#: src/app.rs:3140
+#: src/app.rs:3145
 msgid "Pin removed"
 msgstr "Sabitleme kaldırıldı"
 
-#: src/app.rs:3630
+#: src/app.rs:3635
 msgid "Loading chat history"
 msgstr "Sohbet geçmişi yükleniyor"
 
@@ -1822,11 +1847,11 @@ msgstr "Sohbet geçmişi yükleniyor"
 msgid "Could not use this image"
 msgstr "Bu görsel kullanılamadı"
 
-#: src/app.rs:3946 src/app.rs:7425
+#: src/app.rs:3951 src/app.rs:7443
 msgid "This chat already has three pinned messages"
 msgstr "Bu sohbette zaten üç sabitlenmiş mesaj var"
 
-#: src/app.rs:4016
+#: src/app.rs:4021
 msgid "Connecting"
 msgstr "Bağlanıyor"
 
@@ -1855,14 +1880,14 @@ msgstr "Favorilere eklendi"
 msgid "Sending the sticker pack…"
 msgstr "Çıkartma paketi gönderiliyor…"
 
-#: src/app.rs:7651 src/ui/labels.rs:247
+#: src/app.rs:7651 src/ui/labels.rs:257
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "ZapFast'in tutabileceği maksimum sınır olan {limit} etikete ulaştınız."
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:8160
+#: src/app.rs:8178
 #, rust-format
 msgid "{}: {}"
 msgstr "{}: {}"
@@ -1946,11 +1971,11 @@ msgstr "Renk"
 msgid "Manage labels"
 msgstr "Etiketleri yönet"
 
-#: src/ui/labels.rs:200
+#: src/ui/labels.rs:166
 msgid "Manage labels…"
 msgstr "Etiketleri yönet…"
 
-#: src/ui/labels.rs:236
+#: src/ui/labels.rs:246
 msgid ""
 "Labels stay on this computer. They do not reach your phone or anyone you "
 "chat with."
@@ -1958,15 +1983,15 @@ msgstr ""
 "Etiketler bu bilgisayarda kalır. Telefonunuza veya sohbet ettiğiniz kişilere "
 "iletilmez."
 
-#: src/ui/labels.rs:257
+#: src/ui/labels.rs:267
 msgid "New label"
 msgstr "Yeni etiket"
 
-#: src/ui/labels.rs:271
+#: src/ui/labels.rs:281
 msgid "Create"
 msgstr "Oluştur"
 
-#: src/ui/labels.rs:301
+#: src/ui/labels.rs:311
 msgid ""
 "No labels yet. Create one above, then add chats to it from their right-click "
 "menu."
@@ -1974,22 +1999,22 @@ msgstr ""
 "Henüz etiket yok. Yukarıdan bir tane oluşturun, ardından sağ tık menüsünden "
 "sohbetleri ekleyin."
 
-#: src/ui/labels.rs:336
+#: src/ui/labels.rs:346
 msgid "Next colour"
 msgstr "Sonraki renk"
 
-#: src/ui/labels.rs:385
+#: src/ui/labels.rs:395
 #, rust-format
 msgid "{} chat"
 msgid_plural "{} chats"
 msgstr[0] "{} sohbet"
 msgstr[1] "{} sohbet"
 
-#: src/ui/labels.rs:406
+#: src/ui/labels.rs:416
 msgid "Rename or recolour"
 msgstr "Yeniden adlandır veya rengini değiştir"
 
-#: src/ui/labels.rs:431
+#: src/ui/labels.rs:441
 msgid "Delete this label. Its chats keep their messages."
 msgstr "Bu etiketi sil. İçindeki sohbetlerin mesajları korunur."
 
@@ -2382,7 +2407,7 @@ msgstr "Bireysel sohbetler"
 msgid "Direct messages and groups"
 msgstr "Bireysel sohbetler ve gruplar"
 
-#: src/account.rs:275
+#: src/account.rs:288
 #, rust-format
 msgid "Account {id}"
 msgstr "Hesap {id}"
@@ -2444,7 +2469,7 @@ msgstr "{}+"
 msgid "Could not list the media."
 msgstr "Medya listelenemedi."
 
-#: src/ui/info.rs:881
+#: src/ui/info.rs:881 src/ui/login.rs:114
 msgid "Try again"
 msgstr "Tekrar deneyin"
 

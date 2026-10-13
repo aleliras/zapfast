@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-14 00:41+0200\n"
+"POT-Creation-Date: 2026-10-14 00:51+0200\n"
 "PO-Revision-Date: 2026-09-25 23:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -185,6 +185,31 @@ msgstr "11月"
 msgid "December"
 msgstr "12月"
 
+#: src/util.rs:581
+#, rust-format
+msgid "{seconds} s"
+msgstr "{seconds} 秒"
+
+#: src/util.rs:582
+#, rust-format
+msgid "{minutes} min"
+msgstr "{minutes} 分钟"
+
+#: src/util.rs:583
+#, rust-format
+msgid "{minutes} min {seconds} s"
+msgstr "{minutes} 分 {seconds} 秒"
+
+#: src/util.rs:584
+#, rust-format
+msgid "{hours} h"
+msgstr "{hours} 小时"
+
+#: src/util.rs:585
+#, rust-format
+msgid "{hours} h {minutes} min"
+msgstr "{hours} 小时 {minutes} 分钟"
+
 #: src/ui/chats.rs:168 src/ui/chats.rs:577 src/app.rs:3105
 msgid "Starred"
 msgstr "已加星标"
@@ -264,7 +289,7 @@ msgstr "退出群组"
 msgid "Leave channel"
 msgstr "退出频道"
 
-#: src/ui/chats.rs:1759 src/ui/labels.rs:166 src/ui/labels.rs:213
+#: src/ui/chats.rs:1759 src/ui/labels.rs:178 src/ui/labels.rs:223
 msgid "Labels"
 msgstr "标签"
 
@@ -575,11 +600,11 @@ msgstr "返回"
 msgid "Forward"
 msgstr "转发"
 
-#: src/ui/dialogs.rs:671
+#: src/ui/dialogs.rs:679
 msgid "Messages forwarded many times can be sent to one chat at a time"
 msgstr "多次转发的消息每次只能发送到一个聊天"
 
-#: src/ui/dialogs.rs:679
+#: src/ui/dialogs.rs:687
 #, rust-format
 msgid "You can forward to up to {count} chat"
 msgid_plural "You can forward to up to {count} chats"
@@ -606,11 +631,11 @@ msgid "{count} selected message"
 msgid_plural "{count} selected messages"
 msgstr[0] "{count} 条消息已选择"
 
-#: src/ui/dialogs.rs:924 src/ui/dialogs.rs:945
+#: src/ui/dialogs.rs:932 src/ui/dialogs.rs:953
 msgid "this chat"
 msgstr "对方"
 
-#: src/ui/dialogs.rs:929
+#: src/ui/dialogs.rs:937
 #, rust-format
 msgid ""
 "This deletes your chat with {name}, including all messages, on this computer "
@@ -618,7 +643,7 @@ msgid ""
 msgstr ""
 "这会在此电脑和你的手机上删除你与 {name} 的聊天及其所有消息。此操作无法撤销。"
 
-#: src/ui/dialogs.rs:935
+#: src/ui/dialogs.rs:943
 msgid "Delete chat?"
 msgstr "要删除聊天吗？"
 
@@ -626,7 +651,7 @@ msgstr "要删除聊天吗？"
 msgid "Delete"
 msgstr "删除"
 
-#: src/ui/dialogs.rs:950
+#: src/ui/dialogs.rs:958
 #, rust-format
 msgid ""
 "This clears every message in your chat with {name}, including downloaded "
@@ -636,11 +661,11 @@ msgstr ""
 "这会在此电脑和你的手机上清空你与 {name} 的聊天中的所有消息，包括已下载的媒"
 "体。聊天本身会保留。此操作无法撤销。"
 
-#: src/ui/dialogs.rs:956
+#: src/ui/dialogs.rs:964
 msgid "Clear chat?"
 msgstr "要清空聊天吗？"
 
-#: src/ui/dialogs.rs:958
+#: src/ui/dialogs.rs:966
 msgid "Clear chat"
 msgstr "清空聊天"
 
@@ -657,7 +682,7 @@ msgid "Add to my stickers"
 msgstr "添加到我的贴图"
 
 #: src/ui/dialogs.rs:1096 src/ui/calls.rs:603 src/ui/message_info.rs:28
-#: src/ui/labels.rs:224 src/ui/info.rs:252
+#: src/ui/labels.rs:234 src/ui/info.rs:252
 msgid "Close"
 msgstr "关闭"
 
@@ -687,11 +712,11 @@ msgstr "发送"
 msgid "Cancel"
 msgstr "取消"
 
-#: src/ui/dialogs.rs:1247
+#: src/ui/dialogs.rs:1255
 msgid "Start over?"
 msgstr "要重新开始吗？"
 
-#: src/ui/dialogs.rs:1251
+#: src/ui/dialogs.rs:1259
 msgid ""
 "ZapFast keeps your unreadable archive as a separate file, creates a new one, "
 "and asks you to link again. Linking again brings back recent history from "
@@ -702,7 +727,7 @@ msgstr ""
 "新关联后，最近的历史记录会从手机恢复。之后，请在手机的“已关联的设备”中移除旧"
 "的 ZapFast 条目。"
 
-#: src/ui/dialogs.rs:1255
+#: src/ui/dialogs.rs:1263
 msgid ""
 "If you can restore the original keyring instead, choose Cancel and Try "
 "again: nothing is lost that way."
@@ -710,7 +735,7 @@ msgstr ""
 "如果你能恢复原来的密钥环，请选择“取消”，然后选择“Try again”：这样不会丢失任何"
 "内容。"
 
-#: src/ui/dialogs.rs:1258
+#: src/ui/dialogs.rs:1266
 msgid "Start over"
 msgstr "重新开始"
 
@@ -755,14 +780,14 @@ msgstr "为所有人删除？"
 msgid "Delete for me?"
 msgstr "为我删除？"
 
-#: src/ui/dialogs.rs:1341
+#: src/ui/dialogs.rs:1349
 #, rust-format
 msgid ""
 "This deletes \"{name}\" and its stickers from this computer. To use it "
 "again, import it again."
 msgstr "这会从此电脑删除“{name}”及其贴图。如需再次使用，请重新导入。"
 
-#: src/ui/dialogs.rs:1347
+#: src/ui/dialogs.rs:1355
 msgid "Remove sticker pack?"
 msgstr "要移除贴图包吗？"
 
@@ -770,11 +795,11 @@ msgstr "要移除贴图包吗？"
 msgid "Remove"
 msgstr "移除"
 
-#: src/ui/dialogs.rs:1359 src/ui/lock.rs:123
+#: src/ui/dialogs.rs:1367 src/ui/lock.rs:123
 msgid "Unlink this computer?"
 msgstr "要取消关联此电脑吗？"
 
-#: src/ui/dialogs.rs:1362
+#: src/ui/dialogs.rs:1370
 msgid ""
 "This removes the device from WhatsApp and deletes the chats stored here. You "
 "can link again with a new code."
@@ -782,7 +807,7 @@ msgstr ""
 "这会从 WhatsApp 移除此设备，并删除保存在这里的聊天。你可以用新的代码重新关"
 "联。"
 
-#: src/ui/dialogs.rs:1364 src/ui/lock.rs:139
+#: src/ui/dialogs.rs:1372 src/ui/lock.rs:139
 msgid "Unlink"
 msgstr "取消关联"
 
@@ -1640,7 +1665,7 @@ msgid "Hang up the current call first"
 msgstr "请先挂断当前通话"
 
 #. Translators: {name} is replaced by the author's name, shown as a link.
-#: src/ui/widgets.rs:861
+#: src/ui/widgets.rs:886
 #, rust-format
 msgid "Built with love by {name}"
 msgstr "由 {name} 倾心打造"
@@ -1715,7 +1740,7 @@ msgstr "未连接到 WhatsApp"
 msgid "Enter a valid international phone number"
 msgstr "请输入有效的国际电话号码"
 
-#: src/app.rs:1766
+#: src/app.rs:1771
 msgid "Could not delete the removed account's files"
 msgstr "无法删除已移除账号的文件"
 
@@ -1745,7 +1770,7 @@ msgstr "已置顶 7 天"
 msgid "Pin removed"
 msgstr "已取消置顶"
 
-#: src/app.rs:3630
+#: src/app.rs:3635
 msgid "Loading chat history"
 msgstr "正在加载聊天记录"
 
@@ -1757,7 +1782,7 @@ msgstr "无法使用此图片"
 msgid "This chat already has three pinned messages"
 msgstr "此聊天已有三条置顶消息"
 
-#: src/app.rs:4016
+#: src/app.rs:4021
 msgid "Connecting"
 msgstr "正在连接"
 
@@ -1784,14 +1809,14 @@ msgstr "已添加到收藏"
 msgid "Sending the sticker pack…"
 msgstr "正在发送贴图包…"
 
-#: src/app.rs:7651 src/ui/labels.rs:247
+#: src/app.rs:7651 src/ui/labels.rs:257
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "你已有 {limit} 个标签，这是 ZapFast 的上限。"
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:8160
+#: src/app.rs:8178
 #, rust-format
 msgid "{}: {}"
 msgstr "{}：{}"
@@ -1875,45 +1900,45 @@ msgstr "颜色"
 msgid "Manage labels"
 msgstr "管理标签"
 
-#: src/ui/labels.rs:200
+#: src/ui/labels.rs:166
 msgid "Manage labels…"
 msgstr "管理标签…"
 
-#: src/ui/labels.rs:236
+#: src/ui/labels.rs:246
 msgid ""
 "Labels stay on this computer. They do not reach your phone or anyone you "
 "chat with."
 msgstr "标签只保存在这台电脑上，不会同步到手机，聊天对象也看不到。"
 
-#: src/ui/labels.rs:257
+#: src/ui/labels.rs:267
 msgid "New label"
 msgstr "新建标签"
 
-#: src/ui/labels.rs:271
+#: src/ui/labels.rs:281
 msgid "Create"
 msgstr "创建"
 
-#: src/ui/labels.rs:301
+#: src/ui/labels.rs:311
 msgid ""
 "No labels yet. Create one above, then add chats to it from their right-click "
 "menu."
 msgstr "还没有标签。在上方新建一个，然后用右键菜单把聊天加进去。"
 
-#: src/ui/labels.rs:336
+#: src/ui/labels.rs:346
 msgid "Next colour"
 msgstr "下一个颜色"
 
-#: src/ui/labels.rs:385
+#: src/ui/labels.rs:395
 #, rust-format
 msgid "{} chat"
 msgid_plural "{} chats"
 msgstr[0] "{} 个聊天"
 
-#: src/ui/labels.rs:406
+#: src/ui/labels.rs:416
 msgid "Rename or recolour"
 msgstr "重命名或改颜色"
 
-#: src/ui/labels.rs:431
+#: src/ui/labels.rs:441
 msgid "Delete this label. Its chats keep their messages."
 msgstr "删除此标签。其中的聊天会保留消息。"
 
@@ -2356,7 +2381,7 @@ msgstr "{}+"
 msgid "Could not list the media."
 msgstr "无法列出媒体。"
 
-#: src/ui/info.rs:881
+#: src/ui/info.rs:881 src/ui/login.rs:114
 msgid "Try again"
 msgstr "重试"
 

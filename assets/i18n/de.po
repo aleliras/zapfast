@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-14 00:41+0200\n"
+"POT-Creation-Date: 2026-10-14 00:51+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: German\n"
@@ -185,6 +185,31 @@ msgstr "November"
 msgid "December"
 msgstr "Dezember"
 
+#: src/util.rs:581
+#, rust-format
+msgid "{seconds} s"
+msgstr "{seconds} Sek."
+
+#: src/util.rs:582
+#, rust-format
+msgid "{minutes} min"
+msgstr "{minutes} Min."
+
+#: src/util.rs:583
+#, rust-format
+msgid "{minutes} min {seconds} s"
+msgstr "{minutes} Min. {seconds} Sek."
+
+#: src/util.rs:584
+#, rust-format
+msgid "{hours} h"
+msgstr "{hours} Std."
+
+#: src/util.rs:585
+#, rust-format
+msgid "{hours} h {minutes} min"
+msgstr "{hours} Std. {minutes} Min."
+
 #: src/ui/chats.rs:168 src/ui/chats.rs:577 src/app.rs:3105
 msgid "Starred"
 msgstr "Markiert"
@@ -264,7 +289,7 @@ msgstr "Gruppe verlassen"
 msgid "Leave channel"
 msgstr "Kanal verlassen"
 
-#: src/ui/chats.rs:1759 src/ui/labels.rs:166 src/ui/labels.rs:213
+#: src/ui/chats.rs:1759 src/ui/labels.rs:178 src/ui/labels.rs:223
 msgid "Labels"
 msgstr "Labels"
 
@@ -593,13 +618,13 @@ msgstr "Zurück"
 msgid "Forward"
 msgstr "Weiterleiten"
 
-#: src/ui/dialogs.rs:671
+#: src/ui/dialogs.rs:679
 msgid "Messages forwarded many times can be sent to one chat at a time"
 msgstr ""
 "Häufig weitergeleitete Nachrichten können jeweils nur an einen Chat gesendet "
 "werden"
 
-#: src/ui/dialogs.rs:679
+#: src/ui/dialogs.rs:687
 #, rust-format
 msgid "You can forward to up to {count} chat"
 msgid_plural "You can forward to up to {count} chats"
@@ -629,11 +654,11 @@ msgid_plural "{count} selected messages"
 msgstr[0] "{count} Nachricht ausgewählt"
 msgstr[1] "{count} Nachrichten ausgewählt"
 
-#: src/ui/dialogs.rs:924 src/ui/dialogs.rs:945
+#: src/ui/dialogs.rs:932 src/ui/dialogs.rs:953
 msgid "this chat"
 msgstr "diesem Chat"
 
-#: src/ui/dialogs.rs:929
+#: src/ui/dialogs.rs:937
 #, rust-format
 msgid ""
 "This deletes your chat with {name}, including all messages, on this computer "
@@ -642,7 +667,7 @@ msgstr ""
 "Dadurch wird dein Chat mit {name} samt allen Nachrichten auf diesem Computer "
 "und auf deinem Telefon gelöscht. Das kann nicht rückgängig gemacht werden."
 
-#: src/ui/dialogs.rs:935
+#: src/ui/dialogs.rs:943
 msgid "Delete chat?"
 msgstr "Chat löschen?"
 
@@ -650,7 +675,7 @@ msgstr "Chat löschen?"
 msgid "Delete"
 msgstr "Löschen"
 
-#: src/ui/dialogs.rs:950
+#: src/ui/dialogs.rs:958
 #, rust-format
 msgid ""
 "This clears every message in your chat with {name}, including downloaded "
@@ -662,11 +687,11 @@ msgstr ""
 "gelöscht. Der Chat selbst bleibt bestehen. Das kann nicht rückgängig gemacht "
 "werden."
 
-#: src/ui/dialogs.rs:956
+#: src/ui/dialogs.rs:964
 msgid "Clear chat?"
 msgstr "Chat leeren?"
 
-#: src/ui/dialogs.rs:958
+#: src/ui/dialogs.rs:966
 msgid "Clear chat"
 msgstr "Chat leeren"
 
@@ -683,7 +708,7 @@ msgid "Add to my stickers"
 msgstr "Zu meinen Stickern hinzufügen"
 
 #: src/ui/dialogs.rs:1096 src/ui/calls.rs:603 src/ui/message_info.rs:28
-#: src/ui/labels.rs:224 src/ui/info.rs:252
+#: src/ui/labels.rs:234 src/ui/info.rs:252
 msgid "Close"
 msgstr "Schließen"
 
@@ -713,11 +738,11 @@ msgstr "Senden"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: src/ui/dialogs.rs:1247
+#: src/ui/dialogs.rs:1255
 msgid "Start over?"
 msgstr "Neu beginnen?"
 
-#: src/ui/dialogs.rs:1251
+#: src/ui/dialogs.rs:1259
 msgid ""
 "ZapFast keeps your unreadable archive as a separate file, creates a new one, "
 "and asks you to link again. Linking again brings back recent history from "
@@ -729,7 +754,7 @@ msgstr ""
 "Verlauf von deinem Telefon zurück. Entferne danach auf deinem Telefon den "
 "alten ZapFast-Eintrag unter „Verknüpfte Geräte“."
 
-#: src/ui/dialogs.rs:1255
+#: src/ui/dialogs.rs:1263
 msgid ""
 "If you can restore the original keyring instead, choose Cancel and Try "
 "again: nothing is lost that way."
@@ -737,7 +762,7 @@ msgstr ""
 "Wenn du stattdessen den ursprünglichen Schlüsselbund wiederherstellen "
 "kannst, wähle „Abbrechen“ und dann „Try again“: So geht nichts verloren."
 
-#: src/ui/dialogs.rs:1258
+#: src/ui/dialogs.rs:1266
 msgid "Start over"
 msgstr "Neu beginnen"
 
@@ -790,7 +815,7 @@ msgstr "Für alle löschen?"
 msgid "Delete for me?"
 msgstr "Für mich löschen?"
 
-#: src/ui/dialogs.rs:1341
+#: src/ui/dialogs.rs:1349
 #, rust-format
 msgid ""
 "This deletes \"{name}\" and its stickers from this computer. To use it "
@@ -799,7 +824,7 @@ msgstr ""
 "Dadurch werden „{name}“ und seine Sticker von diesem Computer gelöscht. Um "
 "es wieder zu nutzen, importiere es erneut."
 
-#: src/ui/dialogs.rs:1347
+#: src/ui/dialogs.rs:1355
 msgid "Remove sticker pack?"
 msgstr "Sticker-Pack entfernen?"
 
@@ -807,11 +832,11 @@ msgstr "Sticker-Pack entfernen?"
 msgid "Remove"
 msgstr "Entfernen"
 
-#: src/ui/dialogs.rs:1359 src/ui/lock.rs:123
+#: src/ui/dialogs.rs:1367 src/ui/lock.rs:123
 msgid "Unlink this computer?"
 msgstr "Diesen Computer abmelden?"
 
-#: src/ui/dialogs.rs:1362
+#: src/ui/dialogs.rs:1370
 msgid ""
 "This removes the device from WhatsApp and deletes the chats stored here. You "
 "can link again with a new code."
@@ -819,7 +844,7 @@ msgstr ""
 "Dadurch wird das Gerät aus WhatsApp entfernt und die hier gespeicherten "
 "Chats werden gelöscht. Du kannst es mit einem neuen Code erneut verknüpfen."
 
-#: src/ui/dialogs.rs:1364 src/ui/lock.rs:139
+#: src/ui/dialogs.rs:1372 src/ui/lock.rs:139
 msgid "Unlink"
 msgstr "Abmelden"
 
@@ -1714,7 +1739,7 @@ msgid "Hang up the current call first"
 msgstr "Beende zuerst den laufenden Anruf"
 
 #. Translators: {name} is replaced by the author's name, shown as a link.
-#: src/ui/widgets.rs:861
+#: src/ui/widgets.rs:886
 #, rust-format
 msgid "Built with love by {name}"
 msgstr "Mit Liebe gemacht von {name}"
@@ -1794,7 +1819,7 @@ msgstr "Nicht mit WhatsApp verbunden"
 msgid "Enter a valid international phone number"
 msgstr "Gib eine gültige internationale Telefonnummer ein"
 
-#: src/app.rs:1766
+#: src/app.rs:1771
 msgid "Could not delete the removed account's files"
 msgstr "Die Dateien des entfernten Kontos konnten nicht gelöscht werden"
 
@@ -1824,7 +1849,7 @@ msgstr "Für 7 Tage angepinnt"
 msgid "Pin removed"
 msgstr "Anpinnen aufgehoben"
 
-#: src/app.rs:3630
+#: src/app.rs:3635
 msgid "Loading chat history"
 msgstr "Chatverlauf wird geladen"
 
@@ -1836,7 +1861,7 @@ msgstr "Dieses Bild kann nicht verwendet werden"
 msgid "This chat already has three pinned messages"
 msgstr "In diesem Chat sind bereits drei Nachrichten angepinnt"
 
-#: src/app.rs:4016
+#: src/app.rs:4021
 msgid "Connecting"
 msgstr "Verbindung wird hergestellt"
 
@@ -1866,23 +1891,23 @@ msgstr "Zu Favoriten hinzugefügt"
 msgid "Sending the sticker pack…"
 msgstr "Sticker-Pack wird gesendet…"
 
-#: src/app.rs:7651 src/ui/labels.rs:247
+#: src/app.rs:7651 src/ui/labels.rs:257
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "Du hast {limit} Labels, mehr hebt ZapFast nicht auf."
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:8160
+#: src/app.rs:8178
 #, rust-format
 msgid "{}: {}"
 msgstr "{}: {}"
 
-#: src/app.rs:8514
+#: src/app.rs:8532
 msgid "App lock password saved"
 msgstr "Passwort für die App-Sperre gespeichert"
 
-#: src/app.rs:8522
+#: src/app.rs:8540
 msgid "App lock turned off"
 msgstr "App-Sperre ausgeschaltet"
 
@@ -1957,11 +1982,11 @@ msgstr "Farbe"
 msgid "Manage labels"
 msgstr "Labels verwalten"
 
-#: src/ui/labels.rs:200
+#: src/ui/labels.rs:166
 msgid "Manage labels…"
 msgstr "Labels verwalten …"
 
-#: src/ui/labels.rs:236
+#: src/ui/labels.rs:246
 msgid ""
 "Labels stay on this computer. They do not reach your phone or anyone you "
 "chat with."
@@ -1969,15 +1994,15 @@ msgstr ""
 "Labels bleiben auf diesem Computer. Sie erreichen weder dein Telefon noch "
 "deine Chatpartner."
 
-#: src/ui/labels.rs:257
+#: src/ui/labels.rs:267
 msgid "New label"
 msgstr "Neues Label"
 
-#: src/ui/labels.rs:271
+#: src/ui/labels.rs:281
 msgid "Create"
 msgstr "Erstellen"
 
-#: src/ui/labels.rs:301
+#: src/ui/labels.rs:311
 msgid ""
 "No labels yet. Create one above, then add chats to it from their right-click "
 "menu."
@@ -1985,22 +2010,22 @@ msgstr ""
 "Noch keine Labels. Erstelle oben eins und füge Chats über ihr "
 "Rechtsklickmenü hinzu."
 
-#: src/ui/labels.rs:336
+#: src/ui/labels.rs:346
 msgid "Next colour"
 msgstr "Nächste Farbe"
 
-#: src/ui/labels.rs:385
+#: src/ui/labels.rs:395
 #, rust-format
 msgid "{} chat"
 msgid_plural "{} chats"
 msgstr[0] "{} Chat"
 msgstr[1] "{} Chats"
 
-#: src/ui/labels.rs:406
+#: src/ui/labels.rs:416
 msgid "Rename or recolour"
 msgstr "Umbenennen oder umfärben"
 
-#: src/ui/labels.rs:431
+#: src/ui/labels.rs:441
 msgid "Delete this label. Its chats keep their messages."
 msgstr "Dieses Label löschen. Seine Chats behalten ihre Nachrichten."
 
@@ -2456,7 +2481,7 @@ msgstr "{}+"
 msgid "Could not list the media."
 msgstr "Die Medien konnten nicht aufgelistet werden."
 
-#: src/ui/info.rs:881
+#: src/ui/info.rs:881 src/ui/login.rs:114
 msgid "Try again"
 msgstr "Erneut versuchen"
 

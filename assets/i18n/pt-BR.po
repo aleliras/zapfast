@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-14 00:41+0200\n"
+"POT-Creation-Date: 2026-10-14 00:51+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Brazilian Portuguese\n"
@@ -185,6 +185,31 @@ msgstr "Novembro"
 msgid "December"
 msgstr "Dezembro"
 
+#: src/util.rs:581
+#, rust-format
+msgid "{seconds} s"
+msgstr "{seconds} s"
+
+#: src/util.rs:582
+#, rust-format
+msgid "{minutes} min"
+msgstr "{minutes} min"
+
+#: src/util.rs:583
+#, rust-format
+msgid "{minutes} min {seconds} s"
+msgstr "{minutes} min {seconds} s"
+
+#: src/util.rs:584
+#, rust-format
+msgid "{hours} h"
+msgstr "{hours} h"
+
+#: src/util.rs:585
+#, rust-format
+msgid "{hours} h {minutes} min"
+msgstr "{hours} h {minutes} min"
+
 #: src/ui/chats.rs:168 src/ui/chats.rs:577 src/app.rs:3105
 msgid "Starred"
 msgstr "Com estrela"
@@ -266,7 +291,7 @@ msgstr "Sair do grupo"
 msgid "Leave channel"
 msgstr "Sair do canal"
 
-#: src/ui/chats.rs:1759 src/ui/labels.rs:166 src/ui/labels.rs:213
+#: src/ui/chats.rs:1759 src/ui/labels.rs:178 src/ui/labels.rs:223
 msgid "Labels"
 msgstr "Etiquetas"
 
@@ -591,13 +616,13 @@ msgstr "Voltar"
 msgid "Forward"
 msgstr "Encaminhar"
 
-#: src/ui/dialogs.rs:671
+#: src/ui/dialogs.rs:679
 msgid "Messages forwarded many times can be sent to one chat at a time"
 msgstr ""
 "Mensagens encaminhadas com frequência só podem ser enviadas para uma "
 "conversa por vez"
 
-#: src/ui/dialogs.rs:679
+#: src/ui/dialogs.rs:687
 #, rust-format
 msgid "You can forward to up to {count} chat"
 msgid_plural "You can forward to up to {count} chats"
@@ -627,11 +652,11 @@ msgid_plural "{count} selected messages"
 msgstr[0] "{count} mensagem selecionada"
 msgstr[1] "{count} mensagens selecionadas"
 
-#: src/ui/dialogs.rs:924 src/ui/dialogs.rs:945
+#: src/ui/dialogs.rs:932 src/ui/dialogs.rs:953
 msgid "this chat"
 msgstr "esta conversa"
 
-#: src/ui/dialogs.rs:929
+#: src/ui/dialogs.rs:937
 #, rust-format
 msgid ""
 "This deletes your chat with {name}, including all messages, on this computer "
@@ -640,7 +665,7 @@ msgstr ""
 "Isso apaga sua conversa com {name}, incluindo todas as mensagens, neste "
 "computador e no seu celular. Não é possível desfazer."
 
-#: src/ui/dialogs.rs:935
+#: src/ui/dialogs.rs:943
 msgid "Delete chat?"
 msgstr "Apagar conversa?"
 
@@ -648,7 +673,7 @@ msgstr "Apagar conversa?"
 msgid "Delete"
 msgstr "Apagar"
 
-#: src/ui/dialogs.rs:950
+#: src/ui/dialogs.rs:958
 #, rust-format
 msgid ""
 "This clears every message in your chat with {name}, including downloaded "
@@ -659,11 +684,11 @@ msgstr ""
 "mídias baixadas, neste computador e no seu celular. A conversa em si "
 "continua. Não é possível desfazer."
 
-#: src/ui/dialogs.rs:956
+#: src/ui/dialogs.rs:964
 msgid "Clear chat?"
 msgstr "Limpar conversa?"
 
-#: src/ui/dialogs.rs:958
+#: src/ui/dialogs.rs:966
 msgid "Clear chat"
 msgstr "Limpar conversa"
 
@@ -680,7 +705,7 @@ msgid "Add to my stickers"
 msgstr "Adicionar às minhas figurinhas"
 
 #: src/ui/dialogs.rs:1096 src/ui/calls.rs:603 src/ui/message_info.rs:28
-#: src/ui/labels.rs:224 src/ui/info.rs:252
+#: src/ui/labels.rs:234 src/ui/info.rs:252
 msgid "Close"
 msgstr "Fechar"
 
@@ -710,11 +735,11 @@ msgstr "Enviar"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/ui/dialogs.rs:1247
+#: src/ui/dialogs.rs:1255
 msgid "Start over?"
 msgstr "Começar de novo?"
 
-#: src/ui/dialogs.rs:1251
+#: src/ui/dialogs.rs:1259
 msgid ""
 "ZapFast keeps your unreadable archive as a separate file, creates a new one, "
 "and asks you to link again. Linking again brings back recent history from "
@@ -726,7 +751,7 @@ msgstr ""
 "volta do seu celular. Depois, remova a entrada antiga do ZapFast em "
 "Dispositivos conectados no seu celular."
 
-#: src/ui/dialogs.rs:1255
+#: src/ui/dialogs.rs:1263
 msgid ""
 "If you can restore the original keyring instead, choose Cancel and Try "
 "again: nothing is lost that way."
@@ -734,7 +759,7 @@ msgstr ""
 "Se em vez disso você puder restaurar o chaveiro original, escolha Cancelar e "
 "depois “Try again”: assim nada se perde."
 
-#: src/ui/dialogs.rs:1258
+#: src/ui/dialogs.rs:1266
 msgid "Start over"
 msgstr "Começar de novo"
 
@@ -787,7 +812,7 @@ msgstr "Apagar para todos?"
 msgid "Delete for me?"
 msgstr "Apagar para mim?"
 
-#: src/ui/dialogs.rs:1341
+#: src/ui/dialogs.rs:1349
 #, rust-format
 msgid ""
 "This deletes \"{name}\" and its stickers from this computer. To use it "
@@ -796,7 +821,7 @@ msgstr ""
 "Isso apaga “{name}” e suas figurinhas deste computador. Para usá-lo de novo, "
 "importe-o novamente."
 
-#: src/ui/dialogs.rs:1347
+#: src/ui/dialogs.rs:1355
 msgid "Remove sticker pack?"
 msgstr "Remover o pacote de figurinhas?"
 
@@ -804,11 +829,11 @@ msgstr "Remover o pacote de figurinhas?"
 msgid "Remove"
 msgstr "Remover"
 
-#: src/ui/dialogs.rs:1359 src/ui/lock.rs:123
+#: src/ui/dialogs.rs:1367 src/ui/lock.rs:123
 msgid "Unlink this computer?"
 msgstr "Desconectar este computador?"
 
-#: src/ui/dialogs.rs:1362
+#: src/ui/dialogs.rs:1370
 msgid ""
 "This removes the device from WhatsApp and deletes the chats stored here. You "
 "can link again with a new code."
@@ -816,7 +841,7 @@ msgstr ""
 "Isso remove o dispositivo do WhatsApp e apaga as conversas guardadas aqui. "
 "Você pode conectar de novo com um novo código."
 
-#: src/ui/dialogs.rs:1364 src/ui/lock.rs:139
+#: src/ui/dialogs.rs:1372 src/ui/lock.rs:139
 msgid "Unlink"
 msgstr "Desconectar"
 
@@ -1702,7 +1727,7 @@ msgid "Hang up the current call first"
 msgstr "Desligue a chamada atual primeiro"
 
 #. Translators: {name} is replaced by the author's name, shown as a link.
-#: src/ui/widgets.rs:861
+#: src/ui/widgets.rs:886
 #, rust-format
 msgid "Built with love by {name}"
 msgstr "Feito com amor por {name}"
@@ -1782,7 +1807,7 @@ msgstr "Não conectado ao WhatsApp"
 msgid "Enter a valid international phone number"
 msgstr "Informe um número de telefone internacional válido"
 
-#: src/app.rs:1766
+#: src/app.rs:1771
 msgid "Could not delete the removed account's files"
 msgstr "Não foi possível apagar os arquivos da conta removida"
 
@@ -1812,7 +1837,7 @@ msgstr "Fixada por 7 dias"
 msgid "Pin removed"
 msgstr "Fixação removida"
 
-#: src/app.rs:3630
+#: src/app.rs:3635
 msgid "Loading chat history"
 msgstr "Carregando o histórico da conversa"
 
@@ -1824,7 +1849,7 @@ msgstr "Não foi possível usar esta imagem"
 msgid "This chat already has three pinned messages"
 msgstr "Esta conversa já tem três mensagens fixadas"
 
-#: src/app.rs:4016
+#: src/app.rs:4021
 msgid "Connecting"
 msgstr "Conectando"
 
@@ -1854,23 +1879,23 @@ msgstr "Adicionada aos favoritos"
 msgid "Sending the sticker pack…"
 msgstr "Enviando o pacote de figurinhas…"
 
-#: src/app.rs:7651 src/ui/labels.rs:247
+#: src/app.rs:7651 src/ui/labels.rs:257
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "Você tem {limit} etiquetas, o máximo que o ZapFast guarda."
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:8160
+#: src/app.rs:8178
 #, rust-format
 msgid "{}: {}"
 msgstr "{}: {}"
 
-#: src/app.rs:8514
+#: src/app.rs:8532
 msgid "App lock password saved"
 msgstr "Senha de bloqueio do app salva"
 
-#: src/app.rs:8522
+#: src/app.rs:8540
 msgid "App lock turned off"
 msgstr "Bloqueio do app desativado"
 
@@ -1945,11 +1970,11 @@ msgstr "Cor"
 msgid "Manage labels"
 msgstr "Gerenciar etiquetas"
 
-#: src/ui/labels.rs:200
+#: src/ui/labels.rs:166
 msgid "Manage labels…"
 msgstr "Gerenciar etiquetas…"
 
-#: src/ui/labels.rs:236
+#: src/ui/labels.rs:246
 msgid ""
 "Labels stay on this computer. They do not reach your phone or anyone you "
 "chat with."
@@ -1957,15 +1982,15 @@ msgstr ""
 "As etiquetas ficam neste computador. Elas não chegam ao seu celular nem a "
 "quem conversa com você."
 
-#: src/ui/labels.rs:257
+#: src/ui/labels.rs:267
 msgid "New label"
 msgstr "Nova etiqueta"
 
-#: src/ui/labels.rs:271
+#: src/ui/labels.rs:281
 msgid "Create"
 msgstr "Criar"
 
-#: src/ui/labels.rs:301
+#: src/ui/labels.rs:311
 msgid ""
 "No labels yet. Create one above, then add chats to it from their right-click "
 "menu."
@@ -1973,22 +1998,22 @@ msgstr ""
 "Nenhuma etiqueta ainda. Crie uma acima e adicione conversas pelo menu do "
 "botão direito delas."
 
-#: src/ui/labels.rs:336
+#: src/ui/labels.rs:346
 msgid "Next colour"
 msgstr "Próxima cor"
 
-#: src/ui/labels.rs:385
+#: src/ui/labels.rs:395
 #, rust-format
 msgid "{} chat"
 msgid_plural "{} chats"
 msgstr[0] "{} conversa"
 msgstr[1] "{} conversas"
 
-#: src/ui/labels.rs:406
+#: src/ui/labels.rs:416
 msgid "Rename or recolour"
 msgstr "Renomear ou trocar a cor"
 
-#: src/ui/labels.rs:431
+#: src/ui/labels.rs:441
 msgid "Delete this label. Its chats keep their messages."
 msgstr "Excluir esta etiqueta. As conversas dela mantêm as mensagens."
 
@@ -2443,7 +2468,7 @@ msgstr "{}+"
 msgid "Could not list the media."
 msgstr "Não foi possível listar a mídia."
 
-#: src/ui/info.rs:881
+#: src/ui/info.rs:881 src/ui/login.rs:114
 msgid "Try again"
 msgstr "Tentar novamente"
 
