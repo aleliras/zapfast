@@ -156,6 +156,32 @@ it again. A live-location share shows the position this linked device received;
 WhatsApp sends later positions only to the phone. ZapFast marks when newer
 positions are available there, but cannot follow the moving location here.
 
+## Locations
+
+**Send location** in the plus menu beside the message field opens a dialog that
+takes a spot as text: a pair of coordinates such as `-23.5505, -46.6333`, or a
+link to a spot on Google Maps, Apple Maps, OpenStreetMap, or a `geo:` URI.
+Coordinates may be separated by a comma or a space, and written with a dot or a
+comma as the decimal mark. The dialog shows the spot and a link to it before
+anything is sent, and refuses text it cannot read instead of guessing a place.
+
+ZapFast reads the text on this computer and fetches nothing: no map, no place
+name, and no address. Links to other sites are not read, even when they carry
+coordinates. Short links such as `maps.app.goo.gl` only say where they lead when
+opened online, so the dialog asks for the full link or the coordinates instead;
+open the short link in your browser and copy the address it ends up at.
+
+What goes out is a location that stays where it was sent. A position that keeps
+moving is shared from the phone only, so a linked device such as ZapFast sends
+the spot. It has no place name or address, since ZapFast does not look one up.
+If the location cannot be sent, the dialog comes back with the spot in it; if
+you have moved to another chat or opened something else since, the coordinates
+wait in that chat's message field instead.
+
+A location shows in a chat as a card with the place name and address when the
+sender's phone sent them (otherwise its coordinates), and a link that opens in
+your browser's map.
+
 ## Interactive messages
 
 Business templates and button messages show their image above the formatted
