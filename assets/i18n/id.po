@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-13 21:47+0200\n"
+"POT-Creation-Date: 2026-10-13 21:49+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Indonesian\n"
@@ -224,12 +224,12 @@ msgid "Add to favorites"
 msgstr "Tambah ke favorit"
 
 #: src/ui/chats.rs:1326 src/ui/chats.rs:1711 src/ui/conversation.rs:244
-#: src/ui/dialogs.rs:1233 src/ui/dialogs.rs:1771
+#: src/ui/dialogs.rs:1233 src/ui/dialogs.rs:1779
 msgid "Leave group"
 msgstr "Keluar dari grup"
 
 #: src/ui/chats.rs:1327 src/ui/chats.rs:1709 src/ui/conversation.rs:242
-#: src/ui/dialogs.rs:1231 src/ui/dialogs.rs:1769
+#: src/ui/dialogs.rs:1231 src/ui/dialogs.rs:1777
 msgid "Leave channel"
 msgstr "Keluar dari saluran"
 
@@ -347,7 +347,7 @@ msgstr "Anda"
 #: src/ui/conversation.rs:2413
 #, rust-format
 msgid "Select message from {sender}, {time}: {summary}"
-msgstr ""
+msgstr "Pilih pesan dari {sender}, {time}: {summary}"
 
 #: src/ui/conversation.rs:3422
 msgid "Group calls happen on the phone"
@@ -604,42 +604,46 @@ msgstr "Saluran"
 msgid "Contact"
 msgstr "Kontak"
 
-#: src/ui/dialogs.rs:1585
+#: src/ui/dialogs.rs:1593
 msgid "Edit group name"
 msgstr "Ubah nama grup"
 
-#: src/ui/dialogs.rs:1715
+#: src/ui/dialogs.rs:1723
 msgid "Saving…"
 msgstr "Menyimpan…"
 
-#: src/ui/dialogs.rs:1725
+#: src/ui/dialogs.rs:1733
 #, rust-format
 msgid "{} member"
 msgid_plural "{} members"
 msgstr[0] "{} anggota"
 msgstr[1] "{} anggota"
 
-#: src/ui/dialogs.rs:2060
+#: src/ui/dialogs.rs:1809
+msgid "Description"
+msgstr "Deskripsi"
+
+#: src/ui/dialogs.rs:2094
 msgid "Change group photo"
 msgstr "Ubah foto grup"
 
-#: src/ui/dialogs.rs:2066
+#: src/ui/dialogs.rs:2100
 msgid "Change photo"
 msgstr "Ubah foto"
 
-#: src/ui/dialogs.rs:2067
+#: src/ui/dialogs.rs:2101
 msgid "Remove photo"
 msgstr "Hapus foto"
 
-#: src/ui/dialogs.rs:2107
+#: src/ui/dialogs.rs:2141
 msgid "Group name"
 msgstr "Nama grup"
 
-#: src/ui/dialogs.rs:2150
+#: src/ui/dialogs.rs:2184
 msgid "Save name (Enter)"
 msgstr "Simpan nama (Enter)"
 
-#: src/ui/dialogs.rs:2162
+#: src/ui/dialogs.rs:2196
 msgid "Cancel (Escape)"
 msgstr "Batal (Escape)"
 

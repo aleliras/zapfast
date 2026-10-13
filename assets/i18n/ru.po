@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-13 21:47+0200\n"
+"POT-Creation-Date: 2026-10-13 21:49+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Russian\n"
@@ -225,12 +225,12 @@ msgid "Add to favorites"
 msgstr "Добавить в избранное"
 
 #: src/ui/chats.rs:1326 src/ui/chats.rs:1711 src/ui/conversation.rs:244
-#: src/ui/dialogs.rs:1233 src/ui/dialogs.rs:1771
+#: src/ui/dialogs.rs:1233 src/ui/dialogs.rs:1779
 msgid "Leave group"
 msgstr "Покинуть группу"
 
 #: src/ui/chats.rs:1327 src/ui/chats.rs:1709 src/ui/conversation.rs:242
-#: src/ui/dialogs.rs:1231 src/ui/dialogs.rs:1769
+#: src/ui/dialogs.rs:1231 src/ui/dialogs.rs:1777
 msgid "Leave channel"
 msgstr "Покинуть канал"
 
@@ -601,15 +601,15 @@ msgstr "Канал"
 msgid "Contact"
 msgstr "Контакт"
 
-#: src/ui/dialogs.rs:1585
+#: src/ui/dialogs.rs:1593
 msgid "Edit group name"
 msgstr "Изменить название группы"
 
-#: src/ui/dialogs.rs:1715
+#: src/ui/dialogs.rs:1723
 msgid "Saving…"
 msgstr "Сохранение…"
 
-#: src/ui/dialogs.rs:1725
+#: src/ui/dialogs.rs:1733
 #, rust-format
 msgid "{} member"
 msgid_plural "{} members"
@@ -617,27 +617,31 @@ msgstr[0] "{} участник"
 msgstr[1] "{} участника"
 msgstr[2] "{} участников"
 
-#: src/ui/dialogs.rs:2060
+#: src/ui/dialogs.rs:1809
+msgid "Description"
+msgstr "Описание"
+
+#: src/ui/dialogs.rs:2094
 msgid "Change group photo"
 msgstr "Изменить фото группы"
 
-#: src/ui/dialogs.rs:2066
+#: src/ui/dialogs.rs:2100
 msgid "Change photo"
 msgstr "Изменить фото"
 
-#: src/ui/dialogs.rs:2067
+#: src/ui/dialogs.rs:2101
 msgid "Remove photo"
 msgstr "Удалить фото"
 
-#: src/ui/dialogs.rs:2107
+#: src/ui/dialogs.rs:2141
 msgid "Group name"
 msgstr "Название группы"
 
-#: src/ui/dialogs.rs:2150
+#: src/ui/dialogs.rs:2184
 msgid "Save name (Enter)"
 msgstr "Сохранить имя (Enter)"
 
-#: src/ui/dialogs.rs:2162
+#: src/ui/dialogs.rs:2196
 msgid "Cancel (Escape)"
 msgstr "Отмена (Escape)"
 

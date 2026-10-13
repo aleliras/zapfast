@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-13 21:47+0200\n"
+"POT-Creation-Date: 2026-10-13 21:49+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: French\n"
@@ -224,12 +224,12 @@ msgid "Add to favorites"
 msgstr "Ajouter aux favoris"
 
 #: src/ui/chats.rs:1326 src/ui/chats.rs:1711 src/ui/conversation.rs:244
-#: src/ui/dialogs.rs:1233 src/ui/dialogs.rs:1771
+#: src/ui/dialogs.rs:1233 src/ui/dialogs.rs:1779
 msgid "Leave group"
 msgstr "Quitter le groupe"
 
 #: src/ui/chats.rs:1327 src/ui/chats.rs:1709 src/ui/conversation.rs:242
-#: src/ui/dialogs.rs:1231 src/ui/dialogs.rs:1769
+#: src/ui/dialogs.rs:1231 src/ui/dialogs.rs:1777
 msgid "Leave channel"
 msgstr "Quitter la chaîne"
 
@@ -597,42 +597,46 @@ msgstr "Chaîne"
 msgid "Contact"
 msgstr "Contact"
 
-#: src/ui/dialogs.rs:1585
+#: src/ui/dialogs.rs:1593
 msgid "Edit group name"
 msgstr "Modifier le nom du groupe"
 
-#: src/ui/dialogs.rs:1715
+#: src/ui/dialogs.rs:1723
 msgid "Saving…"
 msgstr "Enregistrement…"
 
-#: src/ui/dialogs.rs:1725
+#: src/ui/dialogs.rs:1733
 #, rust-format
 msgid "{} member"
 msgid_plural "{} members"
 msgstr[0] "{} membre"
 msgstr[1] "{} membres"
 
-#: src/ui/dialogs.rs:2060
+#: src/ui/dialogs.rs:1809
+msgid "Description"
+msgstr ""
+
+#: src/ui/dialogs.rs:2094
 msgid "Change group photo"
 msgstr "Changer la photo du groupe"
 
-#: src/ui/dialogs.rs:2066
+#: src/ui/dialogs.rs:2100
 msgid "Change photo"
 msgstr "Changer la photo"
 
-#: src/ui/dialogs.rs:2067
+#: src/ui/dialogs.rs:2101
 msgid "Remove photo"
 msgstr "Supprimer la photo"
 
-#: src/ui/dialogs.rs:2107
+#: src/ui/dialogs.rs:2141
 msgid "Group name"
 msgstr "Nom du groupe"
 
-#: src/ui/dialogs.rs:2150
+#: src/ui/dialogs.rs:2184
 msgid "Save name (Enter)"
 msgstr "Enregistrer le nom (Entrée)"
 
-#: src/ui/dialogs.rs:2162
+#: src/ui/dialogs.rs:2196
 msgid "Cancel (Escape)"
 msgstr "Annuler (Échap)"
 
@@ -1139,7 +1143,7 @@ msgstr "Alerte Pidgin"
 
 #: src/ui/settings.rs:1724 src/ui/call.rs:544
 msgid "System default"
-msgstr "Par défaut du système"
+msgstr "Son du système"
 
 #. Translators: no notification sound.
 #: src/ui/settings.rs:1726
