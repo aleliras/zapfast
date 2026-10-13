@@ -205,7 +205,7 @@ msgstr "已鎖定"
 msgid "No favorites yet"
 msgstr "尚無最愛"
 
-#: src/ui/chats.rs:1044 src/app.rs:2158
+#: src/ui/chats.rs:1044 src/app.rs:2200
 msgid "Message yourself"
 msgstr "傳訊息給自己"
 
@@ -334,7 +334,7 @@ msgid "{} unread message"
 msgid_plural "{} unread messages"
 msgstr[0] "{} 則未讀訊息"
 
-#: src/ui/conversation.rs:2402 src/app.rs:2140 src/app.rs:2159
+#: src/ui/conversation.rs:2402 src/app.rs:2182 src/app.rs:2201
 msgid "You"
 msgstr "您"
 
@@ -663,7 +663,7 @@ msgstr "「系統」是您桌面的介面字型。Inter 在每台電腦上呈現
 msgid "Wallpaper"
 msgstr "桌布"
 
-#: src/ui/settings.rs:348 src/app.rs:2631
+#: src/ui/settings.rs:348 src/app.rs:2673
 msgid "Image"
 msgstr "圖片"
 
@@ -1183,7 +1183,7 @@ msgstr "無法連線"
 msgid "No answer"
 msgstr "無人接聽"
 
-#: src/ui/call.rs:358 src/ui/calls.rs:106 src/app.rs:3362
+#: src/ui/call.rs:358 src/ui/calls.rs:106 src/app.rs:3404
 msgid "Connection lost"
 msgstr "連線中斷"
 
@@ -1388,80 +1388,80 @@ msgstr[0] "還有 {} 個"
 msgid "No one yet"
 msgstr "尚無對象"
 
-#: src/app.rs:1537
+#: src/app.rs:1552
 msgid "Could not delete the removed account's files"
 msgstr ""
 
-#: src/app.rs:2060
+#: src/app.rs:2102
 #, rust-format
 msgid "A label named “{name}” already exists."
 msgstr "已有名為「{name}」的標籤。"
 
-#: src/app.rs:2139
+#: src/app.rs:2181
 #, rust-format
 msgid "{name} (You)"
 msgstr "{name}（您）"
 
-#: src/app.rs:3072
+#: src/app.rs:3114
 msgid "Loading chat history"
 msgstr ""
 
-#: src/app.rs:3166
+#: src/app.rs:3208
 msgid "Could not use this image"
 msgstr "無法使用這張圖片"
 
-#: src/app.rs:3372
+#: src/app.rs:3414
 msgid "Connecting"
 msgstr ""
 
-#: src/app.rs:3767
+#: src/app.rs:3809
 msgid "Not sent: ZapFast is not connected to WhatsApp."
 msgstr "未送出：ZapFast 尚未連線至 WhatsApp。"
 
-#: src/app.rs:3771
+#: src/app.rs:3813
 msgid ""
 "Not sent: the message you’re replying to isn’t available on this computer. "
 "Cancel the reply to send without a quote."
 msgstr ""
 "未送出：您要回覆的訊息在這部電腦上無法使用。取消回覆即可不附帶引用內容送出。"
 
-#: src/app.rs:5748
+#: src/app.rs:5790
 msgid "Added to favorites"
 msgstr "已加入最愛"
 
-#: src/app.rs:5823
+#: src/app.rs:5865
 msgid "Sending the sticker pack…"
 msgstr "正在傳送貼圖集…"
 
-#: src/app.rs:6119 src/ui/labels.rs:247
+#: src/app.rs:6161 src/ui/labels.rs:247
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "您已有 {limit} 個標籤，已達 ZapFast 的上限。"
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:6619
+#: src/app.rs:6661
 #, rust-format
 msgid "{}: {}"
 msgstr ""
 
-#: src/app.rs:6933
+#: src/app.rs:6975
 msgid "App lock password saved"
 msgstr "已儲存應用程式鎖密碼"
 
-#: src/app.rs:6941
+#: src/app.rs:6983
 msgid "App lock turned off"
 msgstr "已關閉應用程式鎖"
 
-#: src/app.rs:7065
+#: src/app.rs:7107
 msgid "This video opens in your system player"
 msgstr "此影片會在您的系統播放器中開啟"
 
-#: src/app.rs:7498
+#: src/app.rs:7540
 msgid "Copied image"
 msgstr "已複製圖片"
 
-#: src/app.rs:7501 src/app.rs:7506
+#: src/app.rs:7543 src/app.rs:7548
 msgid "Failed to copy image"
 msgstr "複製圖片失敗"
 
