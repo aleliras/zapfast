@@ -67,24 +67,23 @@ msgstr "{date} pukul {time}"
 
 #: src/util.rs:305 src/settings.rs:380
 msgid "Off"
-msgstr ""
+msgstr "Nonaktif"
 
 #: src/util.rs:306
 msgid "24 hours"
-msgstr ""
+msgstr "24 jam"
 
 #: src/util.rs:307
 msgid "7 days"
-msgstr ""
+msgstr "7 hari"
 
 #: src/util.rs:308
 msgid "90 days"
-msgstr ""
+msgstr "90 hari"
 
 #: src/util.rs:311
-#, fuzzy
 msgid "Disappearing messages"
-msgstr "Cari pesan"
+msgstr "Pesan sementara"
 
 #: src/util.rs:335
 #, rust-format
@@ -188,7 +187,7 @@ msgstr "Desember"
 
 #: src/ui/chats.rs:156 src/ui/chats.rs:455 src/app.rs:3100
 msgid "Starred"
-msgstr ""
+msgstr "Berbintang"
 
 #: src/ui/chats.rs:195 src/ui/chats.rs:494 src/ui/settings.rs:398
 msgid "Chats"
@@ -199,9 +198,8 @@ msgid "Search"
 msgstr "Cari"
 
 #: src/ui/chats.rs:309 src/ui/chats.rs:1799
-#, fuzzy
 msgid "Starred messages"
-msgstr "Cari pesan"
+msgstr "Pesan berbintang"
 
 #: src/ui/chats.rs:617
 msgid "Archived"
@@ -212,13 +210,12 @@ msgid "Locked"
 msgstr "Terkunci"
 
 #: src/ui/chats.rs:680
-#, fuzzy
 msgid "No starred messages"
-msgstr "{} pesan belum dibaca"
+msgstr "Tidak ada pesan berbintang"
 
 #: src/ui/chats.rs:683
 msgid "Right-click a message and choose Star to keep it here."
-msgstr ""
+msgstr "Klik kanan pesan lalu pilih Beri bintang untuk menyimpannya di sini."
 
 #: src/ui/chats.rs:928
 msgid "No favorites yet"
@@ -265,9 +262,8 @@ msgid "Ctrl+K to search · ? for keyboard shortcuts"
 msgstr "Ctrl+K untuk mencari · ? untuk pintasan"
 
 #: src/ui/conversation.rs:572
-#, fuzzy
 msgid "Select messages"
-msgstr "Cari pesan"
+msgstr "Pilih pesan"
 
 #: src/ui/conversation.rs:691 src/ui/call.rs:111 src/ui/call.rs:524
 msgid "Hang up"
@@ -347,9 +343,8 @@ msgid "Send as document"
 msgstr "Kirim sebagai dokumen"
 
 #: src/ui/conversation.rs:1994 src/ui/locations.rs:16
-#, fuzzy
 msgid "Send location"
-msgstr "Lokasi terkini"
+msgstr "Kirim lokasi"
 
 #: src/ui/conversation.rs:1999
 msgid "Create poll"
@@ -365,19 +360,17 @@ msgid "Discard voice message"
 msgstr "Hapus pesan suara"
 
 #: src/ui/conversation.rs:2321
-#, fuzzy
 msgid "You pinned a message"
-msgstr "Ketik pesan"
+msgstr "Anda menyematkan pesan"
 
 #: src/ui/conversation.rs:2324
-#, fuzzy
 msgid "A message was pinned"
-msgstr "Pesan tidak ditemukan"
+msgstr "Sebuah pesan disematkan"
 
 #: src/ui/conversation.rs:2326
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} pinned a message"
-msgstr "{} pesan belum dibaca"
+msgstr "{} menyematkan pesan"
 
 #: src/ui/conversation.rs:2837 src/notify/badge_windows.rs:255
 #, rust-format
@@ -414,30 +407,27 @@ msgstr "Muat ulang pesan sebelumnya"
 
 #: src/ui/conversation.rs:5396 src/ui/conversation.rs:5691
 msgid "Unstar"
-msgstr ""
+msgstr "Hapus bintang"
 
 #: src/ui/conversation.rs:5397 src/ui/conversation.rs:5693
 msgid "Star"
-msgstr ""
+msgstr "Beri bintang"
 
 #: src/ui/conversation.rs:5681
 msgid "Reply privately"
 msgstr "Balas secara pribadi"
 
 #: src/ui/conversation.rs:5707
-#, fuzzy
 msgid "Unpin message"
-msgstr "Ketik pesan"
+msgstr "Lepas sematan pesan"
 
 #: src/ui/conversation.rs:5709
-#, fuzzy
 msgid "Pin message"
-msgstr "Pesan baru"
+msgstr "Sematkan pesan"
 
 #: src/ui/conversation.rs:5736
-#, fuzzy
 msgid "Open in the viewer"
-msgstr "Buka di pemutar sistem"
+msgstr "Buka di penampil"
 
 #: src/ui/conversation.rs:5838 src/ui/image_preview.rs:258
 #: src/ui/image_preview.rs:583
@@ -519,19 +509,16 @@ msgid "This message can only be seen on your phone."
 msgstr "Pesan ini hanya dapat dilihat melalui ponsel anda."
 
 #: src/ui/conversation.rs:6955
-#, fuzzy
 msgid "Save all…"
-msgstr "Simpan sebagai…"
+msgstr "Simpan semua…"
 
 #: src/ui/conversation.rs:7661
-#, fuzzy
 msgid "Message"
-msgstr "Info pesan"
+msgstr "Kirim pesan"
 
 #: src/ui/conversation.rs:7662
-#, fuzzy
 msgid "Copy number"
-msgstr "Salin gambar"
+msgstr "Salin nomor"
 
 #: src/ui/conversation.rs:7898 src/ui/locations.rs:45
 msgid "Open in a map"
@@ -566,67 +553,65 @@ msgid "Audio"
 msgstr "Audio"
 
 #: src/ui/dialogs.rs:475
-#, fuzzy
 msgid "Forward message"
-msgstr "Pesan baru"
+msgstr "Teruskan pesan"
 
 #: src/ui/dialogs.rs:479
 #, rust-format
 msgid "Forward {count} message"
 msgid_plural "Forward {count} messages"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Teruskan {count} pesan"
+msgstr[1] "Teruskan {count} pesan"
 
 #: src/ui/dialogs.rs:489
 msgid "Forward to these chats?"
-msgstr ""
+msgstr "Teruskan ke chat-chat ini?"
 
 #: src/ui/dialogs.rs:508 src/ui/info.rs:250 src/ui/info.rs:895
 msgid "Back"
-msgstr ""
+msgstr "Kembali"
 
 #: src/ui/dialogs.rs:518 src/ui/dialogs.rs:721 src/ui/image_preview.rs:374
 msgid "Forward"
-msgstr ""
+msgstr "Teruskan"
 
 #: src/ui/dialogs.rs:671
 msgid "Messages forwarded many times can be sent to one chat at a time"
 msgstr ""
+"Pesan yang sering diteruskan hanya dapat dikirim ke satu chat sekaligus"
 
 #: src/ui/dialogs.rs:679
 #, rust-format
 msgid "You can forward to up to {count} chat"
 msgid_plural "You can forward to up to {count} chats"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Anda dapat meneruskan ke maksimal {count} chat"
+msgstr[1] "Anda dapat meneruskan ke maksimal {count} chat"
 
 #: src/ui/dialogs.rs:705
 #, rust-format
 msgid "{count} recipient selected"
 msgid_plural "{count} recipients selected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{count} penerima dipilih"
+msgstr[1] "{count} penerima dipilih"
 
 #: src/ui/dialogs.rs:716
-#, fuzzy
 msgid "Review recipients"
-msgstr "Hapus dari yang terbaru"
+msgstr "Tinjau penerima"
 
 #: src/ui/dialogs.rs:853
 msgid "Show shortcut hints under the message box"
 msgstr "Tampilkan tips pintasan di bawah kotak pesan"
 
 #: src/ui/dialogs.rs:914
-#, fuzzy, rust-format
+#, rust-format
 msgid "{count} selected message"
 msgid_plural "{count} selected messages"
-msgstr[0] "Cari pesan"
-msgstr[1] "Cari pesan"
+msgstr[0] "{count} pesan dipilih"
+msgstr[1] "{count} pesan dipilih"
 
 #: src/ui/dialogs.rs:924 src/ui/dialogs.rs:945
-#, fuzzy
 msgid "this chat"
-msgstr "{} chat"
+msgstr "chat ini"
 
 #: src/ui/dialogs.rs:929
 #, rust-format
@@ -634,14 +619,16 @@ msgid ""
 "This deletes your chat with {name}, including all messages, on this computer "
 "and on your phone. It cannot be undone."
 msgstr ""
+"Ini akan menghapus chat Anda dengan {name}, termasuk semua pesannya, di "
+"komputer ini dan di telepon Anda. Tindakan ini tidak dapat diurungkan."
 
 #: src/ui/dialogs.rs:935
 msgid "Delete chat?"
-msgstr ""
+msgstr "Hapus chat?"
 
 #: src/ui/dialogs.rs:937 src/ui/dialogs.rs:1327
 msgid "Delete"
-msgstr ""
+msgstr "Hapus"
 
 #: src/ui/dialogs.rs:950
 #, rust-format
@@ -650,16 +637,17 @@ msgid ""
 "media, on this computer and on your phone. The chat itself stays. It cannot "
 "be undone."
 msgstr ""
+"Ini akan mengosongkan semua pesan di chat Anda dengan {name}, termasuk media "
+"yang diunduh, di komputer ini dan di telepon Anda. Chat-nya tetap ada. "
+"Tindakan ini tidak dapat diurungkan."
 
 #: src/ui/dialogs.rs:956
-#, fuzzy
 msgid "Clear chat?"
-msgstr "Hapus"
+msgstr "Kosongkan chat?"
 
 #: src/ui/dialogs.rs:958
-#, fuzzy
 msgid "Clear chat"
-msgstr "Hapus"
+msgstr "Kosongkan chat"
 
 #: src/ui/dialogs.rs:1052
 msgid "Sticker pack"
@@ -706,7 +694,7 @@ msgstr "Batal"
 
 #: src/ui/dialogs.rs:1247
 msgid "Start over?"
-msgstr ""
+msgstr "Mulai dari awal?"
 
 #: src/ui/dialogs.rs:1251
 msgid ""
@@ -715,16 +703,22 @@ msgid ""
 "your phone. Afterwards, remove the old ZapFast entry under Linked devices on "
 "your phone."
 msgstr ""
+"ZapFast menyimpan arsip Anda yang tidak terbaca sebagai file terpisah, "
+"membuat arsip baru, dan meminta Anda menautkan lagi. Menautkan lagi akan "
+"mengembalikan riwayat terbaru dari telepon Anda. Setelah itu, hapus entri "
+"ZapFast lama di Perangkat tertaut pada telepon Anda."
 
 #: src/ui/dialogs.rs:1255
 msgid ""
 "If you can restore the original keyring instead, choose Cancel and Try "
 "again: nothing is lost that way."
 msgstr ""
+"Jika Anda bisa memulihkan keyring asli, pilih Batal lalu \"Try again\": "
+"dengan begitu tidak ada yang hilang."
 
 #: src/ui/dialogs.rs:1258
 msgid "Start over"
-msgstr ""
+msgstr "Mulai dari awal"
 
 #: src/ui/dialogs.rs:1266
 msgid ""
@@ -744,17 +738,16 @@ msgstr ""
 "ini tidak dapat diurungkan."
 
 #: src/ui/dialogs.rs:1268
-#, fuzzy
 msgid ""
 "This removes these messages from your phone and linked devices. Other people "
 "keep their copy. Connect to WhatsApp to delete them. This cannot be undone."
 msgstr ""
-"Ini akan menghapus pesan dari telepon Anda dan perangkat tertaut. Orang lain "
-"tetap menyimpan salinannya. Hubungkan ke WhatsApp untuk menghapusnya. "
-"Tindakan ini tidak dapat diurungkan."
+"Ini akan menghapus pesan-pesan ini dari telepon Anda dan perangkat tertaut. "
+"Orang lain tetap menyimpan salinannya. Hubungkan ke WhatsApp untuk "
+"menghapusnya. Tindakan ini tidak dapat diurungkan."
 
 #: src/ui/dialogs.rs:1269
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Everyone in this chat will see \"This message was deleted\" in place of the "
 "selected message. This cannot be undone."
@@ -762,19 +755,19 @@ msgid_plural ""
 "Everyone in this chat will see \"This message was deleted\" in place of the "
 "selected messages. This cannot be undone."
 msgstr[0] ""
-"Semua orang di chat ini akan melihat \"Pesan ini telah dihapus\". Tindakan "
-"ini tidak dapat diurungkan."
+"Semua orang di chat ini akan melihat \"Pesan ini telah dihapus\" sebagai "
+"ganti pesan yang dipilih. Tindakan ini tidak dapat diurungkan."
 msgstr[1] ""
-"Semua orang di chat ini akan melihat \"Pesan ini telah dihapus\". Tindakan "
-"ini tidak dapat diurungkan."
+"Semua orang di chat ini akan melihat \"Pesan ini telah dihapus\" sebagai "
+"ganti pesan-pesan yang dipilih. Tindakan ini tidak dapat diurungkan."
 
 #: src/ui/dialogs.rs:1297
 msgid "Delete for everyone?"
-msgstr ""
+msgstr "Hapus untuk semua orang?"
 
 #: src/ui/dialogs.rs:1299
 msgid "Delete for me?"
-msgstr ""
+msgstr "Hapus untuk saya?"
 
 #: src/ui/dialogs.rs:1341
 #, rust-format
@@ -782,11 +775,12 @@ msgid ""
 "This deletes \"{name}\" and its stickers from this computer. To use it "
 "again, import it again."
 msgstr ""
+"Ini akan menghapus \"{name}\" beserta stikernya dari komputer ini. Untuk "
+"menggunakannya lagi, impor kembali."
 
 #: src/ui/dialogs.rs:1347
-#, fuzzy
 msgid "Remove sticker pack?"
-msgstr "Hapus paket ini"
+msgstr "Hapus paket stiker?"
 
 #: src/ui/dialogs.rs:1349 src/ui/dialogs.rs:1407
 msgid "Remove"
@@ -797,15 +791,12 @@ msgid "Unlink this computer?"
 msgstr "Putuskan tautan komputer ini?"
 
 #: src/ui/dialogs.rs:1362
-#, fuzzy
 msgid ""
 "This removes the device from WhatsApp and deletes the chats stored here. You "
 "can link again with a new code."
 msgstr ""
-"Tanpa kata sandi, satu-satunya cara untuk masuk kembali adalah memutuskan "
-"tautan. Ini akan menghapus perangkat dari WhatsApp, menghapus chat yang "
-"disimpan di sini, dan menonaktifkan kunci aplikasi. Anda dapat menautkan "
-"kembali dengan kode baru."
+"Ini akan menghapus perangkat dari WhatsApp dan menghapus chat yang disimpan "
+"di sini. Anda dapat menautkan kembali dengan kode baru."
 
 #: src/ui/dialogs.rs:1364 src/ui/lock.rs:139
 msgid "Unlink"
@@ -874,16 +865,18 @@ msgstr "Simpan juga ke kontak ponsel Anda"
 
 #: src/ui/locations.rs:29
 msgid "Paste a map link or coordinates"
-msgstr ""
+msgstr "Tempel tautan peta atau koordinat"
 
 #: src/ui/locations.rs:58
 msgid ""
 "Short links only open online. Paste the full map link or the coordinates."
 msgstr ""
+"Tautan pendek hanya bisa dibuka secara online. Tempel tautan peta lengkap "
+"atau koordinatnya."
 
 #: src/ui/locations.rs:67
 msgid "That is not a location."
-msgstr ""
+msgstr "Itu bukan lokasi."
 
 #: src/ui/settings.rs:255
 msgid "Settings"
@@ -976,6 +969,8 @@ msgid ""
 "Asks your phone in the background for older messages in the open, pinned and "
 "ten most recent chats."
 msgstr ""
+"Meminta pesan lama dari telepon Anda di latar belakang untuk chat yang "
+"terbuka, yang disematkan, dan sepuluh chat terbaru."
 
 #: src/ui/settings.rs:423
 msgid "Pause other media while recording or playing"
@@ -1031,15 +1026,17 @@ msgid "When off, they say only “New message”."
 msgstr "Jika mati, hanya bertuliskan “Pesan baru”."
 
 #: src/ui/settings.rs:505
-#, fuzzy
 msgid "Limit repeat notifications"
-msgstr "Notifikasi desktop"
+msgstr "Batasi notifikasi berulang"
 
 #: src/ui/settings.rs:508
 msgid ""
 "After one notification, a chat stays quiet for 10 minutes. Opening the chat "
 "resets this. In groups, mentions and replies to you still notify."
 msgstr ""
+"Setelah satu notifikasi, chat akan diam selama 10 menit. Membuka chat akan "
+"mengatur ulang ini. Di grup, sebutan dan balasan untuk Anda tetap memberi "
+"notifikasi."
 
 #: src/ui/settings.rs:534 src/ui/settings.rs:2059
 msgid "Play sounds for group messages"
@@ -1719,20 +1716,19 @@ msgstr "Belum ada siapa pun"
 
 #: src/app.rs:848
 msgid "Could not check the number. Please try again."
-msgstr ""
+msgstr "Tidak dapat memeriksa nomor. Silakan coba lagi."
 
 #: src/app.rs:852
 msgid "This number is not on WhatsApp"
-msgstr ""
+msgstr "Nomor ini tidak terdaftar di WhatsApp"
 
 #: src/app.rs:855
-#, fuzzy
 msgid "Not connected to WhatsApp"
-msgstr "Tidak terkirim: ZapFast tidak terhubung ke WhatsApp."
+msgstr "Tidak terhubung ke WhatsApp"
 
 #: src/app.rs:858 src/app.rs:7522
 msgid "Enter a valid international phone number"
-msgstr ""
+msgstr "Masukkan nomor telepon internasional yang valid"
 
 #: src/app.rs:1766
 msgid "Could not delete the removed account's files"
@@ -1754,19 +1750,19 @@ msgstr "Cache media dikosongkan"
 
 #: src/app.rs:3102
 msgid "Star removed"
-msgstr ""
+msgstr "Bintang dihapus"
 
 #: src/app.rs:3138
 msgid "Pinned for 7 days"
-msgstr ""
+msgstr "Disematkan selama 7 hari"
 
 #: src/app.rs:3140
 msgid "Pin removed"
-msgstr ""
+msgstr "Sematan dilepas"
 
 #: src/app.rs:3630
 msgid "Loading chat history"
-msgstr ""
+msgstr "Memuat riwayat chat"
 
 #: src/app.rs:3724
 msgid "Could not use this image"
@@ -1774,11 +1770,11 @@ msgstr "Tidak dapat menggunakan gambar ini"
 
 #: src/app.rs:3946 src/app.rs:7425
 msgid "This chat already has three pinned messages"
-msgstr ""
+msgstr "Chat ini sudah memiliki tiga pesan yang disematkan"
 
 #: src/app.rs:4016
 msgid "Connecting"
-msgstr ""
+msgstr "Menghubungkan"
 
 #: src/app.rs:4647
 msgid "Not sent: ZapFast is not connected to WhatsApp."
@@ -1793,9 +1789,8 @@ msgstr ""
 "Batalkan balasan untuk mengirim tanpa kutipan."
 
 #: src/app.rs:6650
-#, fuzzy
 msgid "A selected chat is no longer writable"
-msgstr "Pesan ini sudah tidak tersedia lagi."
+msgstr "Salah satu chat yang dipilih tidak bisa lagi dikirimi pesan"
 
 #: src/app.rs:7183
 msgid "Added to favorites"
@@ -1815,7 +1810,7 @@ msgstr "Anda memiliki {limit} label, batas maksimal yang disimpan ZapFast."
 #: src/app.rs:8160
 #, rust-format
 msgid "{}: {}"
-msgstr ""
+msgstr "{}: {}"
 
 #: src/app.rs:8514
 msgid "App lock password saved"
@@ -2189,42 +2184,39 @@ msgstr "Putar ke kiri"
 
 #: src/ui/image_preview.rs:237
 msgid "Close preview (Esc)"
-msgstr ""
+msgstr "Tutup pratinjau (Esc)"
 
 #: src/ui/image_preview.rs:250 src/ui/image_preview.rs:586
 msgid "Open in another app"
 msgstr "Buka di aplikasi lain"
 
 #: src/ui/image_preview.rs:292
-#, fuzzy
 msgid "Zoom in"
-msgstr "Zoom"
+msgstr "Perbesar"
 
 #: src/ui/image_preview.rs:302
 msgid "Fit"
-msgstr ""
+msgstr "Paskan"
 
 #: src/ui/image_preview.rs:303
 msgid "Show at original size"
-msgstr ""
+msgstr "Tampilkan dalam ukuran asli"
 
 #: src/ui/image_preview.rs:309
-#, fuzzy
 msgid "Fit to the window (0)"
-msgstr "Penuhi jendela"
+msgstr "Paskan ke jendela (0)"
 
 #: src/ui/image_preview.rs:325
-#, fuzzy
 msgid "Zoom out"
-msgstr "Zoom"
+msgstr "Perkecil"
 
 #: src/ui/image_preview.rs:342
 msgid "Reply"
-msgstr ""
+msgstr "Balas"
 
 #: src/ui/image_preview.rs:355
 msgid "React"
-msgstr ""
+msgstr "Beri reaksi"
 
 #: src/ui/image_preview.rs:399 src/ui/image_preview.rs:584
 msgid "Save as…"
@@ -2232,14 +2224,12 @@ msgstr "Simpan sebagai…"
 
 #: src/ui/image_preview.rs:415 src/ui/image_preview.rs:770
 #: src/ui/image_preview.rs:778 src/ui/image_preview.rs:860
-#, fuzzy
 msgid "Download"
-msgstr "Unduhan"
+msgstr "Unduh"
 
 #: src/ui/image_preview.rs:436
-#, fuzzy
 msgid "Show in the chat"
-msgstr "Kembali ke chat"
+msgstr "Tampilkan di chat"
 
 #: src/ui/image_preview.rs:491
 msgid "Show the photo"
@@ -2251,15 +2241,15 @@ msgstr "Putar foto bergerak"
 
 #: src/ui/image_preview.rs:693
 msgid "This image could not be displayed in ZapFast."
-msgstr ""
+msgstr "Gambar ini tidak dapat ditampilkan di ZapFast."
 
 #: src/ui/image_preview.rs:696
 msgid "Open externally"
-msgstr ""
+msgstr "Buka di aplikasi lain"
 
 #: src/ui/image_preview.rs:858
 msgid "Play or pause the video"
-msgstr ""
+msgstr "Putar atau jeda video"
 
 #: src/ui/image_preview.rs:1014 src/ui/info.rs:1061
 msgid "Video"
@@ -2329,13 +2319,12 @@ msgid "After 1 hour"
 msgstr "Setelah 1 jam"
 
 #: src/settings.rs:381
-#, fuzzy
 msgid "Direct messages"
-msgstr "Cari pesan"
+msgstr "Chat pribadi"
 
 #: src/settings.rs:383
 msgid "Direct messages and groups"
-msgstr ""
+msgstr "Chat pribadi dan grup"
 
 #: src/account.rs:275
 #, rust-format
