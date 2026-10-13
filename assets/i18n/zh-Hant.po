@@ -66,24 +66,23 @@ msgstr "{date} {time}"
 
 #: src/util.rs:305 src/settings.rs:380
 msgid "Off"
-msgstr ""
+msgstr "關閉"
 
 #: src/util.rs:306
 msgid "24 hours"
-msgstr ""
+msgstr "24 小時"
 
 #: src/util.rs:307
 msgid "7 days"
-msgstr ""
+msgstr "7 天"
 
 #: src/util.rs:308
 msgid "90 days"
-msgstr ""
+msgstr "90 天"
 
 #: src/util.rs:311
-#, fuzzy
 msgid "Disappearing messages"
-msgstr "搜尋訊息"
+msgstr "限時訊息"
 
 #: src/util.rs:335
 #, rust-format
@@ -187,7 +186,7 @@ msgstr "12月"
 
 #: src/ui/chats.rs:156 src/ui/chats.rs:455 src/app.rs:3100
 msgid "Starred"
-msgstr ""
+msgstr "已加星號"
 
 #: src/ui/chats.rs:195 src/ui/chats.rs:494 src/ui/settings.rs:398
 msgid "Chats"
@@ -198,9 +197,8 @@ msgid "Search"
 msgstr "搜尋"
 
 #: src/ui/chats.rs:309 src/ui/chats.rs:1799
-#, fuzzy
 msgid "Starred messages"
-msgstr "搜尋訊息"
+msgstr "已加星號的訊息"
 
 #: src/ui/chats.rs:617
 msgid "Archived"
@@ -211,13 +209,12 @@ msgid "Locked"
 msgstr "已鎖定"
 
 #: src/ui/chats.rs:680
-#, fuzzy
 msgid "No starred messages"
-msgstr "{} 則未讀訊息"
+msgstr "沒有已加星號的訊息"
 
 #: src/ui/chats.rs:683
 msgid "Right-click a message and choose Star to keep it here."
-msgstr ""
+msgstr "在訊息上按右鍵並選擇「加上星號」，即可保留在這裡。"
 
 #: src/ui/chats.rs:928
 msgid "No favorites yet"
@@ -342,9 +339,8 @@ msgid "Send as document"
 msgstr "以文件傳送"
 
 #: src/ui/conversation.rs:1994 src/ui/locations.rs:16
-#, fuzzy
 msgid "Send location"
-msgstr "即時位置"
+msgstr "傳送位置"
 
 #: src/ui/conversation.rs:1999
 msgid "Create poll"
@@ -360,19 +356,17 @@ msgid "Discard voice message"
 msgstr "丟棄語音訊息"
 
 #: src/ui/conversation.rs:2321
-#, fuzzy
 msgid "You pinned a message"
-msgstr "輸入訊息"
+msgstr "您釘選了一則訊息"
 
 #: src/ui/conversation.rs:2324
-#, fuzzy
 msgid "A message was pinned"
-msgstr "找不到訊息"
+msgstr "有一則訊息被釘選"
 
 #: src/ui/conversation.rs:2326
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} pinned a message"
-msgstr "{} 則未讀訊息"
+msgstr "{} 釘選了一則訊息"
 
 #: src/ui/conversation.rs:2837 src/notify/badge_windows.rs:255
 #, rust-format
@@ -404,34 +398,31 @@ msgstr "在系統播放器中開啟"
 
 #: src/ui/conversation.rs:5395 src/ui/conversation.rs:5903
 msgid "Reload earlier messages"
-msgstr ""
+msgstr "重新載入較早的訊息"
 
 #: src/ui/conversation.rs:5396 src/ui/conversation.rs:5691
 msgid "Unstar"
-msgstr ""
+msgstr "移除星號"
 
 #: src/ui/conversation.rs:5397 src/ui/conversation.rs:5693
 msgid "Star"
-msgstr ""
+msgstr "加上星號"
 
 #: src/ui/conversation.rs:5681
 msgid "Reply privately"
 msgstr "私下回覆"
 
 #: src/ui/conversation.rs:5707
-#, fuzzy
 msgid "Unpin message"
-msgstr "輸入訊息"
+msgstr "取消釘選訊息"
 
 #: src/ui/conversation.rs:5709
-#, fuzzy
 msgid "Pin message"
-msgstr "新訊息"
+msgstr "釘選訊息"
 
 #: src/ui/conversation.rs:5736
-#, fuzzy
 msgid "Open in the viewer"
-msgstr "在系統播放器中開啟"
+msgstr "在檢視器中開啟"
 
 #: src/ui/conversation.rs:5838 src/ui/image_preview.rs:258
 #: src/ui/image_preview.rs:583
@@ -502,9 +493,8 @@ msgid "This message can only be seen on your phone."
 msgstr "此訊息只能在您的手機上查看。"
 
 #: src/ui/conversation.rs:6955
-#, fuzzy
 msgid "Save all…"
-msgstr "另存為…"
+msgstr "全部儲存…"
 
 #: src/ui/conversation.rs:7661
 msgid "Message"
@@ -570,13 +560,13 @@ msgstr "轉寄"
 
 #: src/ui/dialogs.rs:671
 msgid "Messages forwarded many times can be sent to one chat at a time"
-msgstr ""
+msgstr "多次轉寄的訊息一次只能傳送到一個對話"
 
 #: src/ui/dialogs.rs:679
 #, rust-format
 msgid "You can forward to up to {count} chat"
 msgid_plural "You can forward to up to {count} chats"
-msgstr[0] ""
+msgstr[0] "最多可轉寄到 {count} 個對話"
 
 #: src/ui/dialogs.rs:705
 #, rust-format
@@ -599,9 +589,8 @@ msgid_plural "{count} selected messages"
 msgstr[0] "已選取 {count} 則訊息"
 
 #: src/ui/dialogs.rs:924 src/ui/dialogs.rs:945
-#, fuzzy
 msgid "this chat"
-msgstr "{} 個對話"
+msgstr "對方"
 
 #: src/ui/dialogs.rs:929
 #, rust-format
@@ -609,10 +598,12 @@ msgid ""
 "This deletes your chat with {name}, including all messages, on this computer "
 "and on your phone. It cannot be undone."
 msgstr ""
+"這會在這部電腦和您的手機上刪除您與 {name} 的對話及其所有訊息。此動作無法復"
+"原。"
 
 #: src/ui/dialogs.rs:935
 msgid "Delete chat?"
-msgstr ""
+msgstr "要刪除對話嗎？"
 
 #: src/ui/dialogs.rs:937 src/ui/dialogs.rs:1327
 msgid "Delete"
@@ -625,16 +616,16 @@ msgid ""
 "media, on this computer and on your phone. The chat itself stays. It cannot "
 "be undone."
 msgstr ""
+"這會在這部電腦和您的手機上清除您與 {name} 的對話中的所有訊息，包括已下載的媒"
+"體。對話本身會保留。此動作無法復原。"
 
 #: src/ui/dialogs.rs:956
-#, fuzzy
 msgid "Clear chat?"
-msgstr "清除"
+msgstr "要清除對話內容嗎？"
 
 #: src/ui/dialogs.rs:958
-#, fuzzy
 msgid "Clear chat"
-msgstr "清除"
+msgstr "清除對話內容"
 
 #: src/ui/dialogs.rs:1052
 msgid "Sticker pack"
@@ -681,7 +672,7 @@ msgstr "取消"
 
 #: src/ui/dialogs.rs:1247
 msgid "Start over?"
-msgstr ""
+msgstr "要重新開始嗎？"
 
 #: src/ui/dialogs.rs:1251
 msgid ""
@@ -690,16 +681,21 @@ msgid ""
 "your phone. Afterwards, remove the old ZapFast entry under Linked devices on "
 "your phone."
 msgstr ""
+"ZapFast 會將無法讀取的存檔另存為獨立檔案、建立新的存檔，並請您重新連結。重新"
+"連結後，最近的記錄會從手機取回。之後，請在手機的「已連結的裝置」中移除舊的 "
+"ZapFast 項目。"
 
 #: src/ui/dialogs.rs:1255
 msgid ""
 "If you can restore the original keyring instead, choose Cancel and Try "
 "again: nothing is lost that way."
 msgstr ""
+"如果您能改為還原原本的金鑰圈，請選擇「取消」，再選擇「Try again」：這樣不會遺"
+"失任何內容。"
 
 #: src/ui/dialogs.rs:1258
 msgid "Start over"
-msgstr ""
+msgstr "重新開始"
 
 #: src/ui/dialogs.rs:1266
 msgid ""
@@ -747,29 +743,27 @@ msgstr "為我刪除？"
 msgid ""
 "This deletes \"{name}\" and its stickers from this computer. To use it "
 "again, import it again."
-msgstr ""
+msgstr "這會從這部電腦刪除「{name}」及其貼圖。若要再次使用，請重新匯入。"
 
 #: src/ui/dialogs.rs:1347
-#, fuzzy
 msgid "Remove sticker pack?"
-msgstr "移除此貼圖集"
+msgstr "要移除貼圖集嗎？"
 
 #: src/ui/dialogs.rs:1349 src/ui/dialogs.rs:1407
 msgid "Remove"
-msgstr ""
+msgstr "移除"
 
 #: src/ui/dialogs.rs:1359 src/ui/lock.rs:123
 msgid "Unlink this computer?"
 msgstr "要取消連結這部電腦嗎？"
 
 #: src/ui/dialogs.rs:1362
-#, fuzzy
 msgid ""
 "This removes the device from WhatsApp and deletes the chats stored here. You "
 "can link again with a new code."
 msgstr ""
-"沒有密碼，唯一能再次使用的方式就是取消連結。這會將此裝置從 WhatsApp 移除、刪"
-"除儲存在此處的對話，並關閉應用程式鎖。之後可以用新代碼重新連結。"
+"這會將此裝置從 WhatsApp 移除，並刪除儲存在此處的對話。之後可以用新代碼重新連"
+"結。"
 
 #: src/ui/dialogs.rs:1364 src/ui/lock.rs:139
 msgid "Unlink"
@@ -799,13 +793,14 @@ msgstr "清除"
 
 #: src/ui/dialogs.rs:1402
 msgid "Remove this account?"
-msgstr ""
+msgstr "要移除這個帳號嗎？"
 
 #: src/ui/dialogs.rs:1405
 msgid ""
 "This unlinks the number on this computer and deletes its local chats. Other "
 "accounts stay."
 msgstr ""
+"這會在這部電腦上取消連結此號碼，並刪除它在本機的對話。其他帳號不受影響。"
 
 #: src/ui/dialogs.rs:1457
 msgid "Leave this channel?"
@@ -834,16 +829,16 @@ msgstr "同時儲存到您手機的聯絡人"
 
 #: src/ui/locations.rs:29
 msgid "Paste a map link or coordinates"
-msgstr ""
+msgstr "貼上地圖連結或座標"
 
 #: src/ui/locations.rs:58
 msgid ""
 "Short links only open online. Paste the full map link or the coordinates."
-msgstr ""
+msgstr "短網址只能在線上開啟。請貼上完整的地圖連結或座標。"
 
 #: src/ui/locations.rs:67
 msgid "That is not a location."
-msgstr ""
+msgstr "這不是位置。"
 
 #: src/ui/settings.rs:255
 msgid "Settings"
@@ -932,7 +927,7 @@ msgstr "取得較早的歷史記錄"
 msgid ""
 "Asks your phone in the background for older messages in the open, pinned and "
 "ten most recent chats."
-msgstr ""
+msgstr "在背景向手機要求目前開啟的對話、釘選的對話和最近十個對話中較舊的訊息。"
 
 #: src/ui/settings.rs:423
 msgid "Pause other media while recording or playing"
@@ -985,15 +980,16 @@ msgid "When off, they say only “New message”."
 msgstr "關閉後，通知只顯示「新訊息」。"
 
 #: src/ui/settings.rs:505
-#, fuzzy
 msgid "Limit repeat notifications"
-msgstr "桌面通知"
+msgstr "限制重複通知"
 
 #: src/ui/settings.rs:508
 msgid ""
 "After one notification, a chat stays quiet for 10 minutes. Opening the chat "
 "resets this. In groups, mentions and replies to you still notify."
 msgstr ""
+"通知一次後，該對話會保持安靜 10 分鐘。開啟該對話會重新計時。在群組中，提及您"
+"和回覆您的訊息仍會通知。"
 
 #: src/ui/settings.rs:534 src/ui/settings.rs:2059
 msgid "Play sounds for group messages"
@@ -1115,7 +1111,7 @@ msgstr "您的姓名"
 #: src/ui/settings.rs:738 src/ui/settings.rs:1617
 msgctxt "profile"
 msgid "About"
-msgstr ""
+msgstr "個人簡介"
 
 #: src/ui/settings.rs:741 src/ui/settings.rs:1586
 msgid "Change profile picture"
@@ -1127,11 +1123,11 @@ msgstr "取消連結這部電腦"
 
 #: src/ui/settings.rs:743 src/ui/settings.rs:1680 src/ui/accounts.rs:123
 msgid "Add account"
-msgstr ""
+msgstr "新增帳號"
 
 #: src/ui/settings.rs:744 src/ui/settings.rs:1656
 msgid "Remove this account"
-msgstr ""
+msgstr "移除這個帳號"
 
 #: src/ui/settings.rs:749
 msgid "Files"
@@ -1672,7 +1668,7 @@ msgstr "請輸入有效的國際電話號碼"
 
 #: src/app.rs:1766
 msgid "Could not delete the removed account's files"
-msgstr ""
+msgstr "無法刪除已移除帳號的檔案"
 
 #: src/app.rs:2386
 #, rust-format
@@ -1690,19 +1686,19 @@ msgstr "媒體快取已清除"
 
 #: src/app.rs:3102
 msgid "Star removed"
-msgstr ""
+msgstr "已移除星號"
 
 #: src/app.rs:3138
 msgid "Pinned for 7 days"
-msgstr ""
+msgstr "已釘選 7 天"
 
 #: src/app.rs:3140
 msgid "Pin removed"
-msgstr ""
+msgstr "已取消釘選"
 
 #: src/app.rs:3630
 msgid "Loading chat history"
-msgstr ""
+msgstr "正在載入對話記錄"
 
 #: src/app.rs:3724
 msgid "Could not use this image"
@@ -1710,11 +1706,11 @@ msgstr "無法使用這張圖片"
 
 #: src/app.rs:3946 src/app.rs:7425
 msgid "This chat already has three pinned messages"
-msgstr ""
+msgstr "這個對話已有三則釘選訊息"
 
 #: src/app.rs:4016
 msgid "Connecting"
-msgstr ""
+msgstr "正在連線"
 
 #: src/app.rs:4647
 msgid "Not sent: ZapFast is not connected to WhatsApp."
@@ -1749,7 +1745,7 @@ msgstr "您已有 {limit} 個標籤，已達 ZapFast 的上限。"
 #: src/app.rs:8160
 #, rust-format
 msgid "{}: {}"
-msgstr ""
+msgstr "{}：{}"
 
 #: src/app.rs:8514
 msgid "App lock password saved"
@@ -2110,42 +2106,39 @@ msgstr "向左旋轉"
 
 #: src/ui/image_preview.rs:237
 msgid "Close preview (Esc)"
-msgstr ""
+msgstr "關閉預覽 (Esc)"
 
 #: src/ui/image_preview.rs:250 src/ui/image_preview.rs:586
 msgid "Open in another app"
 msgstr "在其他應用程式中開啟"
 
 #: src/ui/image_preview.rs:292
-#, fuzzy
 msgid "Zoom in"
-msgstr "縮放"
+msgstr "放大"
 
 #: src/ui/image_preview.rs:302
 msgid "Fit"
-msgstr ""
+msgstr "符合視窗"
 
 #: src/ui/image_preview.rs:303
 msgid "Show at original size"
-msgstr ""
+msgstr "以原始大小顯示"
 
 #: src/ui/image_preview.rs:309
-#, fuzzy
 msgid "Fit to the window (0)"
-msgstr "填滿視窗"
+msgstr "符合視窗大小 (0)"
 
 #: src/ui/image_preview.rs:325
-#, fuzzy
 msgid "Zoom out"
-msgstr "縮放"
+msgstr "縮小"
 
 #: src/ui/image_preview.rs:342
 msgid "Reply"
-msgstr ""
+msgstr "回覆"
 
 #: src/ui/image_preview.rs:355
 msgid "React"
-msgstr ""
+msgstr "回應"
 
 #: src/ui/image_preview.rs:399 src/ui/image_preview.rs:584
 msgid "Save as…"
@@ -2153,14 +2146,12 @@ msgstr "另存為…"
 
 #: src/ui/image_preview.rs:415 src/ui/image_preview.rs:770
 #: src/ui/image_preview.rs:778 src/ui/image_preview.rs:860
-#, fuzzy
 msgid "Download"
-msgstr "下載項目"
+msgstr "下載"
 
 #: src/ui/image_preview.rs:436
-#, fuzzy
 msgid "Show in the chat"
-msgstr "轉寄到這些對話？"
+msgstr "在對話中顯示"
 
 #: src/ui/image_preview.rs:491
 msgid "Show the photo"
@@ -2172,15 +2163,15 @@ msgstr "播放動態照片"
 
 #: src/ui/image_preview.rs:693
 msgid "This image could not be displayed in ZapFast."
-msgstr ""
+msgstr "ZapFast 無法顯示這張圖片。"
 
 #: src/ui/image_preview.rs:696
 msgid "Open externally"
-msgstr ""
+msgstr "以外部應用程式開啟"
 
 #: src/ui/image_preview.rs:858
 msgid "Play or pause the video"
-msgstr ""
+msgstr "播放或暫停影片"
 
 #: src/ui/image_preview.rs:1014 src/ui/info.rs:1061
 msgid "Video"
@@ -2248,31 +2239,30 @@ msgid "After 1 hour"
 msgstr "1 小時後"
 
 #: src/settings.rs:381
-#, fuzzy
 msgid "Direct messages"
-msgstr "選取訊息"
+msgstr "個人對話"
 
 #: src/settings.rs:383
 msgid "Direct messages and groups"
-msgstr ""
+msgstr "個人對話和群組"
 
 #: src/account.rs:275
 #, rust-format
 msgid "Account {id}"
-msgstr ""
+msgstr "帳號 {id}"
 
 #: src/ui/accounts.rs:33
 msgid "Switch account"
-msgstr ""
+msgstr "切換帳號"
 
 #: src/ui/accounts.rs:84
 msgid "Not linked"
-msgstr ""
+msgstr "未連結"
 
 #: src/ui/accounts.rs:232
 #, rust-format
 msgid "{count} unread chats"
-msgstr ""
+msgstr "{count} 個未讀對話"
 
 #: src/ui/info.rs:39
 msgid "Media, links and docs"
@@ -2306,7 +2296,7 @@ msgstr[0] "{} 位成員"
 
 #: src/ui/info.rs:519
 msgid "Description"
-msgstr ""
+msgstr "說明"
 
 #: src/ui/info.rs:820
 #, rust-format
