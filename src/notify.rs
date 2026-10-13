@@ -38,12 +38,20 @@ impl Badge {
 
 /// Chat and message a clicked notification opens. The message id travels with
 /// the click, so the reader lands on what was announced instead of on the end
-/// of the chat.
+/// of the chat. An incoming call has no message: its click only brings the
+/// window up, where the call is waiting.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct NotificationTarget {
     pub account: crate::model::AccountId,
     pub chat: String,
-    pub message: String,
+    pub message: Option<String>,
+}
+
+/// The key a call's notification waits under, apart from the chat's message
+/// notifications: answering a call takes back its own notification and leaves
+/// a message that arrived meanwhile on the desktop.
+fn call_key(chat: &str) -> String {
+    format!("call:{chat}")
 }
 
 /// Notifications that may still wait for a click. Each one waiting holds a
@@ -153,6 +161,11 @@ impl Notifications {
         }
     }
 
+    /// Takes back a call's notification, and only that one.
+    pub fn clear_call(&mut self, account: &crate::model::AccountId, chat: &str) {
+        self.clear(account, &call_key(chat));
+    }
+
     pub fn clear_account(&mut self, account: &crate::model::AccountId) {
         let account = account.as_str();
         let keys: Vec<_> = self
@@ -186,7 +199,11 @@ impl Notifications {
         opened: Arc<Mutex<Vec<NotificationTarget>>>,
         wake: impl Fn() + Send + 'static,
     ) {
-        let cancelled = self.register(&target.account, &target.chat);
+        let key = match target.message {
+            Some(_) => target.chat.clone(),
+            None => call_key(&target.chat),
+        };
+        let cancelled = self.register(&target.account, &key);
         if cfg!(test) {
             self.shown.push(Shown {
                 title,
@@ -467,6 +484,22 @@ mod tests {
         assert_eq!(sound_hint(false), notify_rust::Hint::SuppressSound(true));
     }
 
+    /// Answering a call takes back its own notification and leaves a
+    /// message that arrived while it rang on the desktop.
+    #[test]
+    fn answering_a_call_leaves_its_chats_message_notifications_alone() {
+        let mut notifications = Notifications::default();
+        let one = account("1");
+        let mut message = notifications.register(&one, "a");
+        let mut call = notifications.register(&one, &call_key("a"));
+        notifications.clear_call(&one, "a");
+        assert_eq!(call.try_recv(), Ok(Stop::Close));
+        assert_eq!(
+            message.try_recv(),
+            Err(tokio::sync::oneshot::error::TryRecvError::Empty)
+        );
+    }
+
     #[test]
     fn reading_cancels_delivered_and_pending_notifications_for_only_that_chat() {
         let mut notifications = Notifications::default();
@@ -581,7 +614,7 @@ mod tests {
             NotificationTarget {
                 account: crate::model::AccountId::first(),
                 chat: "test".into(),
-                message: "test-message".into(),
+                message: Some("test-message".into()),
             },
             Default::default(),
             || {},

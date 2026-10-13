@@ -37,6 +37,8 @@ pub const REVOKE_WINDOW: Duration = Duration::from_secs(2 * 24 * 60 * 60);
 /// input clock (`InputState::time`), not on the wall clock, so a slow frame
 /// is not taken for a pause and tests can run it at their pace.
 const SCROLL_GESTURE_GAP: f64 = 0.15;
+/// How long a finished call's outcome stays on screen before the surface goes away.
+const CALL_FAREWELL: Duration = Duration::from_secs(4);
 
 /// A pane that scrolls on its own, which a scroll gesture stays with.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -598,6 +600,30 @@ pub struct App {
     /// A notification went out this frame: highlight the taskbar entry of a
     /// window that is open but not focused.
     wants_attention: bool,
+    /// The live call, or the outcome of the one that just ended. One call at
+    /// a time across every account: there is one microphone.
+    pub call: Option<crate::calls::CallUpdate>,
+    /// The account the call is on, which need not be the one on screen.
+    pub call_account: Option<AccountId>,
+    /// When a finished call's surface should disappear.
+    call_surface_until: Option<Instant>,
+    /// The microphones and speakers the call screen offers.
+    pub call_devices: crate::calls::DeviceList,
+    /// Whether the call screen shows its device pickers.
+    pub call_devices_open: bool,
+    /// Whether the full call screen is put aside so a chat can be read while
+    /// the call runs. The call itself is untouched; a bar offers the way back.
+    pub call_surface_hidden: bool,
+    /// Whether the call surface has taken the whole screen. A window state:
+    /// leaving it never touches the call, and a call that ends puts the
+    /// window back itself.
+    pub call_fullscreen: bool,
+    /// The incoming call the desktop was told about, so its notification can
+    /// be taken back once it is answered or given up.
+    call_notified: Option<u64>,
+    /// When an unanswered call last rang, and the sound it rings with.
+    call_rang: Option<Instant>,
+    call_ring_sound: Option<NotificationSound>,
     /// Whether ZapFast starts at login, when this installation supports it.
     pub start_with_system: Option<bool>,
     /// Cross-thread window repaint handle.
@@ -1162,6 +1188,16 @@ impl App {
             quit_requested: false,
             window_focused: false,
             wants_attention: false,
+            call: None,
+            call_account: None,
+            call_surface_until: None,
+            call_devices: crate::calls::DeviceList::default(),
+            call_devices_open: false,
+            call_surface_hidden: false,
+            call_fullscreen: false,
+            call_notified: None,
+            call_rang: None,
+            call_ring_sound: None,
             start_with_system: None,
             waker,
             tray: None,
@@ -1444,6 +1480,9 @@ impl App {
             self.clear_account_ui();
         }
         self.accounts[index].backend.shutdown();
+        // The backend ends its call on the way out; the surface goes with it.
+        let removed = self.accounts[index].id.clone();
+        self.forget_call_of(&removed);
         let dirs = self.accounts[index].dirs.clone();
         // The key outlives the archive only by mistake: forget it once the
         // archive is gone, never before.
@@ -1497,6 +1536,9 @@ impl App {
         self.window_focused = false;
         self.hide_intent = false;
         self.wants_show = false;
+        // The window is gone with the full screen it was in; a new one starts
+        // at its normal size.
+        self.call_fullscreen = false;
     }
 
     /// What the conversation shows behind its bubbles, for the chat and the
@@ -1618,10 +1660,15 @@ impl App {
                 continue;
             }
             self.switch_account(&target.account);
-            self.actions.push(Action::OpenMessage {
-                chat: target.chat,
-                message: target.message,
-            });
+            match target.message {
+                Some(message) => self.actions.push(Action::OpenMessage {
+                    chat: target.chat,
+                    message,
+                }),
+                // A call's notification brings the window up, where the call
+                // is waiting.
+                None => self.actions.push(Action::ReturnToCall),
+            }
             self.actions.push(Action::ShowWindow);
         }
     }
@@ -1679,7 +1726,7 @@ impl App {
             crate::notify::NotificationTarget {
                 account: self.account().id.clone(),
                 chat: chat_id.to_owned(),
-                message: message.id.clone(),
+                message: Some(message.id.clone()),
             },
             std::sync::Arc::clone(&self.notification_opens),
             move || waker.wake(),
@@ -1706,7 +1753,7 @@ impl App {
             crate::notify::NotificationTarget {
                 account: self.account().id.clone(),
                 chat: chat_id.to_owned(),
-                message: message.to_owned(),
+                message: Some(message.to_owned()),
             },
             std::sync::Arc::clone(&self.notification_opens),
             move || waker.wake(),
@@ -2614,6 +2661,8 @@ impl App {
                 self.me_name = name;
                 self.me_about = about;
             }
+            Event::Call(update) => self.handle_call_update(*update),
+            Event::CallDevices(devices) => self.call_devices = *devices,
             Event::Labels(labels) => {
                 self.labels = labels;
                 self.prune_labels();
@@ -3395,6 +3444,8 @@ impl App {
         {
             self.hide_locked_chat(&id);
         }
+        // A live call in a locked chat goes back behind the bar.
+        self.hide_private_call();
     }
 
     fn clear_chat_lock_entry(&mut self) {
@@ -4361,6 +4412,7 @@ impl App {
 
     fn tick(&mut self, ctx: &egui::Context) {
         let now = Instant::now();
+        self.tick_call(ctx);
         if self.composing
             && let Some(last) = self.last_keystroke
             && now.duration_since(last) > COMPOSING_TIMEOUT
@@ -4657,7 +4709,7 @@ impl App {
                     self.app_lock.deferred = Some(crate::notify::NotificationTarget {
                         account: self.account().id.clone(),
                         chat,
-                        message,
+                        message: Some(message),
                     });
                 }
                 Action::StartChat { id, name: _ } => {
@@ -4682,6 +4734,9 @@ impl App {
             }
             return;
         }
+        let Some(action) = self.apply_call_action(action, ctx) else {
+            return;
+        };
         match action {
             Action::Open(page) => {
                 let opens_chats = page == Page::Chats;
@@ -4715,6 +4770,17 @@ impl App {
                 self.apply(Action::Open(page), ctx);
             }
             Action::OpenChat(id) => self.open_chat(id),
+            // Applied by `apply_call_action` before anything else.
+            Action::StartCall(_)
+            | Action::AnswerCall
+            | Action::DeclineCall
+            | Action::HangupCall
+            | Action::SetCallMuted(_)
+            | Action::SetCallMicrophone(_)
+            | Action::SetCallSpeaker(_)
+            | Action::LeaveCallSurface
+            | Action::ReturnToCall
+            | Action::ToggleCallFullscreen => {}
             Action::NavigateBack => self.navigate_back(ctx),
             Action::NavigateForward => self.navigate_forward(ctx),
             Action::StartChat { id, name } => {
@@ -6650,10 +6716,12 @@ impl App {
                 if matched {
                     if let Some(target) = self.app_lock.deferred.take() {
                         self.switch_account(&target.account);
-                        self.actions.push(Action::OpenMessage {
-                            chat: target.chat,
-                            message: target.message,
-                        });
+                        if let Some(message) = target.message {
+                            self.actions.push(Action::OpenMessage {
+                                chat: target.chat,
+                                message,
+                            });
+                        }
                     }
                     if let Some(request) = self.app_lock.deferred_request.take() {
                         self.actions.push(Action::ShowWindow);
@@ -6744,6 +6812,7 @@ impl App {
             .is_some_and(|(_, _, since)| since.elapsed() < VOICE_FETCH_HOLD);
         self.settings.pause_other_media
             && (self.recording.is_some()
+                || self.call_live()
                 || self.player.is_playing()
                 || fetching_next
                 || self.video.is_active() && !self.video.muted())
@@ -7500,6 +7569,8 @@ fn notification_eligible(chat: &Chat, now: i64, message_at: i64) -> bool {
     }
     now - message_at <= 60
 }
+
+mod calls;
 
 #[cfg(test)]
 mod tests {
@@ -8480,7 +8551,7 @@ mod tests {
             .push(crate::notify::NotificationTarget {
                 account: AccountId::parse("2").unwrap(),
                 chat: "15550003333@s.whatsapp.net".into(),
-                message: "m1".into(),
+                message: Some("m1".into()),
             });
         app.handle_notification_opens();
         assert_eq!(
@@ -11322,7 +11393,7 @@ mod tests {
             .push(crate::notify::NotificationTarget {
                 account: crate::model::AccountId::first(),
                 chat: chat.into(),
-                message: "secret".into(),
+                message: Some("secret".into()),
             });
 
         app.handle_notification_opens();
@@ -11348,7 +11419,7 @@ mod tests {
             .push(crate::notify::NotificationTarget {
                 account: crate::model::AccountId::first(),
                 chat: chat.into(),
-                message: "second".into(),
+                message: Some("second".into()),
             });
 
         app.handle_notification_opens();
@@ -14315,7 +14386,7 @@ mod app_lock_tests {
             .push(crate::notify::NotificationTarget {
                 account: crate::model::AccountId::first(),
                 chat: CHAT.into(),
-                message: "m1".into(),
+                message: Some("m1".into()),
             });
         app.handle_notification_opens();
         app.apply_actions(&ctx);

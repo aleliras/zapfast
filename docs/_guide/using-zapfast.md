@@ -286,6 +286,37 @@ microphone. Press Enter or the send button to send the recording, or Escape or
 the delete button to discard it. ZapFast raises the volume of quiet recordings.
 Starting a reply before recording includes the quoted message.
 
+## Calls
+
+The phone button in a one-to-one chat's header starts a voice call; while that
+chat has a call, the same button hangs up. An incoming call takes over the
+window with the caller's picture and name, and **Accept** and **Decline**. It
+also raises a desktop notification and rings until it is answered, declined,
+or given up, so a window hidden in the tray does not hide the call. A call in a
+muted, archived, or locked chat stays as quiet as a message in it. A locked
+chat's call waits in a strip at the bottom of the window as "Locked chat" until
+you open the locked chats with their code.
+
+During a call the window shows the length of the call, counted from the moment
+the two sides are connected, and the controls along the bottom: mute, the
+microphone and speaker pickers, and hang up. Mute tells the other side, as on
+the phone. The arrow in the top corner puts the call screen aside: the call
+keeps running in a strip at the bottom of the window with **Return to the
+call** and a hang-up button, and you can read and write in any chat meanwhile.
+Escape does the same, and leaves full screen first. Only hanging up ends a
+call; closing the window to the tray keeps it running.
+
+Calls open the system's default microphone and speaker. The pickers move a
+call to another device while it runs without changing your system's defaults;
+a device that goes away falls back to the default, and the call screen says so.
+Calls use your platform's own audio (PipeWire or ALSA on Linux, Core Audio on
+macOS, WASAPI on Windows), with no echo cancellation of their own: use
+headphones, or your system's echo cancellation, when the speaker is loud.
+
+One call at a time: a call to another of your numbers while one is up is
+declined there. With several numbers linked, a call to a number that is not on
+screen still rings, under that number's own names.
+
 ## Copying
 
 Select and copy any message text. You can begin dragging in the padding around

@@ -1,6 +1,7 @@
 //! Window layout: panels, overlays, keyboard shortcuts.
 
 pub mod accounts;
+pub mod call;
 pub mod chats;
 pub mod conversation;
 pub mod dialogs;
@@ -56,6 +57,8 @@ pub fn show(app: &mut App, ui: &mut egui::Ui) {
         && app.selection.is_none()
         // The day filter keeps egui's own order among its days.
         && !app.chat_search_calendar
+        // The call screen covers the chats.
+        && (app.call.is_none() || app.call_surface_hidden)
         && !egui::Popup::is_any_open(ctx);
     focus::begin(ctx, main_navigation);
     // The open chat's composer records its rect again below, if there is one.
@@ -83,6 +86,8 @@ pub fn show(app: &mut App, ui: &mut egui::Ui) {
         NarrowView::Detail
     });
     let slide = narrow_slide(ctx, view);
+    // A call the reader stepped away from keeps a strip along the bottom.
+    call::strip(app, ui);
     match slide {
         Some(progress) => slide_in(app, ui, list_only, progress),
         None => main_view(app, ui, list_only),
@@ -94,6 +99,7 @@ pub fn show(app: &mut App, ui: &mut egui::Ui) {
     dialogs::show(app, ctx);
     image_preview::show(app, ctx);
     video_preview::show(app, ctx);
+    call::show(app, ctx);
     drop_target(app, ctx);
     toasts(app, ctx);
     focus_ring(app, ctx);

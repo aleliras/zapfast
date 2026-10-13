@@ -61,9 +61,13 @@ image = { version = "0.25", default-features = false, features = ["jpeg", "png",
 # built from `Default` and assigned field by field. Device-store
 # compatibility retains the legacy created_at column. The revision is on
 # upstream's main and comes from the crmne/whatsapp-rust fork (branch
-# `zapfast`); move to crates.io at the first release that carries it.
-whatsapp-rust = { git = "https://github.com/crmne/whatsapp-rust", rev = "0dc38af07632f48f0cf6c66df285f1643fc22b95", default-features = false, features = ["sqlite-storage", "tokio-transport", "tokio-runtime", "ureq-client", "tokio-native"] }
+# `zapfast`); move to crates.io at the first release that carries it. `voip` is
+# the call stack: signaling, the sans-IO media engine with MLOW and libopus
+# codecs, and the native UDP relay transport.
+whatsapp-rust = { git = "https://github.com/crmne/whatsapp-rust", rev = "0dc38af07632f48f0cf6c66df285f1643fc22b95", default-features = false, features = ["sqlite-storage", "tokio-transport", "tokio-runtime", "ureq-client", "tokio-native", "voip"] }
 tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros", "fs", "net", "io-util"] }
+# Queue between the call's audio streams and the engine.
+async-channel = "2.5"
 # Opens the WhatsApp WebSocket through a proxy. Both crates are already
 # included through the Tokio transport at these versions.
 tokio-websockets = { version = "0.13.3", default-features = false, features = ["client"] }

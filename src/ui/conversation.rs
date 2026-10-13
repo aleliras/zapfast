@@ -141,8 +141,17 @@ fn header(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> Rect {
                 }
                 let picture = app.avatar(&chat.id);
                 let (subtitle, color) = subtitle(app, chat);
-                // More and Search, and Back in a narrow window.
-                let right_controls = if narrow { 108.0 } else { 72.0 };
+                let call_here = app.call_live_here(&chat.id);
+                // More and Search, and Back in a narrow window, and the call
+                // buttons in a one-to-one chat.
+                let call_controls = if chat.kind == crate::model::ChatKind::Direct
+                    && app.me.as_deref() != Some(chat.id.as_str())
+                {
+                    36.0
+                } else {
+                    0.0
+                };
+                let right_controls = if narrow { 108.0 } else { 72.0 } + call_controls;
                 // Treat the avatar, name, and subtitle as one info button.
                 let block = ui
                     .scope(|ui| {
@@ -337,6 +346,38 @@ fn header(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> Rect {
                                 app.actions.push(Action::CloseChat);
                             }
                         });
+                    // Calls are one to one: a group, a channel, a broadcast
+                    // list and the chat with ourselves have no call button.
+                    // While this chat has the call, the button ends it.
+                    if call_controls > 0.0 {
+                        let (call_tooltip, call_icon, call_fill, call) = if call_here {
+                            (
+                                crate::i18n::gettext(app.locale, "Hang up").into_owned(),
+                                Icon::PhoneOff,
+                                palette.danger,
+                                Action::HangupCall,
+                            )
+                        } else {
+                            (
+                                crate::i18n::gettext(app.locale, "Voice call").into_owned(),
+                                Icon::Phone,
+                                palette.secondary,
+                                Action::StartCall(chat.id.clone()),
+                            )
+                        };
+                        if theme::icon_button(
+                            ui,
+                            call_icon,
+                            18.0,
+                            call_fill,
+                            palette.text,
+                            &call_tooltip,
+                        )
+                        .clicked()
+                        {
+                            app.actions.push(call);
+                        }
+                    }
                     let searching = app.chat_search_open;
                     let tip = format!(
                         "{} ({})",

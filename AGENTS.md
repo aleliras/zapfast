@@ -129,6 +129,20 @@ protocol. These notes are for coding agents and new contributors.
   The version-4 backfill preserves those paths when rebuilding derived content.
   See [compatibility notes](docs/interactive-message-actions.md) for response
   families, source references, and live-test limits.
+- Calls use whatsapp-rust's `voip` feature (`Client::voip()`): signaling,
+  keys, the relay transport and the codecs are the library's, never ours.
+  `src/calls.rs` is one call's phase machine, fed only by the protocol's own
+  stanzas and media events (a relay alone is not an answered call);
+  `src/call_audio.rs` bridges the engine's 16 kHz frames to rodio's
+  microphone and speaker behind stable channels, so a device change rebinds
+  a stream instead of the call. `backend/worker/calls.rs` owns at most one
+  call per account; the window (`app/calls.rs`) holds one call across all
+  accounts with its `AccountId`, routes call actions to that account's
+  backend, and declines another account's offer while one is up. Call
+  updates are withheld during privacy recovery like other private content,
+  and a locked chat's call shows only "Locked chat" until its folder opens.
+  Calls open the system default devices; the call screen's pickers apply to
+  the running call only and are not saved.
 - Poll creation, voting, and decryption use whatsapp-rust's `Client::polls()`.
   `backend/worker/polls.rs` retains the original creator identity and key in the
   encrypted archive; `archive/polls.rs` keeps each voter's latest timestamp and

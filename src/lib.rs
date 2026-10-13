@@ -12,6 +12,8 @@ pub mod audio;
 pub mod autostart;
 pub mod backend;
 pub mod bidi;
+pub mod call_audio;
+pub mod calls;
 #[cfg(any(test, feature = "demo"))]
 pub mod demo;
 pub mod diagnostics;
