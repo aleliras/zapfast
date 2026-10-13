@@ -131,3 +131,29 @@ disclosure of generated material. Review the manifests and these changes before
 submitting. The manifests use the current Freedesktop 26.08 runtime; the CI builder
 container is 25.08 and installs the runtime and SDK named by the manifest. The GitHub release job includes the bundle
 in `checksums.txt`. No existing release files are replaced by this change.
+
+## winget
+
+`packaging/winget/` holds the manifests for the `crmne.ZapFast` package in
+[microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs). They install
+the per-user MSI of each stable release, which also takes over a copy installed
+by the Inno Setup installer; its fixed UpgradeCode tells winget which installed
+program is ZapFast. v0.19.0 and earlier ship no MSI, so the first winget
+version is the first release that does.
+
+Submission is a manual step for the maintainer, after the release's assets and
+`checksums.txt` exist. Nothing in CI submits it. Write the manifests from the
+published release, then validate and submit them from a fork of winget-pkgs:
+
+```sh
+python3 packaging/winget/manifests.py vX.Y.Z /path/to/winget-pkgs
+winget validate --manifest /path/to/winget-pkgs/manifests/c/crmne/ZapFast/X.Y.Z
+winget install --manifest /path/to/winget-pkgs/manifests/c/crmne/ZapFast/X.Y.Z
+```
+
+Commit only that version's directory and open a pull request to
+`microsoft/winget-pkgs` (or use `wingetcreate submit` on the directory). Its
+validation installs the package and records anything else it needs. Later
+releases can reuse the same command or `wingetcreate update crmne.ZapFast`;
+change the templates here when the description or installers change, so the
+next submission keeps them.
