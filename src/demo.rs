@@ -1761,6 +1761,7 @@ pub fn apply_flags(app: &mut App, page: Option<&str>) {
     };
     for part in page.split(',').map(str::trim) {
         match part {
+            "history-date" => history_date_sample(app),
             "chat" | "" => {}
             "phone-menu" => phone_menu_sample(app),
             "chat-menu" => app.open_chat_menu = Some(app.chats[0].id.clone()),
@@ -3080,6 +3081,31 @@ fn unlink(app: &mut App) {
     app.conversations.clear();
     app.open_chat = None;
     app.me = None;
+}
+
+/// Builds synthetic history rows spanning multiple dates for the scrolling-date demo.
+fn history_date_sample(app: &mut App) {
+    let chat = SAMPLES[0].id;
+    let base = crate::util::now() - 3 * 86_400;
+    let conversation = app.conversations.entry(chat.into()).or_default();
+    conversation.messages = (0..90)
+        .map(|index| {
+            message(
+                chat,
+                &format!("history-date-{index}"),
+                index % 2 == 0,
+                base + (index / 30) * 86_400 + (index % 30) * 60,
+                Content::text(format!(
+                    "Reference note {} for the design review",
+                    index + 1
+                )),
+            )
+        })
+        .collect();
+    conversation.complete = true;
+    app.open_chat = Some(chat.into());
+    app.scroll_to_bottom = false;
+    app.scroll_anchor = Some("history-date-45".into());
 }
 
 fn sample_qr() -> String {
@@ -5000,9 +5026,11 @@ mod tests {
     }
 
     #[test]
+    /// Checks header layout at different zoom levels with the sidebar shown or hidden.
     fn macos_headers_fit_when_zoomed_with_and_without_the_sidebar() {
         for zoom in [0.6, 1.0, 2.0] {
             for page in [
+                "history-date",
                 "chat",
                 "nosidebar",
                 "settings",
@@ -5955,6 +5983,105 @@ mod tests {
                     Some(Dialog::MessageInfo { chat: shown, message }) if *shown == chat && *message == id
                 ),
                 "the {part} open that message's info: {dialog:?}"
+            );
+        }
+    }
+
+    /// Scrolling within a day keeps its date at the top of the transcript,
+    /// and the date fades away once the transcript stops moving.
+    #[test]
+    fn scrolling_inside_a_day_keeps_its_date_visible() {
+        fn shapes_at(
+            app: &mut App,
+            ctx: &egui::Context,
+            time: f64,
+        ) -> Vec<egui::epaint::ClippedShape> {
+            let mut output = ctx.run_ui(
+                egui::RawInput {
+                    screen_rect: Some(egui::Rect::from_min_size(
+                        egui::Pos2::ZERO,
+                        egui::vec2(1180.0, 780.0),
+                    )),
+                    time: Some(time),
+                    ..Default::default()
+                },
+                |ui| {
+                    let ctx = ui.ctx().clone();
+                    app.background_frame(&ctx);
+                    app.frame_ui(ui);
+                },
+            );
+            output.textures_delta.clear();
+            output.shapes
+        }
+        fn date_on_top(shapes: &[egui::epaint::ClippedShape], label: &str) -> bool {
+            shapes.iter().any(|shape| {
+                matches!(&shape.shape,
+                egui::Shape::Text(text) if text.galley.text() == label
+                    && text.pos.y >= shape.clip_rect.top()
+                    && text.pos.y < shape.clip_rect.top() + 40.0)
+            })
+        }
+        let mut app = app();
+        let ctx = egui::Context::default();
+        app.attach(&ctx);
+        let chat = app.open_chat.clone().unwrap();
+        let conversation = app.conversations.get_mut(&chat).unwrap();
+        let template = conversation.messages.last().unwrap().clone();
+        conversation.messages = (0..120)
+            .map(|index| {
+                let mut row = template.clone();
+                row.id = format!("date-fixture-{index}");
+                row.timestamp = 1_700_000_000 + (index / 60) * 86_400 + (index % 60) * 60;
+                row.content = Content::text(format!("History row {index}"));
+                row
+            })
+            .collect();
+        conversation.complete = true;
+        for index in [90, 30] {
+            app.actions.push(crate::model::Action::OpenMessage {
+                chat: chat.clone(),
+                message: format!("date-fixture-{index}"),
+            });
+            render(&mut app, &ctx);
+            render(&mut app, &ctx);
+            // Jumping to a message is not scrolling; turning the wheel is.
+            let label = crate::util::day_label(
+                app.locale,
+                app.conversations[&chat].messages[index].timestamp,
+            );
+            let still = ctx.input(|input| input.time) + 2.0;
+            assert!(!date_on_top(&shapes_at(&mut app, &ctx, still), &label));
+            frame_with(
+                &mut app,
+                &ctx,
+                vec![
+                    egui::Event::PointerMoved(egui::pos2(800.0, 400.0)),
+                    egui::Event::MouseWheel {
+                        unit: egui::MouseWheelUnit::Point,
+                        delta: egui::vec2(0.0, 60.0),
+                        modifiers: egui::Modifiers::NONE,
+                        phase: egui::TouchPhase::Move,
+                    },
+                ],
+            );
+            render(&mut app, &ctx);
+            let shapes = frame_sized(&mut app, &ctx, 780.0, Vec::new());
+            assert!(
+                date_on_top(&shapes, &label),
+                "the date remains at the top when its separator is off screen: {label}"
+            );
+            let now = ctx.input(|input| input.time);
+            assert!(
+                date_on_top(&shapes_at(&mut app, &ctx, now + 0.5), &label),
+                "the date stays a moment after scrolling stops"
+            );
+            // The wheel's easing may still move the view on the frames above.
+            shapes_at(&mut app, &ctx, now + 1.1);
+            shapes_at(&mut app, &ctx, now + 2.2);
+            assert!(
+                !date_on_top(&shapes_at(&mut app, &ctx, now + 3.0), &label),
+                "the date fades once the transcript has been still"
             );
         }
     }
