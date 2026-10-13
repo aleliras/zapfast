@@ -249,7 +249,7 @@ msgstr "Quitter le groupe"
 msgid "Leave channel"
 msgstr "Quitter la chaîne"
 
-#: src/ui/chats.rs:1655 src/ui/labels.rs:178 src/ui/labels.rs:223
+#: src/ui/chats.rs:1655 src/ui/labels.rs:166 src/ui/labels.rs:213
 msgid "Labels"
 msgstr "Étiquettes"
 
@@ -664,7 +664,7 @@ msgstr "Téléchargement du pack…"
 msgid "Add to my stickers"
 msgstr "Ajouter à mes stickers"
 
-#: src/ui/dialogs.rs:1088 src/ui/message_info.rs:28 src/ui/labels.rs:234
+#: src/ui/dialogs.rs:1088 src/ui/message_info.rs:28 src/ui/labels.rs:224
 #: src/ui/info.rs:252
 msgid "Close"
 msgstr "Fermer"
@@ -1666,7 +1666,7 @@ msgid "Hang up the current call first"
 msgstr "Raccrochez d’abord l’appel en cours"
 
 #. Translators: {name} is replaced by the author's name, shown as a link.
-#: src/ui/widgets.rs:886
+#: src/ui/widgets.rs:861
 #, rust-format
 msgid "Built with love by {name}"
 msgstr "Fait avec amour par {name}"
@@ -1817,7 +1817,7 @@ msgstr "Ajouté aux favoris"
 msgid "Sending the sticker pack…"
 msgstr "Envoi du pack de stickers…"
 
-#: src/app.rs:7633 src/ui/labels.rs:257
+#: src/app.rs:7633 src/ui/labels.rs:247
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "Vous avez {limit} étiquettes, le maximum que ZapFast conserve."
@@ -1908,11 +1908,11 @@ msgstr "Couleur"
 msgid "Manage labels"
 msgstr "Gérer les étiquettes"
 
-#: src/ui/labels.rs:166
+#: src/ui/labels.rs:200
 msgid "Manage labels…"
 msgstr "Gérer les étiquettes…"
 
-#: src/ui/labels.rs:246
+#: src/ui/labels.rs:236
 msgid ""
 "Labels stay on this computer. They do not reach your phone or anyone you "
 "chat with."
@@ -1920,15 +1920,15 @@ msgstr ""
 "Les étiquettes restent sur cet ordinateur. Elles n’atteignent ni votre "
 "téléphone ni vos contacts."
 
-#: src/ui/labels.rs:267
+#: src/ui/labels.rs:257
 msgid "New label"
 msgstr "Nouvelle étiquette"
 
-#: src/ui/labels.rs:281
+#: src/ui/labels.rs:271
 msgid "Create"
 msgstr "Créer"
 
-#: src/ui/labels.rs:311
+#: src/ui/labels.rs:301
 msgid ""
 "No labels yet. Create one above, then add chats to it from their right-click "
 "menu."
@@ -1936,22 +1936,22 @@ msgstr ""
 "Aucune étiquette pour l’instant. Créez-en une ci-dessus, puis ajoutez-y des "
 "discussions depuis leur menu contextuel."
 
-#: src/ui/labels.rs:346
+#: src/ui/labels.rs:336
 msgid "Next colour"
 msgstr "Couleur suivante"
 
-#: src/ui/labels.rs:395
+#: src/ui/labels.rs:385
 #, rust-format
 msgid "{} chat"
 msgid_plural "{} chats"
 msgstr[0] "{} discussion"
 msgstr[1] "{} discussions"
 
-#: src/ui/labels.rs:416
+#: src/ui/labels.rs:406
 msgid "Rename or recolour"
 msgstr "Renommer ou changer la couleur"
 
-#: src/ui/labels.rs:441
+#: src/ui/labels.rs:431
 msgid "Delete this label. Its chats keep their messages."
 msgstr "Supprimer cette étiquette. Ses discussions gardent leurs messages."
 
@@ -2407,7 +2407,7 @@ msgstr "{}+"
 msgid "Could not list the media."
 msgstr "Impossible de lister les médias."
 
-#: src/ui/info.rs:881
+#: src/ui/info.rs:881 src/ui/login.rs:114
 msgid "Try again"
 msgstr "Réessayer"
 
@@ -2484,6 +2484,10 @@ msgstr "Enregistrer le nom (Entrée)"
 #: src/ui/info.rs:1446
 msgid "Cancel (Escape)"
 msgstr "Annuler (Échap)"
+
+#: src/ui/login.rs:125
+msgid "Start over…"
+msgstr "Tout recommencer…"
 
 #~ msgid "Group"
 #~ msgstr "Groupe"
