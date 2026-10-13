@@ -606,6 +606,10 @@ pub struct App {
     /// Sleep and wake as the system reports them. Tests and demo runs get a
     /// fixed one that reads nothing from the machine.
     power: fastframe_power::Power,
+    /// The desktop portal's light or dark preference, which winit does not
+    /// report on Linux. Tests and demo runs read none.
+    #[cfg(target_os = "linux")]
+    system_appearance: Option<crate::appearance::SystemAppearance>,
     /// Stands in for whether a panel shows the tray item, which tests cannot
     /// spawn.
     #[cfg(test)]
@@ -890,6 +894,13 @@ impl App {
             .ok();
         let power_waker = waker.clone();
         app.power = fastframe_power::Power::spawn(move || power_waker.wake());
+        #[cfg(target_os = "linux")]
+        {
+            let appearance_waker = waker.clone();
+            app.system_appearance = Some(crate::appearance::SystemAppearance::spawn(move || {
+                appearance_waker.wake()
+            }));
+        }
         if options.tray {
             let waker = waker.clone();
             app.tray =
@@ -1140,6 +1151,8 @@ impl App {
             waker,
             tray: None,
             power: fastframe_power::Power::fixed(Default::default()),
+            #[cfg(target_os = "linux")]
+            system_appearance: None,
             #[cfg(test)]
             test_tray_shown: None,
             #[cfg(test)]
@@ -4326,6 +4339,24 @@ impl App {
         if !self.zoom_applied {
             ctx.set_zoom_factor(self.settings.zoom);
             self.zoom_applied = true;
+        }
+        // winit reports no system theme on Linux, so "Follow system" falls
+        // back to what the desktop portal says, for our palette and egui's
+        // own controls alike.
+        #[cfg(target_os = "linux")]
+        if let Some(dark) = self
+            .system_appearance
+            .as_ref()
+            .and_then(crate::appearance::SystemAppearance::dark)
+        {
+            let theme = if dark {
+                egui::Theme::Dark
+            } else {
+                egui::Theme::Light
+            };
+            if ctx.options(|options| options.fallback_theme) != theme {
+                ctx.options_mut(|options| options.fallback_theme = theme);
+            }
         }
         // Resolved here rather than after `set_theme`, so a change can keep the
         // old colours, egui's own controls included, while it is revealed.
@@ -9426,6 +9457,31 @@ mod tests {
         app.apply_theme(&ctx);
         assert_eq!(app.palette.accent, egui::Color32::GREEN);
         app.apply(Action::SetTheme(ThemeChoice::Light), &ctx);
+        assert_eq!(app.palette, Palette::light());
+    }
+
+    /// winit reports no system theme on Linux, so "Follow system" takes the
+    /// desktop portal's preference, and a fixed choice ignores it.
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn follow_system_uses_the_desktops_preference_on_linux() {
+        let mut app = app();
+        let ctx = egui::Context::default();
+        app.settings.theme = ThemeChoice::System;
+        assert!(app.settings.cached_palette().is_none());
+        app.system_appearance = Some(crate::appearance::SystemAppearance::fixed(false));
+        app.apply_theme(&ctx);
+        assert_eq!(ctx.theme(), egui::Theme::Light);
+        assert_eq!(app.palette, Palette::light());
+
+        app.system_appearance = Some(crate::appearance::SystemAppearance::fixed(true));
+        app.apply_theme(&ctx);
+        assert_eq!(ctx.theme(), egui::Theme::Dark);
+        assert_eq!(app.palette, Palette::dark());
+
+        app.settings.theme = ThemeChoice::Light;
+        app.apply_theme(&ctx);
+        assert_eq!(ctx.theme(), egui::Theme::Light, "a chosen theme wins");
         assert_eq!(app.palette, Palette::light());
     }
 
