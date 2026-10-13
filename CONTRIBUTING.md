@@ -87,6 +87,13 @@ screenshots, recordings, comparison pages, or other review media to the
 repository: CI fails on media under `docs/` that no page uses, and on images,
 videos or HTML pages named like review evidence.
 
+An interactive HTML comparison, with theme and size selectors and Before and
+After buttons or a slider, helps with larger changes. Attach it to the pull
+request as one self-contained `.html` file with the captures embedded, which
+GitHub hands readers as a download to open in a browser, or publish it
+elsewhere, for example with GitHub Pages from your fork, and link it from the
+description. A gist does not work: GitHub shows its HTML as source.
+
 ### Checks
 
 Run the same checks CI runs before submitting:
