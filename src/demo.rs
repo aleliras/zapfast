@@ -2410,11 +2410,39 @@ pub fn apply_flags(app: &mut App, page: Option<&str>) {
                     app.group_saving.insert(group.to_owned());
                 }
             }
-            "forward" => {
+            "forward" | "forward-selected" | "forward-review" | "forward-full" | "forward-once" => {
                 app.dialog = app.open_chat.clone().map(|chat| Dialog::Forward {
                     chat,
                     messages: vec!["ada-format".to_owned()],
                 });
+                app.forward_limit = crate::model::FORWARD_LIMIT;
+                match part {
+                    "forward-selected" | "forward-review" => {
+                        app.forward_recipients =
+                            vec![SAMPLES[0].id.to_owned(), SAMPLES[1].id.to_owned()];
+                        app.forward_reviewing = part == "forward-review";
+                    }
+                    // As many recipients as WhatsApp allows, with the note
+                    // saying so.
+                    "forward-full" => {
+                        let writable: Vec<_> = app
+                            .chats
+                            .iter()
+                            .filter(|chat| chat.can_send())
+                            .map(|chat| chat.id.clone())
+                            .collect();
+                        app.forward_recipients = writable
+                            .into_iter()
+                            .take(crate::model::FORWARD_LIMIT)
+                            .collect();
+                    }
+                    // A message forwarded many times, which goes to one chat.
+                    "forward-once" => {
+                        app.forward_limit = 1;
+                        app.forward_recipients = vec![SAMPLES[0].id.to_owned()];
+                    }
+                    _ => {}
+                }
             }
             "unlink" => app.dialog = Some(Dialog::ConfirmUnlink),
             "leave-group" => {
@@ -2962,6 +2990,10 @@ pub fn apply_flags(app: &mut App, page: Option<&str>) {
                     app.actions
                         .push(crate::model::Action::OpenChat(SAMPLES[0].id.into()));
                 }
+            }
+            "forward-portuguese" => {
+                apply_flags(app, Some("forward"));
+                app.locale = crate::i18n::Locale::PortugueseBrazil;
             }
             "staged" => {
                 let (photo, _) = sample_files(app);
@@ -5051,6 +5083,7 @@ mod tests {
     }
 
     #[test]
+    /// Checks all synthetic demo surfaces fit their tested window sizes and themes.
     fn every_surface_lays_out() {
         let mut app = app();
         let ctx = egui::Context::default();
@@ -5143,6 +5176,10 @@ mod tests {
             "group-info-locked",
             "group-info-saving",
             "forward",
+            "forward-selected",
+            "forward-review",
+            "forward-full",
+            "forward-once",
             "unlink",
             "leave-group",
             "left-group",
@@ -5200,6 +5237,7 @@ mod tests {
             "wide",
             "rail",
             "search",
+            "forward-portuguese",
             "staged",
             "attachment-draft-away",
             "attachment-draft-return",
@@ -5546,6 +5584,93 @@ mod tests {
         assert_eq!(copied.len(), 1, "a hidden composer must not swallow Copy");
         assert!(copied[0].ends_with("message number 1"));
         assert_eq!(app.composer, "unsent draft");
+    }
+
+    #[test]
+    /// Checks recipient selection and review both use the localized singular forwarding heading.
+    fn singular_forward_headings_use_the_forwarding_translation_in_both_steps() {
+        for page in ["forward", "forward-review"] {
+            let mut app = app();
+            app.locale = crate::i18n::Locale::PortugueseBrazil;
+            apply_flags(&mut app, Some(page));
+            let ctx = egui::Context::default();
+            app.attach(&ctx);
+            let labels = accessible_labels(&mut app, &ctx);
+            assert!(
+                labels.iter().any(|label| label == "Encaminhar mensagem"),
+                "{page}: {labels:?}"
+            );
+            if page == "forward-review" {
+                assert!(labels.iter().any(|label| label == "Voltar"), "{labels:?}");
+                assert!(
+                    labels.iter().any(|label| label == "Encaminhar"),
+                    "{labels:?}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    /// Checks real row and checkbox clicks toggle recipients without dispatching a forward command.
+    fn forward_row_and_checkbox_clicks_select_without_sending() {
+        for light in [false, true] {
+            let mut app = app();
+            app.backend.record_demo_commands();
+            let ctx = egui::Context::default();
+            ctx.enable_accesskit();
+            app.attach(&ctx);
+            apply_flags(
+                &mut app,
+                Some(if light { "forward,light" } else { "forward" }),
+            );
+            for _ in 0..3 {
+                render(&mut app, &ctx);
+            }
+            app.backend.take_demo_commands();
+            let nodes = accessible_nodes(&mut app, &ctx, Vec::new());
+            let title = app.chat_title(app.chat(SAMPLES[0].id).unwrap());
+            assert!(
+                nodes.iter().filter(|(label, _, _)| label == &title).count() >= 2,
+                "both row and checkbox have accessible labels"
+            );
+            let id = egui::Id::new(("forward-recipient", SAMPLES[0].id));
+            let rect = ctx.data(|data| data.get_temp::<egui::Rect>(id)).unwrap();
+            for pos in [
+                rect.center(),
+                egui::pos2(rect.right() - 18.0, rect.center().y),
+            ] {
+                for pressed in [true, false] {
+                    frame_with(
+                        &mut app,
+                        &ctx,
+                        vec![
+                            egui::Event::PointerMoved(pos),
+                            egui::Event::PointerButton {
+                                pos,
+                                button: egui::PointerButton::Primary,
+                                pressed,
+                                modifiers: egui::Modifiers::NONE,
+                            },
+                        ],
+                    );
+                }
+                assert!(app.dialog.is_some());
+                assert!(
+                    !app.backend
+                        .take_demo_commands()
+                        .iter()
+                        .any(|command| matches!(command, crate::backend::Command::Forward { .. }))
+                );
+                if pos == rect.center() {
+                    assert_eq!(app.forward_recipients, [SAMPLES[0].id]);
+                } else {
+                    assert!(
+                        app.forward_recipients.is_empty(),
+                        "checkbox toggles exactly once"
+                    );
+                }
+            }
+        }
     }
 
     /// Lets an eased key scroll's animation settle: tests advance time by the

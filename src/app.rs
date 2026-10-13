@@ -545,6 +545,13 @@ pub struct App {
     nav_history: History,
     /// Chat filter in the forwarding destination dialog.
     pub forward_search: String,
+    /// Recipients chosen in the forwarding dialog, all chats of the account
+    /// on screen, in the order they were picked.
+    pub forward_recipients: Vec<ChatId>,
+    /// Whether the forwarding dialog shows its recipients for confirmation.
+    pub forward_reviewing: bool,
+    /// How many recipients the forwarding dialog's messages may have.
+    pub forward_limit: usize,
     /// The group name being typed in the group info dialog.
     pub group_name_edit: Option<String>,
     /// The new-contact dialog's "Save to phone" box.
@@ -1043,6 +1050,7 @@ impl App {
         }
     }
 
+    /// Constructs application state around the supplied backend and persisted settings.
     #[cfg_attr(not(test), expect(dead_code))]
     fn with_backend(dirs: AppDirs, settings: Settings, backend: Backend, waker: Waker) -> Self {
         let (account, _) = {
@@ -1065,7 +1073,7 @@ impl App {
         };
         Self::with_accounts(dirs, settings, roster, vec![account], 0, waker)
     }
-
+    /// Builds the window state with the supplied accounts and selected account.
     fn with_accounts(
         dirs: AppDirs,
         settings: Settings,
@@ -1189,6 +1197,9 @@ impl App {
             dialog: None,
             nav_history: History::default(),
             forward_search: String::new(),
+            forward_recipients: Vec::new(),
+            forward_reviewing: false,
+            forward_limit: crate::model::FORWARD_LIMIT,
             group_name_edit: None,
             new_contact_to_phone: true,
             sidebar_visible: true,
@@ -1409,6 +1420,8 @@ impl App {
 
     /// Drops App-owned pointers into the previous account's chats and media.
     fn clear_account_ui(&mut self) {
+        self.forward_recipients.clear();
+        self.forward_reviewing = false;
         // The locked folder and the picker show the previous account's chats
         // and stickers.
         if self.locked_folder {
@@ -3040,6 +3053,27 @@ impl App {
                     self.interactive_sending.insert((chat, message));
                 } else {
                     self.interactive_sending.remove(&(chat, message));
+                }
+            }
+            Event::ForwardLimit {
+                from_chat,
+                messages,
+                limit,
+            } => {
+                // The answer for the dialog on screen, not one asked earlier
+                // or by an account that is not on screen.
+                if live
+                    && self.dialog
+                        == Some(Dialog::Forward {
+                            chat: from_chat,
+                            messages,
+                        })
+                {
+                    self.forward_limit = limit;
+                    self.forward_recipients.truncate(limit);
+                    if self.forward_recipients.len() < 2 {
+                        self.forward_reviewing = false;
+                    }
                 }
             }
             Event::PollCreated { chat, error } => {
@@ -5655,19 +5689,76 @@ impl App {
                     starred,
                 });
             }
-            Action::Forward {
-                from_chat,
-                messages,
-                to_chat,
-            } => {
+            Action::ToggleForwardRecipient(id) => {
+                if !matches!(self.dialog, Some(Dialog::Forward { .. }))
+                    || self.forward_reviewing
+                    || !self.chat(&id).is_some_and(Chat::can_send)
+                {
+                    return;
+                }
+                if self.forward_recipients.contains(&id) {
+                    self.forward_recipients.retain(|recipient| recipient != &id);
+                } else if self.forward_limit == 1 {
+                    // A message that may go to one chat only: the new choice
+                    // replaces the old one, as a radio button would.
+                    self.forward_recipients = vec![id];
+                } else if self.forward_recipients.len() < self.forward_limit {
+                    self.forward_recipients.push(id);
+                }
+            }
+            Action::ReviewForward => {
+                if matches!(self.dialog, Some(Dialog::Forward { .. }))
+                    && self.forward_recipients.len() > 1
+                {
+                    self.forward_reviewing = true;
+                }
+            }
+            Action::BackToForwardSelection => self.forward_reviewing = false,
+            Action::ConfirmForward => {
+                let Some(Dialog::Forward { chat, messages }) = self.dialog.clone() else {
+                    return;
+                };
+                // One recipient goes at once; several only from their
+                // confirmation.
+                let confirmed = match self.forward_recipients.len() {
+                    0 => false,
+                    1 => true,
+                    _ => self.forward_reviewing,
+                };
+                if !confirmed
+                    || messages.is_empty()
+                    || self.forward_recipients.len() > self.forward_limit
+                {
+                    return;
+                }
+                // Recheck the complete selection before dispatch. A destination may
+                // have become locked or read-only while the review was open.
+                let writable: std::collections::HashSet<_> = self
+                    .chats
+                    .iter()
+                    .filter(|chat| chat.can_send())
+                    .map(|chat| chat.id.clone())
+                    .collect();
+                let count = self.forward_recipients.len();
+                self.forward_recipients.retain(|id| writable.contains(id));
+                if self.forward_recipients.len() != count {
+                    self.forward_reviewing = false;
+                    self.toast_error(
+                        crate::i18n::gettext(self.locale, "A selected chat is no longer writable")
+                            .into_owned(),
+                    );
+                    return;
+                }
+                let to_chats = std::mem::take(&mut self.forward_recipients);
                 self.backend.send(Command::Forward {
-                    from_chat,
+                    from_chat: chat,
                     messages,
-                    to_chat,
+                    to_chats,
                 });
                 self.follow_sent_chat();
                 self.dialog = None;
                 self.forward_search.clear();
+                self.forward_reviewing = false;
                 self.selection = None;
             }
             Action::StartSelection => {
@@ -6387,8 +6478,17 @@ impl App {
                 if matches!(&dialog, Dialog::SendLocation(_)) {
                     self.location_draft.clear();
                 }
-                if matches!(&dialog, Dialog::Forward { .. }) {
+                if let Dialog::Forward { chat, messages } = &dialog {
                     self.forward_search.clear();
+                    self.forward_recipients.clear();
+                    self.forward_reviewing = false;
+                    // Until the worker has read the messages' forwarding
+                    // scores; it refuses a batch over the real limit anyway.
+                    self.forward_limit = crate::model::FORWARD_LIMIT;
+                    self.backend.send(Command::ForwardLimit {
+                        from_chat: chat.clone(),
+                        messages: messages.clone(),
+                    });
                 }
                 if dialog == Dialog::PairWithPhone {
                     self.pair_phone.clear();
@@ -6409,6 +6509,8 @@ impl App {
                 self.dialog = None;
                 self.invite = None;
                 self.forward_search.clear();
+                self.forward_recipients.clear();
+                self.forward_reviewing = false;
                 self.contact_edit = None;
                 self.group_name_edit = None;
                 self.refocus_composer(ctx);
@@ -9022,6 +9124,245 @@ mod tests {
             app.attachment_drafts["locked"].quoting.as_deref(),
             Some("private-quote")
         );
+    }
+
+    /// The recipients of each forward the app asked for, skipping the
+    /// forwarding-limit questions that opening the dialog sends.
+    fn sent_forwards(
+        commands: &mut tokio::sync::mpsc::UnboundedReceiver<Command>,
+    ) -> Vec<(String, Vec<String>, Vec<String>)> {
+        std::iter::from_fn(|| commands.try_recv().ok())
+            .filter_map(|command| match command {
+                Command::Forward {
+                    from_chat,
+                    messages,
+                    to_chats,
+                } => Some((from_chat, messages, to_chats)),
+                _ => None,
+            })
+            .collect()
+    }
+
+    fn forward_dialog(messages: &[&str]) -> Dialog {
+        Dialog::Forward {
+            chat: "source".into(),
+            messages: messages.iter().map(|id| (*id).to_owned()).collect(),
+        }
+    }
+
+    #[test]
+    /// Several recipients are confirmed first, and going back keeps them.
+    fn forwarding_to_several_chats_asks_for_confirmation() {
+        let mut app = app();
+        let (backend, mut commands) = Backend::recording();
+        app.backend = backend;
+        let ctx = egui::Context::default();
+        for id in ["first", "second"] {
+            app.chats.push(Chat::new(id.into(), id.into()));
+        }
+        let dialog = forward_dialog(&["m1", "m2"]);
+        app.apply(Action::ShowDialog(dialog.clone()), &ctx);
+        assert!(
+            matches!(commands.try_recv(), Ok(Command::ForwardLimit { from_chat, messages })
+                if from_chat == "source" && messages == ["m1", "m2"]),
+            "opening the dialog asks for the limit"
+        );
+        app.apply(Action::ConfirmForward, &ctx);
+        app.apply(Action::ToggleForwardRecipient("first".into()), &ctx);
+        app.forward_search = "second".into();
+        app.apply(Action::ToggleForwardRecipient("second".into()), &ctx);
+        app.apply(Action::ConfirmForward, &ctx);
+        assert!(
+            sent_forwards(&mut commands).is_empty(),
+            "two recipients are not sent without their confirmation"
+        );
+        app.apply(Action::ReviewForward, &ctx);
+        app.apply(Action::BackToForwardSelection, &ctx);
+        assert_eq!(app.forward_recipients, ["first", "second"]);
+        assert!(
+            sent_forwards(&mut commands).is_empty(),
+            "review never sends"
+        );
+        app.apply(Action::ReviewForward, &ctx);
+        app.apply(Action::ConfirmForward, &ctx);
+        assert_eq!(
+            sent_forwards(&mut commands),
+            [(
+                "source".to_owned(),
+                vec!["m1".to_owned(), "m2".to_owned()],
+                vec!["first".to_owned(), "second".to_owned()]
+            )],
+            "one batch for every recipient, in the order they were picked"
+        );
+        app.apply(Action::ConfirmForward, &ctx);
+        assert!(
+            sent_forwards(&mut commands).is_empty(),
+            "double confirmation never duplicates"
+        );
+        assert!(app.dialog.is_none());
+        app.apply(Action::ShowDialog(dialog), &ctx);
+        app.apply(Action::ToggleForwardRecipient("first".into()), &ctx);
+        app.apply(Action::CloseDialog, &ctx);
+        assert!(app.forward_recipients.is_empty());
+        assert!(!app.forward_reviewing);
+        assert!(
+            sent_forwards(&mut commands).is_empty(),
+            "cancel never sends"
+        );
+    }
+
+    #[test]
+    fn forwarding_to_one_chat_needs_no_confirmation() {
+        let mut app = app();
+        let (backend, mut commands) = Backend::recording();
+        app.backend = backend;
+        let ctx = egui::Context::default();
+        app.chats.push(Chat::new("first".into(), "First".into()));
+        app.apply(Action::ShowDialog(forward_dialog(&["m"])), &ctx);
+        app.apply(Action::ToggleForwardRecipient("first".into()), &ctx);
+        app.apply(Action::ReviewForward, &ctx);
+        assert!(
+            !app.forward_reviewing,
+            "one recipient has nothing to review"
+        );
+        app.apply(Action::ConfirmForward, &ctx);
+        assert_eq!(
+            sent_forwards(&mut commands),
+            [(
+                "source".to_owned(),
+                vec!["m".to_owned()],
+                vec!["first".to_owned()]
+            )]
+        );
+        assert!(app.dialog.is_none());
+    }
+
+    #[test]
+    fn forwarding_takes_at_most_five_chats() {
+        let mut app = app();
+        let (backend, mut commands) = Backend::recording();
+        app.backend = backend;
+        let ctx = egui::Context::default();
+        let ids: Vec<String> = (0..7).map(|index| format!("chat-{index}")).collect();
+        for id in &ids {
+            app.chats.push(Chat::new(id.clone(), id.clone()));
+        }
+        app.apply(Action::ShowDialog(forward_dialog(&["m"])), &ctx);
+        for id in &ids {
+            app.apply(Action::ToggleForwardRecipient(id.clone()), &ctx);
+        }
+        assert_eq!(app.forward_recipients, ids[..crate::model::FORWARD_LIMIT]);
+        // Dropping one makes room for another.
+        app.apply(Action::ToggleForwardRecipient(ids[0].clone()), &ctx);
+        app.apply(Action::ToggleForwardRecipient(ids[6].clone()), &ctx);
+        assert_eq!(app.forward_recipients.len(), crate::model::FORWARD_LIMIT);
+        assert!(app.forward_recipients.contains(&ids[6]));
+        app.apply(Action::ReviewForward, &ctx);
+        app.apply(Action::ConfirmForward, &ctx);
+        let sent = sent_forwards(&mut commands);
+        assert_eq!(sent.len(), 1);
+        assert_eq!(sent[0].2.len(), crate::model::FORWARD_LIMIT);
+    }
+
+    #[test]
+    fn a_message_forwarded_many_times_goes_to_one_chat() {
+        let mut app = app();
+        let (backend, mut commands) = Backend::recording();
+        app.backend = backend;
+        let ctx = egui::Context::default();
+        for id in ["first", "second", "third"] {
+            app.chats.push(Chat::new(id.into(), id.into()));
+        }
+        app.apply(Action::ShowDialog(forward_dialog(&["m"])), &ctx);
+        // Picked before the worker answered.
+        app.apply(Action::ToggleForwardRecipient("first".into()), &ctx);
+        app.apply(Action::ToggleForwardRecipient("second".into()), &ctx);
+        app.apply(Action::ReviewForward, &ctx);
+        assert!(app.forward_reviewing);
+        // An answer for other messages changes nothing.
+        app.apply_backend_event(
+            Event::ForwardLimit {
+                from_chat: "source".into(),
+                messages: vec!["other".into()],
+                limit: 1,
+            },
+            true,
+        );
+        assert_eq!(app.forward_limit, crate::model::FORWARD_LIMIT);
+        app.apply_backend_event(
+            Event::ForwardLimit {
+                from_chat: "source".into(),
+                messages: vec!["m".into()],
+                limit: 1,
+            },
+            true,
+        );
+        assert_eq!(app.forward_limit, 1);
+        assert_eq!(app.forward_recipients, ["first"], "the first pick stays");
+        assert!(!app.forward_reviewing);
+        // Another pick replaces it.
+        app.apply(Action::ToggleForwardRecipient("third".into()), &ctx);
+        assert_eq!(app.forward_recipients, ["third"]);
+        app.apply(Action::ConfirmForward, &ctx);
+        let sent = sent_forwards(&mut commands);
+        assert_eq!(sent.len(), 1);
+        assert_eq!(sent[0].2, ["third"]);
+    }
+
+    #[test]
+    /// Checks confirmation rejects destinations that became locked or left after selection.
+    fn forwarding_rechecks_destinations_before_sending() {
+        for left in [false, true] {
+            let mut app = app();
+            app.locale = crate::i18n::Locale::PortugueseBrazil;
+            let (backend, mut commands) = Backend::recording();
+            app.backend = backend;
+            let ctx = egui::Context::default();
+            app.chats.push(Chat::new("target".into(), "Target".into()));
+            app.chats.push(Chat::new("valid".into(), "Valid".into()));
+            app.apply(Action::ShowDialog(forward_dialog(&["m"])), &ctx);
+            app.apply(Action::ToggleForwardRecipient("target".into()), &ctx);
+            app.apply(Action::ToggleForwardRecipient("valid".into()), &ctx);
+            app.apply(Action::ReviewForward, &ctx);
+            let target = app
+                .chats
+                .iter_mut()
+                .find(|chat| chat.id == "target")
+                .unwrap();
+            target.left = left;
+            target.locked = !left;
+            app.apply(Action::ConfirmForward, &ctx);
+            assert!(sent_forwards(&mut commands).is_empty());
+            assert!(app.dialog.is_some());
+            assert!(!app.forward_reviewing);
+            assert_eq!(app.forward_recipients, ["valid"]);
+            // The one recipient left goes without another confirmation.
+            app.apply(Action::ConfirmForward, &ctx);
+            let sent = sent_forwards(&mut commands);
+            assert_eq!(sent.len(), 1);
+            assert_eq!(sent[0].2, ["valid"]);
+            assert!(app.toasts.iter().any(|toast| toast.message
+                == "Não é mais possível enviar mensagens para uma das conversas selecionadas"));
+        }
+    }
+
+    #[test]
+    /// Checks a chat the user has left cannot be selected as a forwarding destination.
+    fn forwarding_cannot_select_a_left_chat() {
+        let mut app = app();
+        let ctx = egui::Context::default();
+        let mut target = Chat::new("left".into(), "Left".into());
+        target.left = true;
+        app.chats.push(target);
+        app.apply(
+            Action::ShowDialog(Dialog::Forward {
+                chat: "source".into(),
+                messages: vec!["m".into()],
+            }),
+            &ctx,
+        );
+        app.apply(Action::ToggleForwardRecipient("left".into()), &ctx);
+        assert!(app.forward_recipients.is_empty());
     }
 
     #[test]
@@ -12060,6 +12401,7 @@ mod tests {
     }
 
     #[test]
+    /// Checks a selected message batch is forwarded in its original conversation order.
     fn selected_messages_forward_together_in_chat_order() {
         let mut app = app();
         let (backend, mut commands) = Backend::recording();
@@ -12082,14 +12424,21 @@ mod tests {
             app.selection,
             Some((chat.into(), vec!["first".into(), "third".into()]))
         );
+        app.chats
+            .push(Chat::new("2@s.whatsapp.net".into(), "Grace".into()));
         app.apply(
-            Action::Forward {
-                from_chat: chat.into(),
+            Action::ShowDialog(Dialog::Forward {
+                chat: chat.into(),
                 messages: vec!["first".into(), "third".into()],
-                to_chat: "2@s.whatsapp.net".into(),
-            },
+            }),
             &ctx,
         );
+        app.apply(
+            Action::ToggleForwardRecipient("2@s.whatsapp.net".into()),
+            &ctx,
+        );
+        app.apply(Action::ReviewForward, &ctx);
+        app.apply(Action::ConfirmForward, &ctx);
         let forwarded: Vec<String> = std::iter::from_fn(|| commands.try_recv().ok())
             .flat_map(|command| match command {
                 Command::Forward { messages, .. } => messages,
@@ -13714,6 +14063,13 @@ mod tests {
         let ctx = egui::Context::default();
         let chat = "fixture@s.whatsapp.net";
         app.open_chat = Some(chat.into());
+        app.chats
+            .push(Chat::new("other@s.whatsapp.net".into(), "Other".into()));
+        app.dialog = Some(Dialog::Forward {
+            chat: chat.into(),
+            messages: vec!["fixture-message".into()],
+        });
+        app.forward_recipients = vec!["other@s.whatsapp.net".into()];
         let sends = [
             Action::SendText {
                 chat: chat.into(),
@@ -13722,11 +14078,7 @@ mod tests {
             },
             Action::SendSticker(PathBuf::from("sticker.webp")),
             Action::ShareStickerPack(PathBuf::from("sticker-pack")),
-            Action::Forward {
-                from_chat: chat.into(),
-                messages: vec!["fixture-message".into()],
-                to_chat: "other@s.whatsapp.net".into(),
-            },
+            Action::ConfirmForward,
             Action::CreatePoll {
                 chat: chat.into(),
                 draft: crate::model::PollDraft {
