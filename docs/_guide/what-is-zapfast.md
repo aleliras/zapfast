@@ -31,8 +31,8 @@ RAM, compared with 1.13 GB for WhatsApp Web and its Chromium processes.
   messages.
   You can add captions to attachments before sending them.
 - **Makes calls.** Place and answer one-to-one voice and video calls, with
-  mute, camera and a choice of microphone, speaker and camera.
-  [Calls](/using-zapfast/#calls).
+  mute, camera and a choice of microphone, speaker and camera, and see every
+  call in its chat and on the Calls page. [Calls](/using-zapfast/#calls).
 - **Plays media in the chat.** Voice messages, videos, round video messages,
   GIFs, and animated stickers play in place. H.264 videos in MP4 files play
   after downloading to the local cache; other formats open in your system

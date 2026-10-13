@@ -383,6 +383,8 @@ pub enum Command {
     SetCallCameraDevice(Option<String>),
     /// Lists the microphones, speakers and cameras the call screen offers.
     RefreshCallDevices,
+    /// Reads the account's call entries for the Calls page.
+    LoadCallLog,
     /// Sends a played receipt for a voice message.
     MarkPlayed {
         chat: ChatId,
@@ -998,6 +1000,8 @@ pub enum Event {
     Call(Box<crate::calls::CallUpdate>),
     /// The devices the call screen can offer.
     CallDevices(Box<crate::calls::DeviceList>),
+    /// The account's call entries, newest first, for the Calls page.
+    CallLog(Vec<Message>),
     /// One video frame for the call screen: our own preview, the peer's picture, or both.
     CallVideo {
         local: Option<Arc<egui::ColorImage>>,

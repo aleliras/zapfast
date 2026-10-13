@@ -2874,6 +2874,10 @@ fn reaction_affordance(
     if shown.height() < REACTION_AFFORDANCE_SIZE || shown.width() <= 0.0 {
         return;
     }
+    // A call in the chat is a record, as in WhatsApp: no reactions, no replies.
+    if matches!(message.content, Content::Call { .. }) {
+        return;
+    }
     let rect = reaction_affordance_rect(shown, bounds, message.from_me);
     let pointer = ui.input(|input| input.pointer.interact_pos());
     // Stay hidden under any floating layer, as the context menu does. The
@@ -3263,9 +3267,44 @@ pub fn edge_scroll(pointer: f32, top: f32, bottom: f32) -> f32 {
     }
 }
 
+/// A call's menu: calling back, in a chat that can take a call.
+fn call_menu(ui: &mut egui::Ui, view: &View<'_>, group: bool, actions: &mut Vec<Action>) {
+    let palette = view.palette;
+    let chat = &view.chat.id;
+    if group || view.chat.kind != crate::model::ChatKind::Direct {
+        ui.add_enabled_ui(false, |ui| {
+            widgets::menu_item(
+                ui,
+                &palette,
+                Some(Icon::Phone),
+                &crate::i18n::gettext(view.locale, "Group calls happen on the phone"),
+            );
+        });
+        return;
+    }
+    if widgets::menu_item(
+        ui,
+        &palette,
+        Some(Icon::Phone),
+        &crate::i18n::gettext(view.locale, "Voice call"),
+    ) {
+        actions.push(Action::StartCall(chat.clone()));
+    }
+    if widgets::menu_item(
+        ui,
+        &palette,
+        Some(Icon::Video),
+        &crate::i18n::gettext(view.locale, "Video call"),
+    ) {
+        actions.push(Action::StartVideoCall(chat.clone()));
+    }
+}
+
 /// Starts a reply when the response was double-clicked, as the menu's "Reply".
 fn reply_on_double_click(response: &egui::Response, message: &Message, actions: &mut Vec<Action>) {
-    if response.double_clicked() && !matches!(message.content, Content::Revoked) {
+    if response.double_clicked()
+        && !matches!(message.content, Content::Revoked | Content::Call { .. })
+    {
         actions.push(Action::Reply(message.id.clone()));
     }
 }
@@ -4302,6 +4341,10 @@ fn quick_reactions<'a>(message: &'a Message, preferred: &'a [(String, u32)]) -> 
 fn context_menu(ui: &mut egui::Ui, view: &View<'_>, message: &Message, actions: &mut Vec<Action>) {
     let palette = view.palette;
     let chat = &view.chat.id;
+    if let Content::Call { group, .. } = message.content {
+        call_menu(ui, view, group, actions);
+        return;
+    }
     let mine = own_reaction(message);
     ui.allocate_ui_with_layout(
         vec2(ui.available_width(), 34.0),
@@ -5113,6 +5156,46 @@ fn content(
                 view.poll_voting
                     .contains(&(message.chat.clone(), message.id.clone())),
                 actions,
+            );
+            None
+        }
+        Content::Call {
+            video,
+            status,
+            duration,
+            group,
+        } => {
+            let entry = super::calls::Entry {
+                from_me: own,
+                video: *video,
+                status: *status,
+                duration: *duration,
+                group: *group,
+            };
+            let tint = if status.is_bad() {
+                palette.danger
+            } else {
+                palette.accent
+            };
+            mirrored_row(
+                ui,
+                own,
+                |ui| {
+                    theme::icon(ui, entry.icon(), 20.0, tint);
+                },
+                |ui| {
+                    ui.vertical(|ui| {
+                        theme::text(
+                            ui,
+                            entry.title(view.locale),
+                            theme::medium(14.0),
+                            palette.text,
+                        );
+                        if let Some(detail) = entry.detail(view.locale) {
+                            theme::text(ui, detail, theme::regular(12.5), palette.secondary);
+                        }
+                    });
+                },
             );
             None
         }

@@ -538,6 +538,60 @@ pub enum Content {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         once: Option<OnceMedia>,
     },
+    /// A call in this chat, where it falls among the messages, as WhatsApp
+    /// shows it. `from_me` on the message says who placed it. Entries ZapFast
+    /// writes itself carry an id that starts with [`CALL_ENTRY_PREFIX`] and are
+    /// never sent anywhere.
+    Call {
+        video: bool,
+        status: CallStatus,
+        /// Seconds the call was up; zero when it never was.
+        #[serde(default)]
+        duration: u64,
+        /// A group call.
+        #[serde(default)]
+        group: bool,
+    },
+}
+
+/// The id prefix of the call entries ZapFast files from call records: the
+/// calls it handled and the phone's call log. They are local, so no receipt,
+/// reaction or deletion is ever sent for them.
+pub const CALL_ENTRY_PREFIX: &str = "zapfast-call-";
+
+/// How far apart, in seconds, two entries for one call may be: the phone's
+/// call-log message and the call's record are stamped by different clocks.
+pub const CALL_ENTRY_WINDOW: i64 = 120;
+
+/// What became of a call.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CallStatus {
+    /// The two sides talked, so the call's length is real.
+    Answered,
+    /// Another of this account's devices took it.
+    AnsweredElsewhere,
+    /// An incoming call nobody picked up.
+    Missed,
+    /// Refused, by either side.
+    Declined,
+    /// Another of this account's devices refused it.
+    DeclinedElsewhere,
+    /// The other phone was on another call.
+    Busy,
+    /// It never came up, for no reason above.
+    Failed,
+    /// Outgoing, and nobody answered.
+    NoAnswer,
+    /// The line went while the call was up.
+    ConnectionLost,
+}
+
+impl CallStatus {
+    /// Whether the call is one to notice: missed, refused, or never up.
+    pub fn is_bad(self) -> bool {
+        !matches!(self, Self::Answered | Self::AnsweredElsewhere)
+    }
 }
 
 /// The kind of media a view-once message holds.
@@ -822,6 +876,24 @@ impl Content {
                 view_once: true, ..
             } => "View once message".to_owned(),
             Self::PhoneOnly { .. } => "Message on your phone".to_owned(),
+            Self::Call {
+                video,
+                status,
+                duration,
+                ..
+            } => {
+                let label = match (status, video) {
+                    (CallStatus::Missed, false) => "Missed voice call",
+                    (CallStatus::Missed, true) => "Missed video call",
+                    (_, false) => "Voice call",
+                    (_, true) => "Video call",
+                };
+                if *status == CallStatus::Answered && *duration > 0 {
+                    format!("{label} ({})", crate::util::call_duration(*duration))
+                } else {
+                    label.to_owned()
+                }
+            }
         }
     }
 
@@ -1024,6 +1096,8 @@ impl Contact {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Page {
     Chats,
+    /// Every call of the account, newest first.
+    Calls,
     Settings,
     Wallpaper,
 }

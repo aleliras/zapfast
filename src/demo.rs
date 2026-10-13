@@ -2195,6 +2195,28 @@ pub fn apply_flags(app: &mut App, page: Option<&str>) {
                 call_sample(app, false, false);
                 app.call_surface_hidden = true;
             }
+            "call-entries" => {
+                // Calls among the open chat's messages, as WhatsApp files them.
+                let open = app.open_chat.clone().unwrap_or_default();
+                let entries: Vec<Message> = call_entries(crate::util::now())
+                    .into_iter()
+                    .filter(|entry| entry.chat == open)
+                    .collect();
+                if let Some(conversation) = app.conversations.get_mut(&open) {
+                    conversation.messages.extend(entries);
+                    conversation
+                        .messages
+                        .sort_by_key(|message| message.timestamp);
+                }
+                app.scroll_to_bottom = true;
+            }
+            "calls" => {
+                app.page = Page::Calls;
+                let mut log = call_entries(crate::util::now());
+                log.sort_by_key(|message| std::cmp::Reverse(message.timestamp));
+                app.call_log = log;
+                app.call_log_loaded = true;
+            }
             "call-video" => call_sample(app, false, true),
             "call-video-incoming" => call_sample(app, true, true),
             "call-video-off" => {
@@ -3038,6 +3060,100 @@ pub fn sample_ids() -> Vec<&'static str> {
 /// real call publishes, filled in by hand: an invented call id, one of the sample chats, and a
 /// picture that is plainly a test pattern rather than anybody's room. `incoming` is the call
 /// waiting to be accepted; otherwise the call is one that has been up for a few minutes.
+/// Calls across the sample chats: answered, missed, declined and unanswered,
+/// voice and video, one in a group.
+fn call_entries(now: i64) -> Vec<Message> {
+    use crate::model::CallStatus;
+    let call = |chat: &str, id: &str, from_me: bool, minutes: i64, video, status, duration| {
+        message(
+            chat,
+            &format!("{}{id}", crate::model::CALL_ENTRY_PREFIX),
+            from_me,
+            now - minutes * 60,
+            Content::Call {
+                video,
+                status,
+                duration,
+                group: false,
+            },
+        )
+    };
+    let mut entries = vec![
+        call(
+            SAMPLES[0].id,
+            "ada-1",
+            false,
+            1,
+            false,
+            CallStatus::Missed,
+            0,
+        ),
+        call(
+            SAMPLES[0].id,
+            "ada-2",
+            true,
+            2,
+            true,
+            CallStatus::Answered,
+            754,
+        ),
+        call(
+            SAMPLES[0].id,
+            "ada-3",
+            false,
+            70,
+            false,
+            CallStatus::Answered,
+            221,
+        ),
+        call(
+            SAMPLES[2].id,
+            "grace",
+            true,
+            300,
+            false,
+            CallStatus::NoAnswer,
+            0,
+        ),
+        call(
+            SAMPLES[3].id,
+            "katherine",
+            false,
+            1500,
+            true,
+            CallStatus::Declined,
+            0,
+        ),
+        call(
+            SAMPLES[5].id,
+            "margaret",
+            true,
+            3000,
+            false,
+            CallStatus::Answered,
+            3725,
+        ),
+    ];
+    let mut group = call(
+        SAMPLES[1].id,
+        "group",
+        false,
+        600,
+        true,
+        CallStatus::Missed,
+        0,
+    );
+    group.sender = SAMPLES[2].id.to_owned();
+    if let Content::Call { group, .. } = &mut group.content {
+        *group = true;
+    }
+    entries.push(group);
+    for entry in &mut entries {
+        entry.status = Delivery::None;
+    }
+    entries
+}
+
 pub fn call_sample(app: &mut App, incoming: bool, video: bool) {
     let chat = SAMPLES[0].id;
     app.call = Some(CallUpdate {
@@ -11632,6 +11748,7 @@ mod tests {
                 Stop::ChatSearch,
                 Stop::Profile,
                 Stop::Sidebar,
+                Stop::Calls,
                 Stop::NewChat,
                 Stop::Settings,
                 Stop::Search,

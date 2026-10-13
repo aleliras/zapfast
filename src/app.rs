@@ -321,6 +321,7 @@ pub(crate) fn can_select(content: &Content) -> bool {
             | Content::Unsupported { .. }
             | Content::Poll { .. }
             | Content::Interactive { .. }
+            | Content::Call { .. }
     )
 }
 
@@ -2681,6 +2682,10 @@ impl App {
             Event::Call(update) => self.handle_call_update(*update),
             Event::CallDevices(devices) => self.call_devices = *devices,
             Event::CallVideo { local, remote } => self.handle_call_video(local, remote),
+            Event::CallLog(entries) => {
+                self.call_log = entries;
+                self.call_log_loaded = true;
+            }
             Event::Labels(labels) => {
                 self.labels = labels;
                 self.prune_labels();
@@ -2724,6 +2729,15 @@ impl App {
                 older,
                 complete,
             } => {
+                // A call filed while the Calls page is open joins its list.
+                if live
+                    && self.page == Page::Calls
+                    && messages
+                        .iter()
+                        .any(|message| matches!(message.content, Content::Call { .. }))
+                {
+                    self.backend.send(Command::LoadCallLog);
+                }
                 let conversation = self.conversations.entry(chat.clone()).or_default();
                 let was_empty = conversation.messages.is_empty();
                 if older && !messages.is_empty() {
@@ -4762,6 +4776,10 @@ impl App {
                 // announces it: read it again whenever Settings opens.
                 if page == Page::Settings && self.page != Page::Settings && self.is_connected() {
                     self.backend.send(Command::FetchAccountPrivacy);
+                }
+                // The Calls page reads the account's calls as it opens.
+                if page == Page::Calls {
+                    self.backend.send(Command::LoadCallLog);
                 }
                 // Typed passwords do not wait in a form nobody sees.
                 if page != Page::Settings && !self.app_lock.checking() {

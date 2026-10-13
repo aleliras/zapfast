@@ -149,7 +149,14 @@ protocol. These notes are for coding agents and new contributors.
   at most, 20 fps) into the library's timed `VideoSource`; the peer's access
   units decode on a thread of their own and reach the window as
   `Event::CallVideo` frames. A camera that cannot open leaves a video call
-  receive-only rather than refusing it.
+  receive-only rather than refusing it. Call history is `Content::Call`
+  messages: the phone's own `callLogMessage`s and `CALL_MISSED_*` stubs, plus
+  local entries (ids prefixed `CALL_ENTRY_PREFIX`) for calls made here,
+  `MissedCall`, `CallLogSync` and `CallLogHistory`. A local entry is skipped
+  when the chat already has a call the same way within `CALL_ENTRY_WINDOW`,
+  and the phone's own message, filed later, retires it
+  (`retire_local_call_twins`); local entries are never sent, read-receipted, reacted to or forwarded. The
+  Calls page reads `archive::call_log` per account.
 - Poll creation, voting, and decryption use whatsapp-rust's `Client::polls()`.
   `backend/worker/polls.rs` retains the original creator identity and key in the
   encrypted archive; `archive/polls.rs` keeps each voter's latest timestamp and

@@ -77,6 +77,9 @@ pub struct Account {
     pub(crate) reported_online: Option<bool>,
     /// Chats this account may pin; WhatsApp Plus raises it once known.
     pub pin_limit: usize,
+    /// The call entries the Calls page lists, newest first, once read.
+    pub call_log: Vec<Message>,
+    pub call_log_loaded: bool,
 }
 
 impl Account {
@@ -145,6 +148,8 @@ impl Account {
             group_saving: HashSet::new(),
             reported_online: None,
             pin_limit: crate::backend::PINNED_CHATS,
+            call_log: Vec::new(),
+            call_log_loaded: false,
         }
     }
 

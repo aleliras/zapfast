@@ -9,6 +9,8 @@ use rusqlite::{Connection, OptionalExtension, params};
 
 use crate::model::{Chat, ChatKind, Contact, Content, Delivery, LastMessage, Message};
 
+mod calls;
+pub use calls::CALL_LOG_LIMIT;
 mod drafts;
 mod encryption;
 pub use encryption::{archive_key_identity, copy_archive_key, forget_archive_key};
@@ -103,6 +105,8 @@ CREATE TRIGGER IF NOT EXISTS delete_motion_clips AFTER DELETE ON messages BEGIN
 END;
 CREATE INDEX IF NOT EXISTS messages_stickers ON messages (from_me, timestamp)
     WHERE json_extract(content, '$.kind') = 'sticker';
+CREATE INDEX IF NOT EXISTS messages_calls ON messages (timestamp)
+    WHERE json_extract(content, '$.kind') = 'call';
 CREATE TABLE IF NOT EXISTS contacts (
     id TEXT PRIMARY KEY,
     full_name TEXT,
@@ -850,6 +854,7 @@ impl Archive {
     pub fn unread_incoming(&self, chat: &str, limit: u32) -> Result<Vec<(String, String)>> {
         let mut statement = self.connection.prepare(
             "SELECT id, sender FROM messages WHERE chat = ?1 AND from_me = 0
+             AND id NOT LIKE 'zapfast-call-%'
              AND timestamp >= COALESCE((SELECT read_through FROM chats WHERE id = ?1), -1)
              ORDER BY timestamp DESC, COALESCE(history_order, 9223372036854775807) DESC, rowid DESC LIMIT ?2",
         )?;

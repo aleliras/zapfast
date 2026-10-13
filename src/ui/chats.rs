@@ -210,6 +210,7 @@ fn header(app: &mut App, ui: &mut egui::Ui) {
 enum HeaderButton {
     Settings,
     NewChat,
+    Calls,
     HideList,
 }
 
@@ -218,14 +219,16 @@ const HEADER_ICON: f32 = 18.0;
 
 /// The buttons on the right of the chat list header, rightmost first, as
 /// `header_button_row` draws them: Settings (but in the macOS chrome, where
-/// the menu has it), New chat, and Hide the chat list unless the window is
-/// narrow. The title before them measures its room from the same list.
+/// the menu has it), New chat, Calls, and Hide the chat list unless the
+/// window is narrow. The title before them measures its room from the same
+/// list.
 fn header_buttons(ctx: &egui::Context, macos: bool) -> Vec<HeaderButton> {
-    let mut buttons = Vec::with_capacity(3);
+    let mut buttons = Vec::with_capacity(4);
     if !macos {
         buttons.push(HeaderButton::Settings);
     }
     buttons.push(HeaderButton::NewChat);
+    buttons.push(HeaderButton::Calls);
     if !super::narrow(ctx) {
         buttons.push(HeaderButton::HideList);
     }
@@ -277,6 +280,27 @@ fn header_button_row(app: &mut App, ui: &mut egui::Ui, buttons: &[HeaderButton],
                 .clicked()
                 {
                     app.actions.push(Action::ShowDialog(Dialog::NewChat));
+                }
+            }
+            HeaderButton::Calls => {
+                let open = app.page == Page::Calls;
+                if theme::icon_button(
+                    ui,
+                    Icon::Phone,
+                    HEADER_ICON,
+                    if open {
+                        palette.accent
+                    } else {
+                        palette.secondary
+                    },
+                    palette.text,
+                    "Calls",
+                )
+                .tab_stop(Stop::Calls)
+                .clicked()
+                {
+                    app.actions
+                        .push(Action::Open(if open { Page::Chats } else { Page::Calls }));
                 }
             }
             HeaderButton::HideList => {
@@ -1804,7 +1828,7 @@ mod tests {
     /// window is wide enough to show the list beside a chat.
     #[test]
     fn header_buttons_follow_the_chrome_and_width() {
-        use HeaderButton::{HideList, NewChat, Settings};
+        use HeaderButton::{Calls, HideList, NewChat, Settings};
         let buttons = |width: f32, macos: bool| {
             let ctx = egui::Context::default();
             let mut buttons = Vec::new();
@@ -1821,10 +1845,10 @@ mod tests {
             output.textures_delta.clear();
             buttons
         };
-        assert_eq!(buttons(1000.0, false), [Settings, NewChat, HideList]);
-        assert_eq!(buttons(1000.0, true), [NewChat, HideList]);
-        assert_eq!(buttons(400.0, false), [Settings, NewChat]);
-        assert_eq!(buttons(400.0, true), [NewChat]);
+        assert_eq!(buttons(1000.0, false), [Settings, NewChat, Calls, HideList]);
+        assert_eq!(buttons(1000.0, true), [NewChat, Calls, HideList]);
+        assert_eq!(buttons(400.0, false), [Settings, NewChat, Calls]);
+        assert_eq!(buttons(400.0, true), [NewChat, Calls]);
     }
 
     use crate::paths::AppDirs;

@@ -328,6 +328,16 @@ One call at a time: a call to another of your numbers while one is up is
 declined there. With several numbers linked, a call to a number that is not on
 screen still rings, under that number's own names.
 
+Every call takes its place among the chat's messages, as on the phone: who
+called, voice or video, how long it lasted, or that it was missed, declined, or
+not answered. Calls made here are filed when they end, and so are the phone's:
+the ones it reports as they happen, the calls missed while ZapFast was closed,
+and the call history it sends when the computer is linked. The phone button at
+the top of the chat list opens **Calls**, every call of the number on screen,
+newest first; a row opens its chat at the call, and its buttons call back.
+Right-click a call in a chat to call back from there. Group calls show up in
+the history, but are placed and answered on the phone.
+
 ## Copying
 
 Select and copy any message text. You can begin dragging in the padding around

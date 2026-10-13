@@ -142,9 +142,9 @@ impl Worker {
         {
             runtime.last = update.clone();
         }
-        self.emit(Event::Call(Box::new(update)));
-        if finished {
-            self.call = None;
+        self.emit(Event::Call(Box::new(update.clone())));
+        if finished && let Some(runtime) = self.call.take() {
+            self.file_finished_call(&runtime.call, &update);
         }
     }
 
@@ -512,7 +512,8 @@ impl Worker {
         if let Some(mut runtime) = self.call.take() {
             let update = runtime.call.hangup(self.client.as_ref()).await;
             // The window lets the call go as it lets any other finished one.
-            self.emit(Event::Call(Box::new(update)));
+            self.emit(Event::Call(Box::new(update.clone())));
+            self.file_finished_call(&runtime.call, &update);
         }
     }
 
@@ -589,6 +590,267 @@ impl Worker {
     }
 }
 
+/// A call to file among a chat's messages.
+pub(super) struct CallEntry {
+    pub chat: ChatId,
+    pub call_id: String,
+    pub from_me: bool,
+    pub timestamp: i64,
+    pub video: bool,
+    pub status: calls::CallOutcome,
+    pub duration: u64,
+    pub group: bool,
+}
+
+impl Worker {
+    /// Files a call among its chat's messages, as WhatsApp shows calls, unless
+    /// the chat already has an entry for it (the phone's own call-log
+    /// message). The entry is local: an id of ZapFast's own, never sent, never
+    /// unread.
+    pub(super) fn file_call_entry(&mut self, entry: CallEntry) {
+        if entry.chat.is_empty() || entry.call_id.is_empty() || entry.timestamp <= 0 {
+            return;
+        }
+        let id = format!("{}{}", crate::model::CALL_ENTRY_PREFIX, entry.call_id);
+        match self
+            .archive
+            .call_entry_near(&entry.chat, entry.timestamp, entry.from_me, &id)
+        {
+            Ok(true) => return,
+            Ok(false) => {}
+            Err(error) => {
+                log::warn!("[CALL] the chat's call entries could not be read: {error}");
+                return;
+            }
+        }
+        self.ensure_chat(&entry.chat, None);
+        let sender = if entry.from_me {
+            self.me()
+        } else {
+            entry.chat.clone()
+        };
+        let message = Message {
+            id,
+            chat: entry.chat.clone(),
+            sender,
+            sender_name: None,
+            from_me: entry.from_me,
+            timestamp: entry.timestamp,
+            history_order: None,
+            content: Content::Call {
+                video: entry.video,
+                status: entry.status,
+                duration: entry.duration,
+                group: entry.group,
+            },
+            status: Delivery::None,
+            delivered_at: None,
+            read_at: None,
+            quoted: None,
+            reactions: Vec::new(),
+            edited: false,
+            mentions: Vec::new(),
+            forwarded: false,
+            thumbnail: None,
+        };
+        if let Err(error) = self.archive.insert_message(&message, None) {
+            log::warn!("[CALL] a call entry could not be filed: {error}");
+            return;
+        }
+        self.emit(Event::Messages {
+            chat: entry.chat.clone(),
+            messages: vec![message],
+            older: false,
+            complete: false,
+        });
+        self.emit_chat(&entry.chat);
+    }
+
+    /// Removes ZapFast's own entries for a call once the phone's own message
+    /// for it is filed, so the chat shows the call once.
+    pub(super) fn retire_local_call_twins(&mut self, message: &Message) {
+        if !matches!(message.content, Content::Call { .. })
+            || message.id.starts_with(crate::model::CALL_ENTRY_PREFIX)
+        {
+            return;
+        }
+        let twins =
+            match self
+                .archive
+                .local_call_twins(&message.chat, message.timestamp, message.from_me)
+            {
+                Ok(twins) => twins,
+                Err(error) => {
+                    log::warn!("[CALL] the chat's call entries could not be read: {error}");
+                    return;
+                }
+            };
+        for id in twins {
+            match self.archive.delete_message(&message.chat, &id) {
+                Ok(_) => self.emit(Event::MessageDeleted {
+                    chat: message.chat.clone(),
+                    id,
+                }),
+                Err(error) => log::warn!("[CALL] a duplicate call entry stays: {error}"),
+            }
+        }
+    }
+
+    /// Files a call this worker took part in once it is over.
+    fn file_finished_call(&mut self, call: &Call, update: &CallUpdate) {
+        let Some(status) = update.outcome else {
+            return;
+        };
+        self.file_call_entry(CallEntry {
+            chat: update.chat.clone(),
+            call_id: call.call_id().to_owned(),
+            from_me: update.direction == crate::model::CallDirection::Outgoing,
+            timestamp: call.began(),
+            video: call.carried_video(),
+            status,
+            duration: update
+                .started
+                .map_or(0, |started| started.elapsed().as_secs()),
+            group: false,
+        });
+    }
+
+    /// Files a call the phone reports as missed while this device was away.
+    pub(super) fn missed_call_entry(&mut self, call: &whatsapp_rust::types::call::MissedCall) {
+        let chat = self.canonical(&call.from);
+        self.file_call_entry(CallEntry {
+            chat,
+            call_id: call.call_id.clone(),
+            from_me: false,
+            timestamp: call.timestamp.timestamp(),
+            video: false,
+            status: calls::CallOutcome::Missed,
+            duration: 0,
+            group: false,
+        });
+    }
+
+    /// Files a call from the phone's call log: synced as it happens, or sent
+    /// with history when this device was linked.
+    pub(super) fn call_log_entry(
+        &mut self,
+        call_id: &str,
+        creator: Option<&Jid>,
+        from_me: Option<bool>,
+        record: &wa::CallLogRecord,
+    ) {
+        let Some(from_me) = from_me else {
+            return;
+        };
+        let Some(status) = record_status(record, from_me) else {
+            return;
+        };
+        let group = record
+            .group_jid
+            .as_deref()
+            .and_then(|jid| jid.parse::<Jid>().ok());
+        let chat = match (&group, from_me) {
+            (Some(group), _) => self.canonical(group),
+            (None, false) => match creator {
+                Some(creator) => self.canonical(&creator.to_non_ad()),
+                None => return,
+            },
+            // Our own call: the other side is its participant.
+            (None, true) => match record
+                .participants
+                .iter()
+                .filter_map(|participant| participant.user_jid.as_deref())
+                .filter_map(|jid| jid.parse::<Jid>().ok())
+                .next()
+            {
+                Some(peer) => self.canonical(&peer.to_non_ad()),
+                None => return,
+            },
+        };
+        self.file_call_entry(CallEntry {
+            chat,
+            call_id: call_id.to_owned(),
+            from_me,
+            timestamp: record.start_time.unwrap_or(0),
+            video: record.is_video.unwrap_or(false),
+            status,
+            duration: record.duration.unwrap_or(0).max(0) as u64,
+            group: group.is_some(),
+        });
+    }
+
+    /// Hands the Calls page this account's calls.
+    pub(super) fn emit_call_log(&mut self) {
+        match self.archive.call_log(crate::archive::CALL_LOG_LIMIT) {
+            Ok(entries) => self.emit(Event::CallLog(entries)),
+            Err(error) => log::warn!("[CALL] the call log could not be read: {error}"),
+        }
+    }
+}
+
+/// What a call-log record says became of a call; `None` for a call that has
+/// not happened yet or is still going on.
+fn record_status(record: &wa::CallLogRecord, from_me: bool) -> Option<calls::CallOutcome> {
+    use calls::CallOutcome as Status;
+    use wa::call_log_record::CallResult;
+    Some(match record.call_result? {
+        CallResult::CONNECTED => Status::Answered,
+        CallResult::REJECTED => Status::Declined,
+        CallResult::ACCEPTEDELSEWHERE => Status::AnsweredElsewhere,
+        CallResult::MISSED => Status::Missed,
+        CallResult::CANCELLED | CallResult::ABANDONED | CallResult::UNAVAILABLE => {
+            if from_me {
+                Status::NoAnswer
+            } else {
+                Status::Missed
+            }
+        }
+        CallResult::INVALID | CallResult::FAILED => Status::Failed,
+        CallResult::UPCOMING | CallResult::ONGOING => return None,
+        _ => return None,
+    })
+}
+
+/// A call-log message in a chat, as WhatsApp files a call there.
+pub(super) fn call_log_content(log: &wa::message::CallLogMessage) -> Content {
+    use calls::CallOutcome as Status;
+    use wa::message::call_log_message::CallOutcome;
+    let status = match log.call_outcome {
+        Some(CallOutcome::CONNECTED) | None => Status::Answered,
+        Some(CallOutcome::REJECTED) => Status::Declined,
+        Some(CallOutcome::ACCEPTED_ELSEWHERE) => Status::AnsweredElsewhere,
+        Some(CallOutcome::FAILED) => Status::Failed,
+        Some(CallOutcome::ONGOING) => Status::Answered,
+        // Missed, silenced while Do Not Disturb was on or for an unknown
+        // caller: either way nobody answered.
+        _ => Status::Missed,
+    };
+    Content::Call {
+        video: log.is_video.unwrap_or(false),
+        status,
+        duration: log.duration_secs.unwrap_or(0).max(0) as u64,
+        group: log.participants.len() > 1,
+    }
+}
+
+/// A missed call the phone filed as a bare notice in a chat's history.
+pub(super) fn missed_call_stub(stub: wa::web_message_info::StubType) -> Option<Content> {
+    use wa::web_message_info::StubType;
+    let (video, group) = match stub {
+        StubType::CALL_MISSED_VOICE => (false, false),
+        StubType::CALL_MISSED_VIDEO => (true, false),
+        StubType::CALL_MISSED_GROUP_VOICE => (false, true),
+        StubType::CALL_MISSED_GROUP_VIDEO => (true, true),
+        _ => return None,
+    };
+    Some(Content::Call {
+        video,
+        status: calls::CallOutcome::Missed,
+        duration: 0,
+        group,
+    })
+}
+
 /// Device discovery off the worker thread: enumerating opens every audio device to name it, so it
 /// runs on a blocking thread rather than on the async loop, where a slow device would hold up
 /// message handling and the call's own events.
@@ -622,5 +884,100 @@ mod tests {
         assert!(!callable_chat("12345-67890@g.us"));
         assert!(!callable_chat("1234567890@broadcast"));
         assert!(!callable_chat("1234567890@newsletter"));
+    }
+
+    #[test]
+    fn the_phones_call_log_says_how_each_call_ended() {
+        use calls::CallOutcome as Status;
+        use wa::call_log_record::CallResult;
+        let record = |result| {
+            let mut record = wa::CallLogRecord::default();
+            record.call_result = result;
+            record
+        };
+        assert_eq!(
+            record_status(&record(Some(CallResult::CONNECTED)), true),
+            Some(Status::Answered)
+        );
+        assert_eq!(
+            record_status(&record(Some(CallResult::REJECTED)), false),
+            Some(Status::Declined)
+        );
+        assert_eq!(
+            record_status(&record(Some(CallResult::ACCEPTEDELSEWHERE)), false),
+            Some(Status::AnsweredElsewhere)
+        );
+        // A call nobody picked up: unanswered when we placed it, missed when
+        // it rang here.
+        assert_eq!(
+            record_status(&record(Some(CallResult::CANCELLED)), true),
+            Some(Status::NoAnswer)
+        );
+        assert_eq!(
+            record_status(&record(Some(CallResult::CANCELLED)), false),
+            Some(Status::Missed)
+        );
+        assert_eq!(
+            record_status(&record(Some(CallResult::FAILED)), true),
+            Some(Status::Failed)
+        );
+        // Calls still to come or still going on are not filed yet.
+        assert_eq!(
+            record_status(&record(Some(CallResult::ONGOING)), true),
+            None
+        );
+        assert_eq!(record_status(&record(None), true), None);
+    }
+
+    #[test]
+    fn a_call_log_message_reads_as_a_call() {
+        use wa::message::call_log_message::CallOutcome;
+        let mut log = wa::message::CallLogMessage::default();
+        log.is_video = Some(true);
+        log.call_outcome = Some(CallOutcome::CONNECTED);
+        log.duration_secs = Some(754);
+        assert!(matches!(
+            call_log_content(&log),
+            Content::Call {
+                video: true,
+                status: calls::CallOutcome::Answered,
+                duration: 754,
+                group: false,
+            }
+        ));
+        let mut missed = wa::message::CallLogMessage::default();
+        missed.call_outcome = Some(CallOutcome::MISSED);
+        assert!(matches!(
+            call_log_content(&missed),
+            Content::Call {
+                video: false,
+                status: calls::CallOutcome::Missed,
+                duration: 0,
+                ..
+            }
+        ));
+    }
+
+    #[test]
+    fn only_missed_call_notices_become_calls() {
+        use wa::web_message_info::StubType;
+        assert!(matches!(
+            missed_call_stub(StubType::CALL_MISSED_GROUP_VIDEO),
+            Some(Content::Call {
+                video: true,
+                group: true,
+                status: calls::CallOutcome::Missed,
+                ..
+            })
+        ));
+        assert!(matches!(
+            missed_call_stub(StubType::CALL_MISSED_VOICE),
+            Some(Content::Call {
+                video: false,
+                group: false,
+                ..
+            })
+        ));
+        assert!(missed_call_stub(StubType::GROUP_CREATE).is_none());
     }
 }

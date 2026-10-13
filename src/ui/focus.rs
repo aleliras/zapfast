@@ -20,6 +20,7 @@ pub enum Stop {
     Back,
     Profile,
     Sidebar,
+    Calls,
     NewChat,
     Settings,
     Search,

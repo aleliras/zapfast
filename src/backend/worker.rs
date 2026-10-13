@@ -2586,7 +2586,26 @@ impl Worker {
             // that decide the call this worker already owns: the peer's answer is the only thing
             // that moves a call out of dialing, never the fact that dialing started.
             E::IncomingCall(call) => self.call_signaling(call).await,
-            E::MissedCall(call) => self.call_resolved(&call.call_id, None),
+            E::MissedCall(call) => {
+                self.call_resolved(&call.call_id, None);
+                self.missed_call_entry(call);
+            }
+            E::CallLogSync(sync) => self.call_log_entry(
+                &sync.call_id,
+                Some(&sync.call_creator_jid),
+                Some(sync.from_me),
+                &sync.record,
+            ),
+            E::CallLogHistory(history) => {
+                if let Some(call_id) = history.record.call_id.clone() {
+                    self.call_log_entry(
+                        &call_id,
+                        history.call_creator_jid.as_ref(),
+                        history.from_me,
+                        &history.record,
+                    );
+                }
+            }
             E::CallEndedElsewhere(call) => self.call_resolved(
                 &call.call_id,
                 Some(match call.outcome {
@@ -4123,6 +4142,7 @@ impl Worker {
             log::warn!("could not store a message: {error}");
             return;
         }
+        self.retire_local_call_twins(&message);
         if poll_baseline && let Err(error) = self.archive.mark_poll_history(&chat, &message.id) {
             log::warn!("could not store a live poll baseline: {error}");
         }
@@ -4642,6 +4662,7 @@ impl Worker {
                     if live_location_changed {
                         self.emit_message(&id, &row.id);
                     }
+                    self.retire_local_call_twins(&row);
                     if existed {
                         repeated += 1;
                     } else {
@@ -5178,6 +5199,7 @@ impl Worker {
             Command::RefreshCallDevices => {
                 self.emit_call_devices().await;
             }
+            Command::LoadCallLog => self.emit_call_log(),
             Command::RefreshPoll { chat, message } => self.refresh_poll(chat, message),
             Command::PollHistoryFailed {
                 chat,
@@ -9321,7 +9343,10 @@ fn classify_base(base: &wa::Message) -> Option<Content> {
     {
         return unsupported("payment");
     }
-    if base.call_log_messsage.is_set() || base.scheduled_call_creation_message.is_set() {
+    if let Some(log) = base.call_log_messsage.as_option() {
+        return Some(calls::call_log_content(log));
+    }
+    if base.scheduled_call_creation_message.is_set() {
         return unsupported("call");
     }
     if base.lottie_sticker_message.is_set() {
@@ -10094,6 +10119,35 @@ fn parse_conversation(conversation: wa::Conversation) -> ParsedChat {
             continue;
         };
         let Some(original) = info.message.as_option() else {
+            // A missed call the phone filed as a bare notice.
+            if let Some(content) = info.message_stub_type.and_then(calls::missed_call_stub) {
+                let from_me = key.from_me.unwrap_or(false);
+                let timestamp = info.message_timestamp.unwrap_or(0) as i64;
+                newest = newest.max(timestamp);
+                messages.push(ParsedMessage {
+                    id,
+                    sender: key.participant.clone().or_else(|| key.remote_jid.clone()),
+                    from_me,
+                    push_name: None,
+                    timestamp,
+                    history_order: entry
+                        .msg_order_id
+                        .and_then(|order| i64::try_from(order).ok()),
+                    edited: false,
+                    content,
+                    status: Delivery::None,
+                    quoted: None,
+                    reactions: Vec::new(),
+                    mentions: Vec::new(),
+                    forwarded: false,
+                    thumbnail: None,
+                    raw: Vec::new(),
+                    poll_secret: None,
+                    poll_votes: Vec::new(),
+                    receipts: Vec::new(),
+                });
+                continue;
+            }
             diagnostics.missing_body += 1;
             diagnostics.ciphertext_stubs += usize::from(
                 info.message_stub_type == Some(wa::web_message_info::StubType::CIPHERTEXT),
