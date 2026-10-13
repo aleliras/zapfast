@@ -2594,6 +2594,11 @@ pub fn apply_flags(app: &mut App, page: Option<&str>) {
                 }
             }
             "new-contact" => app.dialog = Some(Dialog::NewContact),
+            // A formatted number with no name: the dialog offers Message.
+            "new-contact-number" => {
+                app.dialog = Some(Dialog::NewContact);
+                app.new_contact_phone = "+1 (555) 010-4477".to_owned();
+            }
             // The switcher under our avatar open with the one account.
             "account-menu" => app.account_menu = true,
             // A second number linked beside the first, with unread chats of
@@ -4049,7 +4054,7 @@ mod tests {
             .unwrap()
             .message_mut("ada-link")
             .unwrap();
-        let body = "اتصل على +00 (000) 00000-0000";
+        let body = "اتصل على +99 (999) 99999-9999";
         row.content = Content::text(body);
         row.from_me = false;
 
@@ -4123,7 +4128,7 @@ mod tests {
                 _ => None,
             })
             .unwrap();
-        assert_eq!(copied, "+00 (000) 00000-0000");
+        assert_eq!(copied, "+99 (999) 99999-9999");
 
         open_menu(&mut app, next, phone_last, egui::Modifiers::SHIFT);
         let message_rect = ctx
@@ -4142,7 +4147,7 @@ mod tests {
                         phone,
                         full_name: None,
                         ..
-                    } if phone == "00000000000000"
+                    } if phone == "99999999999999"
                 ))
         );
     }
@@ -5363,6 +5368,7 @@ mod tests {
             "app-lock-settings",
             "app-lock-setup",
             "new-chat",
+            "new-contact-number",
             "unnamed-group",
             "keyring",
             "interactive",
@@ -6994,6 +7000,47 @@ mod tests {
                 assert!(app.image_preview.is_none());
             }
         }
+    }
+
+    /// New contact with a blank name messages a formatted number without
+    /// saving it, and refuses a number that formatting cannot explain.
+    #[test]
+    fn new_contact_messages_a_formatted_number_left_unnamed() {
+        let mut app = app();
+        app.backend.record_demo_commands();
+        let ctx = egui::Context::default();
+        app.attach(&ctx);
+        app.actions
+            .push(crate::model::Action::ShowDialog(Dialog::NewContact));
+        render(&mut app, &ctx);
+        app.backend.take_demo_commands();
+        let submit = |app: &mut App, phone: &str| {
+            app.new_contact_phone = phone.into();
+            ctx.memory_mut(|memory| memory.request_focus(egui::Id::new("new-contact-phone")));
+            render(app, &ctx);
+            frame_with(
+                app,
+                &ctx,
+                vec![key(egui::Key::Enter, egui::Modifiers::NONE)],
+            );
+            app.backend.take_demo_commands()
+        };
+        for refused in ["123", "+1 555 123 4567 ext. 89", "+1 (555 123-4567"] {
+            assert!(
+                !submit(&mut app, refused)
+                    .iter()
+                    .any(|command| matches!(command, crate::backend::Command::NewContact { .. })),
+                "{refused}"
+            );
+        }
+        assert!(
+            submit(&mut app, "+1 (555) 123-4567")
+                .iter()
+                .any(|command| matches!(command,
+            crate::backend::Command::NewContact { phone, full_name, first_name, .. }
+                if phone == "15551234567" && full_name.is_none() && first_name.is_none()))
+        );
+        assert!(app.new_contact_pending);
     }
 
     /// The composer keeps its draft while the preview is open: Enter does not

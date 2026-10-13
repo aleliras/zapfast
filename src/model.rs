@@ -1797,6 +1797,7 @@ pub enum Action {
     StartChat {
         id: ChatId,
         name: String,
+        dismiss_dialog: bool,
     },
     /// Puts a template in the named chat's composer without sending it, the
     /// way a share link's `text=` asks. Carries the chat it belongs to, since
