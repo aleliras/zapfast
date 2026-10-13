@@ -224,10 +224,10 @@ apple-native-keyring-store = { version = "1.0.2", features = ["keychain"] }
 # The application menu bar, built with tray-icon's muda at the version
 # fastframe-tray uses.
 tray-icon = { version = "0.25", default-features = false }
-# AppKit calls for the application menus and editing commands, on the main
-# thread.
+# AppKit calls for the application menus, editing commands, and the Dock
+# badge, on the main thread.
 objc2 = "0.6"
-objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSApplication", "NSResponder", "NSText", "NSView", "NSWindow"] }
+objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSApplication", "NSDockTile", "NSResponder", "NSText", "NSView", "NSWindow"] }
 # Reads the locale's clock format.
 objc2-foundation = { version = "0.3", default-features = false, features = ["std", "NSDateFormatter", "NSFormatter", "NSLocale", "NSString"] }
 # Notifications through UNUserNotificationCenter: notify-rust's macOS backend

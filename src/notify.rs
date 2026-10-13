@@ -10,6 +10,8 @@ use std::sync::{Arc, Mutex};
 
 #[cfg(target_os = "linux")]
 mod badge;
+#[cfg(target_os = "macos")]
+mod badge_macos;
 #[cfg(target_os = "windows")]
 mod badge_windows;
 #[cfg(target_os = "macos")]
@@ -18,15 +20,17 @@ mod macos;
 mod windows;
 #[cfg(target_os = "linux")]
 pub use badge::Badge;
+#[cfg(target_os = "macos")]
+pub use badge_macos::Badge;
 #[cfg(target_os = "windows")]
 pub use badge_windows::{Badge, Taskbar};
 
 /// A no-op taskbar badge on platforms without a taskbar badge implementation.
-#[cfg(not(any(target_os = "linux", target_os = "windows")))]
+#[cfg(not(any(target_os = "linux", target_os = "windows", target_os = "macos")))]
 #[derive(Default)]
 pub struct Badge;
 
-#[cfg(not(any(target_os = "linux", target_os = "windows")))]
+#[cfg(not(any(target_os = "linux", target_os = "windows", target_os = "macos")))]
 impl Badge {
     /// Does nothing; no supported desktop here reads a taskbar badge.
     pub fn set(&mut self, _count: u32) {}
