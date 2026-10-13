@@ -49,16 +49,20 @@ image = { version = "0.25", default-features = false, features = ["jpeg", "png",
 # WhatsApp Web protocol: pairing, encryption, history sync, and media. Version
 # 0.7.0 on crates.io enables `simd`, which needs nightly Rust. This commit builds
 # on stable and includes snapshot recovery and no-progress conflict handling
-# (upstream #1365, #1374 and #1375). Selected features provide Tokio transport, ureq media downloads,
-# and the SQLite device store. The window handles shutdown instead of `signal`.
-# Includes upstream Business pairing (#1440), LockChatUpdate and snapshot replay
-# (#1507), the viewer's channel mute state (#1537), favorite and recent sticker
-# sync events (#1538), boolean AB props (#1539), and favorite chats sync
-# (#1544). Device-store
+# (upstream #1365, #1374 and #1375). Selected features provide Tokio transport,
+# ureq media downloads, and the SQLite device store. The window handles shutdown
+# instead of `signal`. Includes upstream Business pairing (#1440), LockChatUpdate
+# and snapshot replay (#1507), the viewer's channel mute state (#1537), favorite
+# and recent sticker sync events (#1538), boolean AB props (#1539), favorite
+# chats sync (#1544), media re-upload that works and expired downloads that no
+# longer force a media_conn refresh each (#1648, #1653, #1659; the 429s of
+# ZapFast #405), and the typed send, edit, picture and poll APIs (#1614, #1626,
+# #1630, #1640). Protobuf structs are non-exhaustive since #1676, so they are
+# built from `Default` and assigned field by field. Device-store
 # compatibility retains the legacy created_at column. The revision is on
 # upstream's main and comes from the crmne/whatsapp-rust fork (branch
 # `zapfast`); move to crates.io at the first release that carries it.
-whatsapp-rust = { git = "https://github.com/crmne/whatsapp-rust", rev = "f7468ae2920a2b0aedbd0848cf121de56a07f93c", default-features = false, features = ["sqlite-storage", "tokio-transport", "tokio-runtime", "ureq-client", "tokio-native"] }
+whatsapp-rust = { git = "https://github.com/crmne/whatsapp-rust", rev = "0dc38af07632f48f0cf6c66df285f1643fc22b95", default-features = false, features = ["sqlite-storage", "tokio-transport", "tokio-runtime", "ureq-client", "tokio-native"] }
 tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros", "fs", "net", "io-util"] }
 # Opens the WhatsApp WebSocket through a proxy. Both crates are already
 # included through the Tokio transport at these versions.
