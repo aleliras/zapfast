@@ -2575,6 +2575,24 @@ pub fn apply_flags(app: &mut App, page: Option<&str>) {
                         for_everyone: false,
                     });
             }
+            "select-delete" => {
+                if let Some(chat) = app.open_chat.clone() {
+                    app.selection =
+                        Some((chat, vec!["ada-format".to_owned(), "ada-reply".to_owned()]));
+                    app.open_selection_delete_menu = true;
+                }
+            }
+            "delete-selection" => {
+                if let Some(chat) = app.open_chat.clone() {
+                    let messages = vec!["ada-doc".to_owned(), "ada-reply".to_owned()];
+                    app.selection = Some((chat.clone(), messages.clone()));
+                    app.dialog = Some(Dialog::ConfirmDeleteSelection {
+                        chat,
+                        messages,
+                        for_everyone: false,
+                    });
+                }
+            }
             "new-contact" => app.dialog = Some(Dialog::NewContact),
             // The switcher under our avatar open with the one account.
             "account-menu" => app.account_menu = true,
@@ -3637,6 +3655,49 @@ mod tests {
         assert_eq!(offset(), near, "the list is just below the top");
         send(&mut app);
         assert_eq!(offset(), 0.0, "the list is back at the top");
+    }
+
+    /// Enter opens the batch menu while retaining the selected messages and checkbox focus.
+    #[test]
+    fn keyboard_activation_opens_batch_delete_without_changing_selection() {
+        let mut app = app();
+        let ctx = egui::Context::default();
+        ctx.enable_accesskit();
+        app.attach(&ctx);
+        let chat = SAMPLES[0].id;
+        let selected = vec!["ada-doc".to_owned(), "ada-reply".to_owned()];
+        app.selection = Some((chat.into(), selected.clone()));
+        render(&mut app, &ctx);
+        let nodes = accessible_nodes(&mut app, &ctx, Vec::new());
+        assert!(
+            nodes
+                .iter()
+                .any(|(label, _, _)| label.starts_with("Select message from ")),
+            "selection rows have accessible labels"
+        );
+        let pick = crate::ui::conversation::bubble_id(chat, "ada-reply").with("pick");
+        ctx.memory_mut(|memory| memory.request_focus(pick));
+        frame_with(
+            &mut app,
+            &ctx,
+            vec![key(egui::Key::Enter, egui::Modifiers::NONE)],
+        );
+        render(&mut app, &ctx);
+        assert!(egui::Popup::is_id_open(&ctx, pick.with("popup")));
+        assert_eq!(app.selection.as_ref().unwrap().1, selected);
+        assert!(app.dialog.is_none(), "opening the menu never deletes");
+        let bubble = crate::ui::conversation::bubble_id(chat, "ada-reply");
+        let row_outline = ctx
+            .data(|data| data.get_temp::<crate::theme::FocusOutline>(pick.with("focus-outline")))
+            .unwrap();
+        let bubble_outline = ctx
+            .data(|data| data.get_temp::<crate::theme::FocusOutline>(bubble.with("focus-outline")))
+            .unwrap();
+        let check = ctx
+            .data(|data| data.get_temp::<egui::Rect>(bubble.with("check")))
+            .unwrap();
+        assert!(row_outline.rect.contains_rect(check));
+        assert_eq!(row_outline.rect, bubble_outline.rect);
     }
 
     /// A clicked notification lands on the message it announced and keeps it
@@ -5203,6 +5264,71 @@ mod tests {
     }
 
     #[test]
+    fn direct_delete_controls_use_the_selected_locale() {
+        for for_everyone in [false, true] {
+            let mut app = app();
+            app.locale = crate::i18n::Locale::PortugueseBrazil;
+            app.dialog = Some(crate::model::Dialog::ConfirmDeleteMessage {
+                chat: SAMPLES[0].id.to_owned(),
+                message: "fixture".into(),
+                for_everyone,
+            });
+            let ctx = egui::Context::default();
+            app.attach(&ctx);
+            let labels = accessible_labels(&mut app, &ctx);
+            for expected in [
+                if for_everyone {
+                    "Apagar para todos?"
+                } else {
+                    "Apagar para mim?"
+                },
+                "Apagar",
+                "Cancelar",
+            ] {
+                assert!(labels.iter().any(|label| label == expected), "{labels:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn deletion_dialog_distinguishes_direct_messages_from_selected_batches() {
+        for for_everyone in [false, true] {
+            for count in [0, 1, 2] {
+                let mut app = app();
+                let chat = SAMPLES[0].id.to_owned();
+                app.dialog = Some(if count == 0 {
+                    crate::model::Dialog::ConfirmDeleteMessage {
+                        chat,
+                        message: "fixture".into(),
+                        for_everyone,
+                    }
+                } else {
+                    crate::model::Dialog::ConfirmDeleteSelection {
+                        chat,
+                        messages: (0..count).map(|i| format!("fixture-{i}")).collect(),
+                        for_everyone,
+                    }
+                });
+                let ctx = egui::Context::default();
+                app.attach(&ctx);
+                let labels = accessible_labels(&mut app, &ctx);
+                let text = labels.join("\n");
+                if count == 0 {
+                    assert!(!text.contains("selected message"), "{text}");
+                } else {
+                    assert!(
+                        text.contains(&format!("{count} selected message")),
+                        "{text}"
+                    );
+                    if count == 2 {
+                        assert!(text.contains("selected messages"), "{text}");
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
     /// Checks all synthetic demo surfaces fit their tested window sizes and themes.
     fn every_surface_lays_out() {
         let mut app = app();
@@ -5315,6 +5441,8 @@ mod tests {
             "delete-message",
             "delete-message-mine",
             "remove-pack",
+            "delete-selection",
+            "select-delete",
             "new-contact",
             "accounts",
             "accounts,light",
@@ -7398,6 +7526,101 @@ mod tests {
         );
     }
 
+    /// The batch-deletion demo references real messages from its chat.
+    #[test]
+    fn the_batch_delete_demo_uses_existing_messages() {
+        let mut app = app();
+        apply_flags(&mut app, Some("delete-selection"));
+        let Some(Dialog::ConfirmDeleteSelection { chat, messages, .. }) = &app.dialog else {
+            panic!("batch confirmation");
+        };
+        assert_eq!(messages.len(), 2);
+        for id in messages {
+            assert!(app.conversations[chat].message(id).is_some(), "{id}");
+        }
+    }
+
+    /// The selection bar's Delete menu opens the batch confirmation for the
+    /// whole selection, and offers Delete for everyone only when every
+    /// selected message can still be revoked.
+    #[test]
+    fn the_selection_bar_deletes_the_whole_selection() {
+        for own in [false, true] {
+            let mut app = app();
+            let chat = SAMPLES[0].id.to_owned();
+            let ids = ["ada-format", "ada-reply"];
+            if own {
+                let conversation = app.conversations.get_mut(&chat).unwrap();
+                for id in ids {
+                    let message = conversation.message_mut(id).unwrap();
+                    message.from_me = true;
+                    message.timestamp = crate::util::now();
+                }
+            }
+            app.selection = Some((chat.clone(), ids.map(str::to_owned).to_vec()));
+            let ctx = egui::Context::default();
+            ctx.enable_accesskit();
+            app.attach(&ctx);
+            for _ in 0..3 {
+                render(&mut app, &ctx);
+            }
+            let click = |app: &mut App, pos| {
+                let event = |pressed| egui::Event::PointerButton {
+                    pos,
+                    button: egui::PointerButton::Primary,
+                    pressed,
+                    modifiers: egui::Modifiers::NONE,
+                };
+                frame_with(app, &ctx, vec![egui::Event::PointerMoved(pos), event(true)]);
+                frame_with(app, &ctx, vec![event(false)]);
+            };
+            let find = |app: &mut App, label: &str| {
+                accessible_nodes(app, &ctx, Vec::new())
+                    .into_iter()
+                    .find(|(text, _, _)| text == label)
+                    .map(|(_, _, pos)| pos)
+            };
+            let delete = find(&mut app, "Delete…").expect("the selection bar offers Delete");
+            click(&mut app, delete);
+            render(&mut app, &ctx);
+            let everyone = find(&mut app, "Delete for everyone").expect("menu item");
+            click(&mut app, everyone);
+            if own {
+                assert_eq!(
+                    app.dialog,
+                    Some(Dialog::ConfirmDeleteSelection {
+                        chat: chat.clone(),
+                        messages: ids.map(str::to_owned).to_vec(),
+                        for_everyone: true,
+                    })
+                );
+                continue;
+            }
+            assert!(
+                app.dialog.is_none(),
+                "others' messages cannot be deleted for everyone"
+            );
+            render(&mut app, &ctx);
+            let pos = match find(&mut app, "Delete for me") {
+                Some(pos) => pos,
+                None => {
+                    click(&mut app, delete);
+                    render(&mut app, &ctx);
+                    find(&mut app, "Delete for me").expect("menu item")
+                }
+            };
+            click(&mut app, pos);
+            assert_eq!(
+                app.dialog,
+                Some(Dialog::ConfirmDeleteSelection {
+                    chat: chat.clone(),
+                    messages: ids.map(str::to_owned).to_vec(),
+                    for_everyone: false,
+                })
+            );
+        }
+    }
+
     /// macOS and Wayland report trackpad scrolling in points; a two-finger
     /// scroll moves a picture larger than the area.
     #[test]
@@ -8651,6 +8874,155 @@ mod tests {
             )),
             "the bubble menu sends SetStar for that message: {commands:?}"
         );
+    }
+
+    #[test]
+    fn selected_documents_use_full_rows_and_delete_the_complete_selection() {
+        for (for_everyone, switch_chat) in
+            [(true, false), (false, false), (true, true), (false, true)]
+        {
+            let mut app = app();
+            let (backend, mut commands) = crate::backend::Backend::recording();
+            app.backend = backend;
+            let chat = sample_ids()[0].to_owned();
+            let conversation = app.conversations.get_mut(&chat).unwrap();
+            let mut document = conversation.message("ada-doc").unwrap().clone();
+            if let Content::Document { media, .. } = &mut document.content {
+                // Exercise the downloaded-file control that normally opens a PDF.
+                media.path = Some(std::path::PathBuf::from("synthetic-selection-document.pdf"));
+            }
+            document.from_me = true;
+            document.timestamp = crate::util::now();
+            conversation.messages = ["pdf-1", "pdf-2", "pdf-3"]
+                .map(|id| {
+                    let mut message = document.clone();
+                    message.id = id.into();
+                    message
+                })
+                .to_vec();
+            app.selection = Some((chat.clone(), vec!["pdf-1".into()]));
+            let ctx = egui::Context::default();
+            ctx.enable_accesskit();
+            app.attach(&ctx);
+            for _ in 0..3 {
+                render(&mut app, &ctx);
+            }
+            let click = |app: &mut App, pos, button| {
+                let event = |pressed| egui::Event::PointerButton {
+                    pos,
+                    button,
+                    pressed,
+                    modifiers: egui::Modifiers::NONE,
+                };
+                frame_with(app, &ctx, vec![egui::Event::PointerMoved(pos), event(true)]);
+                frame_with(app, &ctx, vec![event(false)]);
+            };
+            let rect = |message: &str| {
+                ctx.data(|data| {
+                    data.get_temp::<egui::Rect>(
+                        crate::ui::conversation::bubble_id(&chat, message).with("rect"),
+                    )
+                })
+                .unwrap()
+            };
+            click(
+                &mut app,
+                rect("pdf-2").center(),
+                egui::PointerButton::Primary,
+            );
+            let row = ctx
+                .read_response(crate::ui::conversation::bubble_id(&chat, "pdf-3").with("pick"))
+                .unwrap()
+                .rect;
+            click(
+                &mut app,
+                egui::pos2(row.left() + 15.0, row.center().y),
+                egui::PointerButton::Primary,
+            );
+            assert_eq!(
+                app.selection.as_ref().unwrap().1,
+                ["pdf-1", "pdf-2", "pdf-3"]
+            );
+            click(
+                &mut app,
+                rect("pdf-2").center(),
+                egui::PointerButton::Secondary,
+            );
+            let label = if for_everyone {
+                "Delete for everyone"
+            } else {
+                "Delete for me"
+            };
+            let pos = accessible_nodes(&mut app, &ctx, Vec::new())
+                .into_iter()
+                .find(|(text, _, _)| text == label)
+                .unwrap()
+                .2;
+            click(&mut app, pos, egui::PointerButton::Primary);
+            assert_eq!(
+                app.dialog,
+                Some(Dialog::ConfirmDeleteSelection {
+                    chat: chat.clone(),
+                    messages: ["pdf-1", "pdf-2", "pdf-3"].map(str::to_owned).to_vec(),
+                    for_everyone,
+                })
+            );
+            assert_eq!(app.conversations[&chat].messages.len(), 3);
+            if switch_chat {
+                app.open_chat = Some(SAMPLES[1].id.to_owned());
+            }
+            let other_count = app.conversations[SAMPLES[1].id].messages.len();
+            for _ in 0..3 {
+                render(&mut app, &ctx);
+            }
+            let pos = accessible_nodes(&mut app, &ctx, Vec::new())
+                .into_iter()
+                .find(|(text, role, _)| text == "Delete" && *role == egui::accesskit::Role::Button)
+                .unwrap()
+                .2;
+            click(&mut app, pos, egui::PointerButton::Primary);
+            assert!(
+                app.dialog.is_none(),
+                "confirmation closes after Delete: {:?}",
+                app.dialog
+            );
+            if for_everyone {
+                assert!(
+                    app.conversations[&chat]
+                        .messages
+                        .iter()
+                        .all(|message| matches!(message.content, Content::Revoked))
+                );
+            } else {
+                assert_eq!(
+                    app.conversations[&chat].messages.len(),
+                    3,
+                    "local removal waits for WhatsApp acknowledgement"
+                );
+            }
+            let requested: Vec<_> = std::iter::from_fn(|| commands.try_recv().ok())
+                .filter_map(|command| match command {
+                    crate::backend::Command::DeleteLocal { chat: target, id }
+                        if !for_everyone && target == chat =>
+                    {
+                        Some(id)
+                    }
+                    crate::backend::Command::Revoke { chat: target, id }
+                        if for_everyone && target == chat =>
+                    {
+                        Some(id)
+                    }
+                    _ => None,
+                })
+                .collect();
+            assert_eq!(requested, ["pdf-1", "pdf-2", "pdf-3"]);
+            assert!(app.selection.is_none());
+            assert_eq!(
+                app.conversations[SAMPLES[1].id].messages.len(),
+                other_count,
+                "confirmation only affects the chat that owned the selection"
+            );
+        }
     }
 
     /// One frame with AccessKit on; returns (label, role, centre) per node.
