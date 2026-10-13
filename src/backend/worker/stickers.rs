@@ -727,7 +727,9 @@ impl Worker {
         tokio::spawn(async move {
             let mut result = Err("no download references".to_owned());
             for download in &candidates {
-                result = download_attachment(&client, download, &dir, &path).await;
+                result =
+                    download_attachment(&client, download, &dir, &path, ATTACHMENT_DOWNLOAD_LIMIT)
+                        .await;
                 if result.is_ok() {
                     break;
                 }

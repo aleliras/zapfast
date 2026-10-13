@@ -4682,6 +4682,7 @@ fn context_menu(ui: &mut egui::Ui, view: &View<'_>, message: &Message, actions: 
                     !downloading,
                 ) {
                     actions.push(Action::Download {
+                        manual: true,
                         card: None,
                         chat: chat.clone(),
                         message: message.id.clone(),
@@ -5814,6 +5815,7 @@ fn carousel_picture(
                 && matches!(media.state, MediaState::Idle)))
     {
         actions.push(Action::Download {
+            manual: clicked,
             chat: message.chat.clone(),
             message: message.id.clone(),
             card: Some(index),
@@ -6726,6 +6728,7 @@ fn picture(
         && auto_download_allowed(media, sticker.is_some(), view.auto_download);
     if wants || auto {
         actions.push(Action::Download {
+            manual: wants,
             card: None,
             chat: view.chat.id.clone(),
             message: message.id.clone(),
@@ -7019,6 +7022,7 @@ fn video(
         && media.is_within_download_limit();
     if auto {
         actions.push(Action::Download {
+            manual: false,
             card: None,
             chat: view.chat.id.clone(),
             message: message.id.clone(),
@@ -7063,6 +7067,7 @@ fn video_clicked(
         None => {
             if !downloading && !matches!(media.state, MediaState::Downloading) {
                 actions.push(Action::Download {
+                    manual: true,
                     card: None,
                     chat: view.chat.id.clone(),
                     message: message.id.clone(),
@@ -7398,6 +7403,7 @@ fn video_note(
         && media.is_within_download_limit();
     if auto {
         actions.push(Action::Download {
+            manual: false,
             card: None,
             chat: view.chat.id.clone(),
             message: message.id.clone(),
@@ -7508,6 +7514,7 @@ fn attachment(
         && media.is_within_download_limit();
     if auto {
         actions.push(Action::Download {
+            manual: false,
             card: None,
             chat: view.chat.id.clone(),
             message: message.id.clone(),
@@ -7531,6 +7538,7 @@ fn attachment(
             Some(path) => actions.push(Action::OpenFile(path.clone())),
             None if !matches!(media.state, MediaState::Downloading) => {
                 actions.push(Action::Download {
+                    manual: true,
                     card: None,
                     chat: view.chat.id.clone(),
                     message: message.id.clone(),
@@ -7618,6 +7626,7 @@ fn voice_player(
                     .clicked()
                     {
                         actions.push(Action::Download {
+                            manual: true,
                             card: None,
                             chat: view.chat.id.clone(),
                             message: message.id.clone(),
@@ -7812,6 +7821,7 @@ fn voice_player(
         && media.is_within_download_limit();
     if auto {
         actions.push(Action::Download {
+            manual: false,
             card: None,
             chat: view.chat.id.clone(),
             message: message.id.clone(),

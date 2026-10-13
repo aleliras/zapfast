@@ -5133,6 +5133,7 @@ impl App {
                 self.backend.send(Command::DownloadMotion { chat, message });
             }
             Action::Download {
+                manual,
                 card,
                 chat,
                 message,
@@ -5145,9 +5146,11 @@ impl App {
                 else {
                     return;
                 };
-                if !media.is_within_download_limit() {
+                // The limit spares the disk and the link from what nobody
+                // asked for; a file the reader clicked downloads whole.
+                if !manual && !media.is_within_download_limit() {
                     media.state = MediaState::Failed(
-                        "This attachment is larger than the 64 MiB download limit".into(),
+                        "This attachment is larger than the 64 MiB automatic download limit".into(),
                     );
                     return;
                 }
@@ -5156,6 +5159,7 @@ impl App {
                 }
                 media.state = MediaState::Downloading;
                 self.backend.send(Command::Download {
+                    manual,
                     card,
                     chat,
                     message,
@@ -7161,6 +7165,7 @@ impl App {
             None => {
                 self.voice_wanted = Some((chat.clone(), next.clone(), Instant::now()));
                 self.actions.push(Action::Download {
+                    manual: false,
                     card: None,
                     chat,
                     message: next,
@@ -12781,6 +12786,7 @@ mod tests {
         for _ in 0..2 {
             app.apply(
                 Action::Download {
+                    manual: false,
                     card: None,
                     chat: chat.into(),
                     message: "picture".into(),
@@ -12810,6 +12816,7 @@ mod tests {
         app.backend = backend;
         app.apply(
             Action::Download {
+                manual: true,
                 card: None,
                 chat: chat.into(),
                 message: "picture".into(),
@@ -12863,6 +12870,7 @@ mod tests {
         let ctx = egui::Context::default();
         app.apply(
             Action::Download {
+                manual: true,
                 card: Some(1),
                 chat: chat.into(),
                 message: "carousel".into(),
@@ -13427,7 +13435,7 @@ mod tests {
     }
 
     #[test]
-    fn clicking_an_oversized_attachment_does_not_start_a_download() {
+    fn only_a_click_downloads_an_oversized_attachment() {
         let mut app = app();
         let (backend, mut commands) = Backend::recording();
         app.backend = backend;
@@ -13452,6 +13460,7 @@ mod tests {
 
         app.apply(
             Action::Download {
+                manual: false,
                 card: None,
                 chat: chat.into(),
                 message: "picture".into(),
@@ -13463,6 +13472,24 @@ mod tests {
         assert!(matches!(
             app.media_of(chat, "picture").map(|media| &media.state),
             Some(MediaState::Failed(_))
+        ));
+
+        app.apply(
+            Action::Download {
+                manual: true,
+                card: None,
+                chat: chat.into(),
+                message: "picture".into(),
+            },
+            &egui::Context::default(),
+        );
+        assert!(matches!(
+            commands.try_recv(),
+            Ok(Command::Download { manual: true, .. })
+        ));
+        assert!(matches!(
+            app.media_of(chat, "picture").map(|media| &media.state),
+            Some(MediaState::Downloading)
         ));
     }
 

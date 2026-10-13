@@ -233,9 +233,11 @@ protocol. These notes are for coding agents and new contributors.
   position steers the clock. rodio's own MP4 reader (symphonia 0.5's isomp4)
   is not used for it: it refuses WhatsApp's videos, whose `esds` carries a
   custom SLConfigDescriptor (#265). Unsupported formats
-  go to the system player. Playback reads a downloaded local file; the shared
-  64 MiB attachment download limit applies to automatic and manual downloads,
-  not to the video decoder. `Action::PlayVideo/SeekVideo/ToggleVideoSound` drive
+  go to the system player. Playback reads a downloaded local file; the 64 MiB
+  attachment limit applies only to automatic downloads (`manual: false` on
+  `Action::Download`/`Command::Download`), never to a click or a play, and
+  not to the video decoder. Every download's deadline grows with its size
+  (`attachment_deadline`). `Action::PlayVideo/SeekVideo/ToggleVideoSound` drive
   it; leaving the chat stops it and an unseen video pauses. Round video
   messages (PTV) are `Content::Video { note: true }` and draw as circles.
   `Action::CycleVideoSpeed` (the chip, or S full-window) runs the `Clock` at

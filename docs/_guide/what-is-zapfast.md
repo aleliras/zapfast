@@ -66,8 +66,8 @@ ZapFast does not currently support:
   communities, publishing to channels, and group administration beyond a
   group's name and photo (members, admins, descriptions, settings).
 - Playing videos outside the supported H.264 MP4 format in the app; they open
-  in your system player. Downloads over 64 MiB are currently blocked for all
-  attachment types, including videos, even when clicked manually.
+  in your system player. Attachments over 64 MiB download only when you click
+  them, never automatically.
 - Interactive forms, payments, shopping flows, carousel selections, or forwarding
   interactive messages. Use these in WhatsApp Web or on your phone. Embedded
   videos, documents, and templates without readable text

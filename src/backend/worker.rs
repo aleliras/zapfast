@@ -82,8 +82,18 @@ const THUMBNAIL_SIDE: u32 = 96;
 const PROFILE_PICTURE_SIDE: u32 = 640;
 /// Sticker download batch size for the picker.
 const STICKER_FETCH_LIMIT: usize = 40;
-const ATTACHMENT_LIMIT_ERROR: &str = "This attachment is larger than the 64 MiB download limit";
+const ATTACHMENT_LIMIT_ERROR: &str =
+    "This attachment is larger than the 64 MiB automatic download limit";
+/// The deadline of a download of unknown or small size.
 const ATTACHMENT_TIMEOUT: Duration = Duration::from_secs(120);
+/// The slowest transfer the deadline allows for beyond that: 128 KiB/s, so a
+/// 2 GiB video still has over four hours.
+const ATTACHMENT_SLOWEST_RATE: u64 = 128 * 1024;
+
+/// How long a download of `size` bytes may take, re-upload request included.
+fn attachment_deadline(size: Option<u64>) -> Duration {
+    ATTACHMENT_TIMEOUT + Duration::from_secs(size.unwrap_or(0) / ATTACHMENT_SLOWEST_RATE)
+}
 
 async fn with_attachment_deadline<T>(
     duration: Duration,
@@ -143,14 +153,17 @@ fn attachment_is_too_large(size: Option<u64>) -> bool {
     size.is_some_and(|size| size > ATTACHMENT_DOWNLOAD_LIMIT)
 }
 
-/// Streams a verified attachment to disk without accepting more than 64 MiB.
+/// Streams a verified attachment to disk without accepting more than `limit`
+/// bytes: 64 MiB for automatic downloads, unlimited for one the reader asked
+/// for.
 async fn download_attachment(
     client: &Client,
     downloadable: &dyn Downloadable,
     dir: &Path,
     path: &Path,
+    limit: u64,
 ) -> Result<PathBuf, String> {
-    if attachment_is_too_large(downloadable.file_length()) {
+    if downloadable.file_length().is_some_and(|size| size > limit) {
         return Err(ATTACHMENT_LIMIT_ERROR.to_owned());
     }
     tokio::fs::create_dir_all(dir)
@@ -158,10 +171,7 @@ async fn download_attachment(
         .map_err(|error| error.to_string())?;
     let (temporary, file) = temporary_attachment_file(path)?;
     let result = client
-        .download_to_writer(
-            downloadable,
-            LimitedWriter::new(file, ATTACHMENT_DOWNLOAD_LIMIT),
-        )
+        .download_to_writer(downloadable, LimitedWriter::new(file, limit))
         .await;
     match result {
         Ok(writer) => {
@@ -5397,10 +5407,11 @@ impl Worker {
                 }
             }
             Command::Download {
+                manual,
                 card,
                 chat,
                 message,
-            } => self.download_media(chat, message, card),
+            } => self.download_media(chat, message, card, manual),
             Command::FetchAvatar { id, full } => self.fetch_avatar(id, full),
             Command::EditText {
                 chat,
@@ -7422,10 +7433,12 @@ impl Worker {
     }
 
     fn download(&mut self, chat: ChatId, id: String) {
-        self.download_media(chat, id, None);
+        self.download_media(chat, id, None, false);
     }
 
-    fn download_media(&mut self, chat: ChatId, id: String, card: Option<usize>) {
+    /// Downloads an attachment. A `manual` one, asked for by the reader, has
+    /// no size limit; every download's deadline grows with its size.
+    fn download_media(&mut self, chat: ChatId, id: String, card: Option<usize>, manual: bool) {
         if !self.downloads.insert((chat.clone(), id.clone(), card)) {
             return;
         }
@@ -7505,10 +7518,16 @@ impl Worker {
                 );
                 return;
             };
-        if attachment_is_too_large(downloadable.file_length()) {
+        if !manual && attachment_is_too_large(downloadable.file_length()) {
             self.downloaded(chat, id, card, Err(ATTACHMENT_LIMIT_ERROR.to_owned()));
             return;
         }
+        let limit = if manual {
+            u64::MAX
+        } else {
+            ATTACHMENT_DOWNLOAD_LIMIT
+        };
+        let deadline = attachment_deadline(downloadable.file_length());
         // Keep metadata needed for one media re-upload request and retry.
         let media_key = base
             .image_message
@@ -7581,8 +7600,8 @@ impl Worker {
         tokio::spawn(async move {
             let cache_id = card.map_or_else(|| id.clone(), |index| format!("{id}-card-{index}"));
             let path = media_path(&dir, &chat, &cache_id, &mime, file_name.as_deref());
-            let result = with_attachment_deadline(ATTACHMENT_TIMEOUT, async {
-                match download_attachment(&client, &*downloadable, &dir, &path).await {
+            let result = with_attachment_deadline(deadline, async {
+                match download_attachment(&client, &*downloadable, &dir, &path, limit).await {
                     Ok(path) => Ok(path),
                     Err(error) => {
                         let text = error.to_string();
@@ -7608,8 +7627,10 @@ impl Worker {
                                     Ok(MediaRetryResult::Success { direct_path }) => {
                                         match refreshed(direct_path) {
                                             Some(again) => {
-                                                download_attachment(&client, &*again, &dir, &path)
-                                                    .await
+                                                download_attachment(
+                                                    &client, &*again, &dir, &path, limit,
+                                                )
+                                                .await
                                             }
                                             None => Err(text),
                                         }
@@ -7677,8 +7698,8 @@ impl Worker {
         tokio::spawn(async move {
             let path = media_path(&dir, &chat, &format!("{id}-motion"), "video/mp4", None);
             let result = with_attachment_deadline(
-                ATTACHMENT_TIMEOUT,
-                download_attachment(&client, &video, &dir, &path),
+                attachment_deadline(video.file_length),
+                download_attachment(&client, &video, &dir, &path, ATTACHMENT_DOWNLOAD_LIMIT),
             )
             .await;
             let _ = commands.send(Command::MotionDownloaded { chat, id, result });
@@ -7753,10 +7774,12 @@ impl Worker {
             let hash = sticker.hash;
             tokio::spawn(async move {
                 // The shelf waits for the whole batch, so none may hang.
-                let result = with_attachment_deadline(ATTACHMENT_TIMEOUT, async {
+                let deadline = attachment_deadline(meta.file_length);
+                let result = with_attachment_deadline(deadline, async {
                     let path = dir.join(format!("{hash}.webp"));
                     let sticker = PhoneSticker(meta);
-                    download_attachment(&client, &sticker, &dir, &path).await
+                    download_attachment(&client, &sticker, &dir, &path, ATTACHMENT_DOWNLOAD_LIMIT)
+                        .await
                 })
                 .await;
                 let _ = commands.send(Command::StickerFetched { hash, result });
@@ -10960,6 +10983,19 @@ mod tests {
             .seek(SeekFrom::Start(0))
             .expect("rewinds after clearing");
         writer.write_all(b"xyz").expect("can retry after clearing");
+    }
+
+    #[test]
+    fn the_download_deadline_grows_with_the_file() {
+        assert_eq!(attachment_deadline(None), ATTACHMENT_TIMEOUT);
+        assert_eq!(attachment_deadline(Some(1024)), ATTACHMENT_TIMEOUT);
+        // 64 MiB at the slowest allowed rate takes 512 s more.
+        assert_eq!(
+            attachment_deadline(Some(ATTACHMENT_DOWNLOAD_LIMIT)),
+            ATTACHMENT_TIMEOUT + Duration::from_secs(512)
+        );
+        let video = attachment_deadline(Some(2 * 1024 * 1024 * 1024));
+        assert!(video > Duration::from_secs(4 * 60 * 60), "{video:?}");
     }
 
     #[test]

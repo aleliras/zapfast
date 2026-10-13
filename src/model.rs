@@ -1000,7 +1000,7 @@ fn with_caption(label: &str, caption: &Option<String>) -> String {
     }
 }
 
-/// Maximum size accepted for a downloaded attachment.
+/// Maximum size of an attachment downloaded without the reader asking.
 pub(crate) const ATTACHMENT_DOWNLOAD_LIMIT: u64 = 64 * 1024 * 1024;
 
 /// Attachment metadata, download state, and optional local file. Download keys
@@ -1020,10 +1020,10 @@ pub struct Media {
 }
 
 impl Media {
-    /// Whether the attachment's declared size can be downloaded locally.
+    /// Whether the attachment's declared size may download automatically.
     ///
     /// A missing size is represented as zero and is allowed here. The worker
-    /// still enforces the limit while streaming it from WhatsApp.
+    /// still enforces the limit while streaming an automatic download.
     pub fn is_within_download_limit(&self) -> bool {
         self.size <= ATTACHMENT_DOWNLOAD_LIMIT
     }
@@ -1553,6 +1553,9 @@ pub enum Action {
         message: String,
     },
     Download {
+        /// The reader asked for it (a click, a menu item): exempt from the
+        /// automatic download limit.
+        manual: bool,
         card: Option<usize>,
         chat: ChatId,
         message: String,

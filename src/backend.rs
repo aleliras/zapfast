@@ -241,6 +241,9 @@ pub enum Command {
         focused: Option<ChatId>,
     },
     Download {
+        /// Asked for by the reader: no size limit, a deadline that grows
+        /// with the file.
+        manual: bool,
         card: Option<usize>,
         chat: ChatId,
         message: String,

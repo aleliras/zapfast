@@ -154,9 +154,11 @@ back to the chat it was meant for.
 
 Incoming attachments up to 64 MiB download when they enter view if automatic
 downloads are on, or on click. Visible stickers download automatically even
-when that setting is off. The 64 MiB limit applies to both automatic and manual
-downloads, including videos and stickers; clicking a larger attachment does
-not bypass it. If an attachment has expired, ZapFast asks your phone to upload
+when that setting is off. Larger attachments never download on their own:
+click one, or choose **Download** in its right-click menu, and it downloads
+whatever its size. A download may take longer the larger the file is, at
+least two minutes plus one second for every 128 KiB, before it gives up and
+offers a retry. If an attachment has expired, ZapFast asks your phone to upload
 it again. A live-location share shows the position this linked device received;
 WhatsApp sends later positions only to the phone. ZapFast marks when newer
 positions are available there, but cannot follow the moving location here.
@@ -281,8 +283,9 @@ play inside their circle. Click the speed chip to cycle 1x, 1.5x, and 2x, as on
 voice messages: voices keep their pitch, stereo sound stays stereo, and the
 speed stays for the next video until ZapFast quits. Already downloaded videos
 play from their local file. Playback
-waits for the download to finish, and the [64 MiB download limit](#attachments)
-also applies to videos. Double-click one, or use the button at the end of its
+waits for the download to finish; videos over the
+[64 MiB automatic download limit](#attachments) download when you click them.
+Double-click one, or use the button at the end of its
 controls, to play it over the whole window:
 Space plays and pauses, the arrows jump five seconds, M mutes, S changes the
 speed, and Escape puts it back. The built-in player supports H.264 video in MP4 files; other formats
@@ -301,8 +304,8 @@ right-click menu keeps a copy wherever you choose.
 A motion photo has a play button in its corner. Click it to download the short
 clip to the local cache and play it over the photo, muted and in a loop; click
 again to return to the photo. In the photo's preview, the play button in the
-header plays the clip over the whole window with sound. The clip follows the
-same download limit.
+header plays the clip over the whole window with sound. Clips over 64 MiB are
+not downloaded.
 
 ## Polls
 
