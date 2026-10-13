@@ -132,6 +132,15 @@ fn default_log_filter(verbose: bool) -> &'static str {
     }
 }
 
+/// Deletes a directory tree when dropped.
+struct RemoveOnDrop(std::path::PathBuf);
+
+impl Drop for RemoveOnDrop {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.0);
+    }
+}
+
 fn main() -> eframe::Result<()> {
     let result = run();
     // A Windows release has no console, so an error that ends the start
@@ -236,15 +245,19 @@ fn run() -> eframe::Result<()> {
     let default_filter = default_log_filter(cli.verbose);
     // A demo must not create empty ZapFast directories that would prevent a
     // later real launch from adopting the existing FastsApp session.
-    let dirs = if demo {
-        paths::AppDirs::under(&std::env::temp_dir().join(format!(
+    let demo_root = demo.then(|| {
+        std::env::temp_dir().join(format!(
             "zapfast-demo-{}-{}",
             std::process::id(),
             jiff::Timestamp::now().as_millisecond(),
-        )))
-    } else {
-        discovered
+        ))
+    });
+    let dirs = match &demo_root {
+        Some(root) => paths::AppDirs::under(root),
+        None => discovered,
     };
+    // A demo's folders are throwaway; remove them when the run returns.
+    let _demo_root = demo_root.map(RemoveOnDrop);
     if !demo {
         dirs.adopt_previous_names()
             .map_err(|error| eframe::Error::AppCreation(error.into()))?;

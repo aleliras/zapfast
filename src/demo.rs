@@ -3290,13 +3290,21 @@ mod tests {
     use crate::paths::AppDirs;
     use crate::settings::Settings;
 
+    thread_local! {
+        /// The folders of this test's apps, removed when the test's thread
+        /// ends (each test runs on a thread of its own).
+        static ROOTS: std::cell::RefCell<Vec<tempfile::TempDir>> = const {
+            std::cell::RefCell::new(Vec::new())
+        };
+    }
+
     pub(super) fn app() -> App {
-        let root = std::env::temp_dir().join(format!(
-            "zapfast-demo-{}-{:?}",
-            std::process::id(),
-            std::thread::current().id()
-        ));
-        let (mut app, _events) = App::headless(AppDirs::under(&root), Settings::default());
+        let root = tempfile::Builder::new()
+            .prefix("zapfast-demo-")
+            .tempdir()
+            .unwrap();
+        let (mut app, _events) = App::headless(AppDirs::under(root.path()), Settings::default());
+        ROOTS.with(|roots| roots.borrow_mut().push(root));
         populate(&mut app);
         app
     }
