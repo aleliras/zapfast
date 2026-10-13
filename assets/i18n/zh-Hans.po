@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Translators: one word, no spaces. The word after @ that mentions everyone.
-#: src/mentions.rs:70
+#: src/mentions.rs:80
 msgctxt "mention"
 msgid "all"
 msgstr "所有人"
@@ -206,34 +206,34 @@ msgstr "已锁定"
 msgid "No favorites yet"
 msgstr "还没有收藏"
 
-#: src/ui/chats.rs:1044 src/app.rs:2231
+#: src/ui/chats.rs:1044 src/app.rs:2228
 msgid "Message yourself"
 msgstr "给自己发消息"
 
-#: src/ui/chats.rs:1227
+#: src/ui/chats.rs:1233
 msgid "Draft:"
 msgstr "草稿："
 
-#: src/ui/chats.rs:1314 src/ui/chats.rs:1685 src/ui/picker.rs:1615
+#: src/ui/chats.rs:1320 src/ui/chats.rs:1691 src/ui/picker.rs:1615
 msgid "Remove from favorites"
 msgstr "取消收藏"
 
-#: src/ui/chats.rs:1316 src/ui/chats.rs:1687 src/ui/conversation.rs:4663
+#: src/ui/chats.rs:1322 src/ui/chats.rs:1693 src/ui/conversation.rs:4663
 #: src/ui/dialogs.rs:1059 src/ui/picker.rs:1616
 msgid "Add to favorites"
 msgstr "添加到收藏"
 
-#: src/ui/chats.rs:1326 src/ui/chats.rs:1711 src/ui/conversation.rs:244
+#: src/ui/chats.rs:1332 src/ui/chats.rs:1717 src/ui/conversation.rs:244
 #: src/ui/dialogs.rs:1233 src/ui/dialogs.rs:1771
 msgid "Leave group"
 msgstr "退出群组"
 
-#: src/ui/chats.rs:1327 src/ui/chats.rs:1709 src/ui/conversation.rs:242
+#: src/ui/chats.rs:1333 src/ui/chats.rs:1715 src/ui/conversation.rs:242
 #: src/ui/dialogs.rs:1231 src/ui/dialogs.rs:1769
 msgid "Leave channel"
 msgstr "退出频道"
 
-#: src/ui/chats.rs:1342 src/ui/labels.rs:166 src/ui/labels.rs:213
+#: src/ui/chats.rs:1348 src/ui/labels.rs:166 src/ui/labels.rs:213
 msgid "Labels"
 msgstr "标签"
 
@@ -333,7 +333,7 @@ msgid "{} unread message"
 msgid_plural "{} unread messages"
 msgstr[0] "{} 条未读消息"
 
-#: src/ui/conversation.rs:2424 src/app.rs:2213 src/app.rs:2232
+#: src/ui/conversation.rs:2424 src/app.rs:2210 src/app.rs:2229
 msgid "You"
 msgstr "你"
 
@@ -662,7 +662,7 @@ msgstr "“系统”使用桌面的界面字体。Inter 在每台电脑上都一
 msgid "Wallpaper"
 msgstr "壁纸"
 
-#: src/ui/settings.rs:348 src/app.rs:2704
+#: src/ui/settings.rs:348 src/app.rs:2701
 msgid "Image"
 msgstr "图片"
 
@@ -1181,7 +1181,7 @@ msgstr "无法连接"
 msgid "No answer"
 msgstr "无人接听"
 
-#: src/ui/call.rs:358 src/ui/calls.rs:106 src/app.rs:3435
+#: src/ui/call.rs:358 src/ui/calls.rs:106 src/app.rs:3432
 msgid "Connection lost"
 msgstr "连接已断开"
 
@@ -1327,7 +1327,7 @@ msgid "Hang up the current call first"
 msgstr "请先挂断当前通话"
 
 #. Translators: {name} is replaced by the author's name, shown as a link.
-#: src/ui/widgets.rs:843
+#: src/ui/widgets.rs:859
 #, rust-format
 msgid "Built with love by {name}"
 msgstr "由 {name} 倾心打造"
@@ -1390,54 +1390,54 @@ msgstr "还没有人"
 msgid "Could not delete the removed account's files"
 msgstr ""
 
-#: src/app.rs:2133
+#: src/app.rs:2130
 #, rust-format
 msgid "A label named “{name}” already exists."
 msgstr "已存在名为“{name}”的标签。"
 
-#: src/app.rs:2212
+#: src/app.rs:2209
 #, rust-format
 msgid "{name} (You)"
 msgstr "{name}（你）"
 
-#: src/app.rs:3145
+#: src/app.rs:3142
 msgid "Loading chat history"
 msgstr ""
 
-#: src/app.rs:3239
+#: src/app.rs:3236
 msgid "Could not use this image"
 msgstr "无法使用此图片"
 
-#: src/app.rs:3445
+#: src/app.rs:3442
 msgid "Connecting"
 msgstr ""
 
-#: src/app.rs:3840
+#: src/app.rs:3838
 msgid "Not sent: ZapFast is not connected to WhatsApp."
 msgstr "未发送：ZapFast 未连接到 WhatsApp。"
 
-#: src/app.rs:3844
+#: src/app.rs:3842
 msgid ""
 "Not sent: the message you’re replying to isn’t available on this computer. "
 "Cancel the reply to send without a quote."
 msgstr "未发送：你要回复的消息不在这台电脑上。取消回复即可不带引用发送。"
 
-#: src/app.rs:5821
+#: src/app.rs:5831
 msgid "Added to favorites"
 msgstr "已添加到收藏"
 
-#: src/app.rs:5896
+#: src/app.rs:5906
 msgid "Sending the sticker pack…"
 msgstr "正在发送贴图包…"
 
-#: src/app.rs:6193 src/ui/labels.rs:247
+#: src/app.rs:6203 src/ui/labels.rs:247
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "你已有 {limit} 个标签，这是 ZapFast 的上限。"
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:6693
+#: src/app.rs:6703
 #, rust-format
 msgid "{}: {}"
 msgstr ""
@@ -1450,15 +1450,15 @@ msgstr "应用锁密码已保存"
 msgid "App lock turned off"
 msgstr "应用锁已关闭"
 
-#: src/app.rs:7139
+#: src/app.rs:7149
 msgid "This video opens in your system player"
 msgstr "此视频将用系统播放器打开"
 
-#: src/app.rs:7572
+#: src/app.rs:7582
 msgid "Copied image"
 msgstr "已复制图片"
 
-#: src/app.rs:7575 src/app.rs:7580
+#: src/app.rs:7585 src/app.rs:7590
 msgid "Failed to copy image"
 msgstr "复制图片失败"
 

@@ -1507,6 +1507,16 @@ impl Worker {
             last.full = self.pn_tokens(&last.full);
         }
         chat.labels = self.archive.chat_labels(&chat.id).unwrap_or_default();
+        if chat.is_group() && chat.unread > 0 {
+            let ours: Vec<&str> = [self.me_pn.as_deref(), self.me_lid.as_deref()]
+                .into_iter()
+                .flatten()
+                .collect();
+            chat.unread_mention = self
+                .archive
+                .unread_mention(&chat.id, chat.unread, &ours)
+                .unwrap_or_default();
+        }
     }
 
     fn emit_message(&self, chat: &str, id: &str) {

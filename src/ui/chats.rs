@@ -1187,6 +1187,12 @@ fn row(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> egui::Response {
             );
             badge_right -= width + 6.0;
         }
+        if chat.unread > 0 && chat.unread_mention.is_some() {
+            // A mention calls even in a muted chat, as on WhatsApp.
+            let width =
+                widgets::mention_badge(ui, &palette, pos2(badge_right - 10.0, line_y + 8.0));
+            badge_right -= width + 6.0;
+        }
         if muted {
             let icon_rect =
                 Rect::from_center_size(pos2(badge_right - 8.0, line_y + 8.0), Vec2::splat(15.0));
@@ -1781,6 +1787,8 @@ fn context_menu(app: &mut App, ui: &mut egui::Ui, chat: &Chat, palette: &Palette
 fn unread_announcement(title: &str, chat: &Chat) -> String {
     if chat.marked_unread && chat.unread == 0 {
         format!("{title}, unread")
+    } else if chat.unread > 0 && chat.unread_mention.is_some() {
+        format!("{title}, {} unread messages, mentioned you", chat.unread)
     } else {
         format!("{title}, {} unread messages", chat.unread)
     }

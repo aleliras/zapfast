@@ -229,6 +229,9 @@ pub struct Chat {
     pub labels: Vec<String>,
     /// This chat's own notification sound; `None` follows Settings.
     pub notification_sound: Option<crate::settings::NotificationSound>,
+    /// The oldest unread message that mentions us (or everyone), which the
+    /// chat list marks with "@" and opening the chat shows.
+    pub unread_mention: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -272,6 +275,7 @@ impl Chat {
             ephemeral_expiration: None,
             labels: Vec::new(),
             notification_sound: None,
+            unread_mention: None,
         }
     }
 
