@@ -288,8 +288,8 @@ Starting a reply before recording includes the quoted message.
 
 ## Calls
 
-The phone button in a one-to-one chat's header starts a voice call; while that
-chat has a call, the same button hangs up. An incoming call takes over the
+The phone and camera buttons in a one-to-one chat's header start a voice or a
+video call; while that chat has a call, a hang-up button takes their place. An incoming call takes over the
 window with the caller's picture and name, and **Accept** and **Decline**. It
 also raises a desktop notification and rings until it is answered, declined,
 or given up, so a window hidden in the tray does not hide the call. A call in a
@@ -306,9 +306,20 @@ call** and a hang-up button, and you can read and write in any chat meanwhile.
 Escape does the same, and leaves full screen first. Only hanging up ends a
 call; closing the window to the tray keeps it running.
 
-Calls open the system's default microphone and speaker. The pickers move a
-call to another device while it runs without changing your system's defaults;
-a device that goes away falls back to the default, and the call screen says so.
+In a video call the other side's picture fills the window and yours sits in the
+top corner. The camera button turns your camera off and on; in a voice call it
+asks the other side to switch to video, and when they ask, the call screen says
+so and the same button answers. A computer without a camera, or with one another
+program is using, still takes part in a video call: you see the other side, and
+your camera stays off.
+
+Calls open the system's default microphone and speaker, and the first camera.
+The pickers move a call to another device while it runs without changing your
+system's defaults; a device that goes away falls back to the default, and the
+call screen says so. Cameras come through Video4Linux on Linux, AVFoundation on
+macOS (which asks once for permission), and Media Foundation on Windows. The
+Flatpak is allowed its devices for this, since Flatpak has no narrower
+permission for cameras.
 Calls use your platform's own audio (PipeWire or ALSA on Linux, Core Audio on
 macOS, WASAPI on Windows), with no echo cancellation of their own: use
 headphones, or your system's echo cancellation, when the speaker is loud.

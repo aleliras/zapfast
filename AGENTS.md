@@ -142,7 +142,14 @@ protocol. These notes are for coding agents and new contributors.
   updates are withheld during privacy recovery like other private content,
   and a locked chat's call shows only "Locked chat" until its folder opens.
   Calls open the system default devices; the call screen's pickers apply to
-  the running call only and are not saved.
+  the running call only and are not saved. Video: `src/camera.rs` reads
+  cameras through linuxvideo on Linux (pure Rust, no build-time bindings) and
+  nokhwa on macOS and Windows, converts every layout to YUV 4:2:0, and the
+  call's capture thread encodes it with openh264 (Constrained Baseline, 720p
+  at most, 20 fps) into the library's timed `VideoSource`; the peer's access
+  units decode on a thread of their own and reach the window as
+  `Event::CallVideo` frames. A camera that cannot open leaves a video call
+  receive-only rather than refusing it.
 - Poll creation, voting, and decryption use whatsapp-rust's `Client::polls()`.
   `backend/worker/polls.rs` retains the original creator identity and key in the
   encrypted archive; `archive/polls.rs` keeps each voter's latest timestamp and

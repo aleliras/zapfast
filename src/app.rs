@@ -40,6 +40,12 @@ const SCROLL_GESTURE_GAP: f64 = 0.15;
 /// How long a finished call's outcome stays on screen before the surface goes away.
 const CALL_FAREWELL: Duration = Duration::from_secs(4);
 
+/// A video call's picture on the GPU, and the frame it was last filled from.
+pub struct CallTexture {
+    pub texture: egui::TextureHandle,
+    pub frame: std::sync::Arc<egui::ColorImage>,
+}
+
 /// A pane that scrolls on its own, which a scroll gesture stays with.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ScrollPane {
@@ -624,6 +630,13 @@ pub struct App {
     /// When an unanswered call last rang, and the sound it rings with.
     call_rang: Option<Instant>,
     call_ring_sound: Option<NotificationSound>,
+    /// The newest camera preview and peer picture of a video call.
+    pub call_local_frame: Option<std::sync::Arc<egui::ColorImage>>,
+    pub call_remote_frame: Option<std::sync::Arc<egui::ColorImage>>,
+    /// The textures those pictures are drawn through, updated in place rather
+    /// than made afresh for every frame.
+    pub call_local_texture: Option<CallTexture>,
+    pub call_remote_texture: Option<CallTexture>,
     /// Whether ZapFast starts at login, when this installation supports it.
     pub start_with_system: Option<bool>,
     /// Cross-thread window repaint handle.
@@ -1198,6 +1211,10 @@ impl App {
             call_notified: None,
             call_rang: None,
             call_ring_sound: None,
+            call_local_frame: None,
+            call_remote_frame: None,
+            call_local_texture: None,
+            call_remote_texture: None,
             start_with_system: None,
             waker,
             tray: None,
@@ -2663,6 +2680,7 @@ impl App {
             }
             Event::Call(update) => self.handle_call_update(*update),
             Event::CallDevices(devices) => self.call_devices = *devices,
+            Event::CallVideo { local, remote } => self.handle_call_video(local, remote),
             Event::Labels(labels) => {
                 self.labels = labels;
                 self.prune_labels();
@@ -4775,9 +4793,12 @@ impl App {
             | Action::AnswerCall
             | Action::DeclineCall
             | Action::HangupCall
+            | Action::StartVideoCall(_)
             | Action::SetCallMuted(_)
+            | Action::SetCallCamera(_)
             | Action::SetCallMicrophone(_)
             | Action::SetCallSpeaker(_)
+            | Action::SetCallCameraDevice(_)
             | Action::LeaveCallSurface
             | Action::ReturnToCall
             | Action::ToggleCallFullscreen => {}
