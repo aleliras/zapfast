@@ -229,6 +229,15 @@ parts of it. Opening the cropper again
 starts from your original with the crop you chose, so you can widen it back out
 without a second pass over the picture.
 
+Pictures and videos sent as a WhatsApp album appear together in a grid. Only
+items with the same protocol album identity, sender and local calendar date
+are grouped. **Download all** downloads every item that is not on this
+computer yet, whatever its size, as clicking each one would, and shows
+individual failures; **Save all…** copies downloaded files to a folder
+without replacing existing files. Open an item to view it individually, and
+right-click it to reply to, react to, forward or delete that item alone. A
+download that fails marks only its own item; click it to retry.
+
 Incoming attachments up to 64 MiB download when they enter view if automatic
 downloads are on, or on click. Visible stickers download automatically even
 when that setting is off. Larger attachments never download on their own:
