@@ -199,13 +199,14 @@ impl Notifications {
         let spawned = std::thread::Builder::new()
             .name("notification".into())
             .spawn(move || {
-                let system_sound = sound == NotificationSound::System;
-                play_sound(sound);
+                if !played_by_notification(&sound) {
+                    play_sound(sound.clone());
+                }
                 deliver(
                     &title,
                     &body,
                     picture.as_deref(),
-                    system_sound,
+                    &sound,
                     target,
                     opened,
                     wake,
@@ -221,6 +222,22 @@ impl Notifications {
 /// Pidgin's message and alert sounds (GPL-2.0, see `assets/sounds/README.md`).
 const RECEIVE: &[u8] = include_bytes!("../assets/sounds/receive.wav");
 const ALERT: &[u8] = include_bytes!("../assets/sounds/alert.wav");
+
+/// Whether the notification itself plays the sound, instead of ZapFast. On
+/// macOS a sound the notification plays is silenced along with the banner by
+/// Do Not Disturb, Focus, and the app's notification settings, so Pidgin's
+/// sounds go with it when the application bundle carries them.
+fn played_by_notification(sound: &NotificationSound) -> bool {
+    #[cfg(target_os = "macos")]
+    {
+        macos::bundled_sound(sound).is_some()
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = sound;
+        false
+    }
+}
 
 /// Plays a notification sound on its own thread, for notifications and
 /// their preview in Settings. System sounds and silence play nothing here.
@@ -297,7 +314,7 @@ fn deliver(
     title: &str,
     body: &str,
     picture: Option<&std::path::Path>,
-    system_sound: bool,
+    sound: &NotificationSound,
     target: NotificationTarget,
     opened: Arc<Mutex<Vec<NotificationTarget>>>,
     wake: impl Fn() + Send + 'static,
@@ -319,7 +336,7 @@ fn deliver(
         .hint(notify_rust::Hint::Category("im.received".into()))
         .icon("zapfast")
         .action("default", "Open");
-    notification.hint(sound_hint(system_sound));
+    notification.hint(sound_hint(*sound == NotificationSound::System));
     if let Some(picture) = picture {
         notification.image_path(&picture.to_string_lossy());
     }
@@ -367,14 +384,22 @@ fn deliver(
     title: &str,
     body: &str,
     picture: Option<&std::path::Path>,
-    system_sound: bool,
+    sound: &NotificationSound,
     target: NotificationTarget,
     opened: Arc<Mutex<Vec<NotificationTarget>>>,
     wake: impl Fn() + Send + 'static,
     mut cancelled: tokio::sync::oneshot::Receiver<Stop>,
 ) {
     if before_showing(&mut cancelled).is_some()
-        && let Err(error) = windows::show(title, body, picture, system_sound, target, opened, wake)
+        && let Err(error) = windows::show(
+            title,
+            body,
+            picture,
+            *sound == NotificationSound::System,
+            target,
+            opened,
+            wake,
+        )
     {
         log::debug!("no Windows notification: {error}");
     }
@@ -386,7 +411,7 @@ fn deliver(
     title: &str,
     body: &str,
     _picture: Option<&std::path::Path>,
-    system_sound: bool,
+    sound: &NotificationSound,
     target: NotificationTarget,
     opened: Arc<Mutex<Vec<NotificationTarget>>>,
     wake: impl Fn() + Send + 'static,
@@ -394,14 +419,7 @@ fn deliver(
 ) {
     if let Some(may_wait) = before_showing(&mut cancelled) {
         macos::deliver(
-            title,
-            body,
-            system_sound,
-            target,
-            opened,
-            wake,
-            cancelled,
-            may_wait,
+            title, body, sound, target, opened, wake, cancelled, may_wait,
         );
     }
 }
@@ -412,7 +430,7 @@ fn deliver(
     title: &str,
     body: &str,
     picture: Option<&std::path::Path>,
-    _system_sound: bool,
+    _sound: &NotificationSound,
     _target: NotificationTarget,
     _opened: Arc<Mutex<Vec<NotificationTarget>>>,
     _wake: impl Fn() + Send + 'static,

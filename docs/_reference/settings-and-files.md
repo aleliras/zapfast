@@ -120,7 +120,10 @@ name or description, in the interface language or in English.
 - **Desktop notifications**: for chats you are not looking at. Muted chats stay
   quiet.
 - **Message sound** and **Mention sound**: Pidgin's sounds, the system sound,
-  none, or an audio file.
+  none, or an audio file. On macOS, Pidgin's sounds and the system sound play
+  with the notification, so Do Not Disturb, Focus, and the notification
+  settings for ZapFast silence them; an audio file of your own plays
+  regardless.
 - **Play sounds for group messages**: when off, only mentions and replies to
   you make a sound in groups.
 

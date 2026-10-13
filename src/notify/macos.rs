@@ -8,8 +8,38 @@
 //! in Notification Center.
 
 use super::{NotificationTarget, Stop};
+use crate::settings::NotificationSound;
 use mac_usernotifications::Notification;
 use std::sync::{Arc, Mutex, OnceLock};
+
+/// The file name `packaging/macos/bundle.sh` gives a built-in sound in the
+/// bundle's `Contents/Resources`, where the notification looks it up by name.
+/// The prefix keeps a same-named file in `~/Library/Sounds`, which macOS
+/// searches first, from replacing it.
+fn sound_file(sound: &NotificationSound) -> Option<&'static str> {
+    match sound {
+        NotificationSound::Receive => Some("zapfast-receive.wav"),
+        NotificationSound::Alert => Some("zapfast-alert.wav"),
+        NotificationSound::System | NotificationSound::None | NotificationSound::Custom(_) => None,
+    }
+}
+
+/// The name of a built-in sound the notification can play from the
+/// application bundle, so Do Not Disturb and Focus silence it with the
+/// banner. `None` for the other sounds, and for a run outside a bundle that
+/// carries the file (`cargo run`), where ZapFast plays the sound itself. An
+/// audio file of the reader's own is not in the bundle and is played by
+/// ZapFast.
+pub(super) fn bundled_sound(sound: &NotificationSound) -> Option<&'static str> {
+    let name = sound_file(sound)?;
+    let executable = std::env::current_exe().ok()?;
+    let contents = executable.parent()?.parent()?;
+    contents
+        .join("Resources")
+        .join(name)
+        .is_file()
+        .then_some(name)
+}
 
 /// Whether notifications can be shown: the process has a bundle identifier
 /// (the framework aborts without one, so unbundled builds stay silent) and the
@@ -46,7 +76,7 @@ fn authorized() -> bool {
 pub(super) fn deliver(
     title: &str,
     body: &str,
-    system_sound: bool,
+    sound: &NotificationSound,
     target: NotificationTarget,
     opened: Arc<Mutex<Vec<NotificationTarget>>>,
     wake: impl Fn() + Send + 'static,
@@ -56,11 +86,14 @@ pub(super) fn deliver(
     if !authorized() {
         return;
     }
-    // macOS always shows the application icon; custom sounds are played by
-    // ZapFast, and None stays silent.
+    // macOS always shows the application icon. Built-in sounds play from the
+    // bundle with the notification, an audio file of the reader's own is
+    // played by ZapFast, and None stays silent.
     let mut notification = Notification::new().title(title).message(body);
-    if system_sound {
+    if *sound == NotificationSound::System {
         notification = notification.default_sound();
+    } else if let Some(name) = bundled_sound(sound) {
+        notification = notification.sound(name);
     }
     let runtime = match tokio::runtime::Builder::new_current_thread()
         .enable_all()
@@ -100,4 +133,25 @@ pub(super) fn deliver(
             }
         }
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// The bundle script copies each built-in sound under the name the
+    /// notification asks for.
+    #[test]
+    fn the_bundle_script_ships_every_built_in_sound() {
+        let script = include_str!("../../packaging/macos/bundle.sh");
+        for sound in [NotificationSound::Receive, NotificationSound::Alert] {
+            let name = sound_file(&sound).unwrap();
+            assert!(script.contains(name), "bundle.sh does not ship {name}");
+        }
+        assert_eq!(sound_file(&NotificationSound::System), None);
+        assert_eq!(
+            sound_file(&NotificationSound::Custom("/a.wav".into())),
+            None
+        );
+    }
 }
