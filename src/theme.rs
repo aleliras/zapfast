@@ -872,6 +872,7 @@ fastframe_icons::icons! {
         PhoneMissed => "phone-missed",
         PhoneOff => "phone-off",
         PhoneOutgoing => "phone-outgoing",
+        PhonePlus => "phone-plus",
         Pin => lucide "pin",
         PinOff => lucide "pin-off",
         Play => lucide "play",

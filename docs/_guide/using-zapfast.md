@@ -468,11 +468,25 @@ Every call takes its place among the chat's messages, as on the phone: who
 called, voice or video, how long it lasted, or that it was missed, declined, or
 not answered. Calls made here are filed when they end, and so are the phone's:
 the ones it reports as they happen, the calls missed while ZapFast was closed,
-and the call history it sends when the computer is linked. The phone button at
-the top of the chat list opens **Calls**, every call of the number on screen,
-newest first; a row opens its chat at the call, and its buttons call back.
-Right-click a call in a chat to call back from there. Group calls show up in
-the history, but are placed and answered on the phone.
+and the call history it sends when the computer is linked. Right-click a call
+in a chat to call back from there.
+
+The phone button at the top of the chat list opens the **Calls** tab, laid out
+as in WhatsApp: the list on the left shows every call of the number on screen,
+newest first, with calls in a row from the same person folded into one row
+with a count. Each row says which way the call went (a missed call's name is
+red), when, and how it went, and its phone or camera button calls back the
+same way. The search field finds calls by name or number. Clicking a row shows
+the call info beside the list: **Message**, **Voice call**, **Video call**, and
+every call with that person by day; clicking a call there opens the chat at
+it. The **New call** button beside the phone button (or **Start call** in the
+empty pane) opens a list of the people you call most often and all your
+contacts, searchable by name or number, each with a voice and a video button.
+Click the lit phone button, or press Escape, to go back to the chats. Switching
+numbers keeps the Calls tab open on the other number's calls. In a narrow
+window the list takes the whole window and a call's info opens over it, with
+a Back button. Group calls show up in the history, but are placed and answered
+on the phone.
 
 ## Copying
 
