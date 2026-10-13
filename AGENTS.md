@@ -9,8 +9,19 @@ protocol. These notes are for coding agents and new contributors.
 - Keep it a small native client. No browser engine, no telemetry, no
   hosted backend, no ZapFast-operated account system. Features never send
   message content to a third party.
-- Do not vendor, fork, or patch upstream crates (egui, epaint, whatsapp-rust)
-  in this repository. Fix them upstream.
+- Do not copy dependency source into this repository. For a dependency fix,
+  use a fork under `github.com/crmne/` pinned to a commit and contribute the
+  fix upstream; egui, winit, whatsapp-rust and rodio already come from such
+  forks. Only the maintainer creates those forks; in a contributor's pull
+  request, send the fix upstream and ask for it to be carried. Use the fork
+  until a release includes the fix. Never point a dependency at any other
+  fork or source: `.github/scripts/check-dependency-sources.py` fails CI on
+  one.
+- Screenshots, captures, comparison pages and recordings made for a review
+  go in the pull request, never the repository:
+  `.github/scripts/check-review-evidence.py` fails CI on any file under
+  `docs/assets/`, or image or video elsewhere under `docs/`, that no page,
+  top-level file or packaging metadata uses.
 - The protocol comes from whatsapp-rust. Do not reimplement pieces of it
   here, and do not advertise a capability merely because a protobuf field
   for it exists.
