@@ -5782,25 +5782,38 @@ impl Worker {
                     )),
                 }
             }
-            Command::PickFiles(chat) => {
+            Command::PickFiles { chat, documents } => {
                 let commands = self.commands.clone();
                 tokio::task::spawn_blocking(move || {
                     let paths = rfd::FileDialog::new()
                         .set_title("Send to WhatsApp")
                         .pick_files()
                         .unwrap_or_default();
-                    let _ = commands.send(Command::Picked { chat, paths });
+                    let _ = commands.send(Command::Picked {
+                        chat,
+                        paths,
+                        documents,
+                    });
                 });
             }
-            Command::Picked { chat, paths } => self.emit(Event::Picked { chat, paths }),
+            Command::Picked {
+                chat,
+                paths,
+                documents,
+            } => self.emit(Event::Picked {
+                chat,
+                paths,
+                documents,
+            }),
             Command::SendFiles {
                 chat,
                 paths,
+                documents,
                 caption,
                 mentions,
                 quoting,
             } => {
-                self.send_files(chat, paths, caption, mentions, quoting);
+                self.send_files(chat, paths, documents, caption, mentions, quoting);
             }
             Command::SendImage {
                 chat,
@@ -8799,24 +8812,25 @@ impl Worker {
         &mut self,
         chat: ChatId,
         paths: Vec<PathBuf>,
+        documents: bool,
         caption: Option<String>,
         mentions: Vec<String>,
         quoting: Option<String>,
     ) {
+        let unsent = |paths, caption| Unsent::Files {
+            paths,
+            documents,
+            caption,
+        };
         let mut quote = match self.quote(&chat, quoting.as_deref()) {
             Ok(quote) => quote,
             Err(reason) => {
-                self.refuse(chat, quoting, Unsent::Files { paths, caption }, reason);
+                self.refuse(chat, quoting, unsent(paths, caption), reason);
                 return;
             }
         };
         let Some(client) = self.connected_client() else {
-            self.refuse(
-                chat,
-                quoting,
-                Unsent::Files { paths, caption },
-                Refusal::Offline,
-            );
+            self.refuse(chat, quoting, unsent(paths, caption), Refusal::Offline);
             return;
         };
         let mut mentions = mentions;
@@ -8852,8 +8866,11 @@ impl Worker {
                     let file_name = path
                         .file_name()
                         .map(|name| name.to_string_lossy().into_owned());
-                    let prepared =
-                        prepare_media(&client, bytes, &mime, file_name.as_deref(), false).await?;
+                    let prepared = if documents {
+                        prepare_document(&client, bytes, &mime, file_name.as_deref()).await?
+                    } else {
+                        prepare_media(&client, bytes, &mime, file_name.as_deref(), false).await?
+                    };
                     quoted_outbound(
                         &client, &chat, &me, &dir, prepared, caption, mentions, quote,
                     )
@@ -10482,6 +10499,19 @@ async fn prepare_media(
             file_name: file_name.map(str::to_owned),
         });
     }
+    prepare_document(client, bytes, mime, file_name).await
+}
+
+/// Uploads a file as a document: its own bytes, name and type, whatever it
+/// holds, so a picture keeps its quality, transparency and metadata.
+async fn prepare_document(
+    client: &Client,
+    bytes: Vec<u8>,
+    mime: &str,
+    file_name: Option<&str>,
+) -> Result<Prepared, String> {
+    let size = bytes.len() as u64;
+    let mime_owned = mime.to_owned();
     let upload = client
         .upload(bytes.clone(), MediaType::Document, UploadOptions::default())
         .await
@@ -17769,13 +17799,30 @@ mod receipt_tests {
                 Command::SendFiles {
                     chat: PEER.into(),
                     paths: vec!["/fixture/a.pdf".into(), "/fixture/b.png".into()],
+                    documents: false,
                     caption: Some("Caption fixture".into()),
                     mentions: Vec::new(),
                     quoting: quoting.clone(),
                 },
                 Unsent::Files {
                     paths: vec!["/fixture/a.pdf".into(), "/fixture/b.png".into()],
+                    documents: false,
                     caption: Some("Caption fixture".into()),
+                },
+            ),
+            (
+                Command::SendFiles {
+                    chat: PEER.into(),
+                    paths: vec!["/fixture/c.png".into()],
+                    documents: true,
+                    caption: None,
+                    mentions: Vec::new(),
+                    quoting: quoting.clone(),
+                },
+                Unsent::Files {
+                    paths: vec!["/fixture/c.png".into()],
+                    documents: true,
+                    caption: None,
                 },
             ),
             (

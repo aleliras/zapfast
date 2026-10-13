@@ -178,6 +178,13 @@ caption. To reply with an attachment, start a reply and then attach the file.
 When sending several files, the caption and reply quote belong to the first
 one. Press Escape or click a file's close button to remove it.
 
+Pictures sent this way become photos, which WhatsApp shows inline but
+compresses: transparency and the file's metadata are lost. To send a picture as
+it is, choose **Send as document** in the plus menu beside the message field
+instead. The files you select there go as documents with their own name and
+bytes, pictures included, and show as files above the composer until you send
+them.
+
 Staged attachments stay with their chat, along with their caption and reply,
 when you switch chats or accounts, and come back when you return. Unlike text
 drafts, they are kept only while ZapFast runs. A refused attachment send goes

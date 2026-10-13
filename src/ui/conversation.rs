@@ -1700,7 +1700,8 @@ fn composer_pill(palette: &Palette) -> Frame {
         })
 }
 
-/// The plus menu beside the composer: send files or create a poll.
+/// The plus menu beside the composer: send files, documents or a location,
+/// or create a poll.
 fn composer_tools_menu(app: &mut App, chat: &Chat, plus: &egui::Response) {
     let id = plus.id.with("composer-tools");
     let mut open = app.composer_tools_open;
@@ -1722,7 +1723,13 @@ fn composer_tools_menu(app: &mut App, chat: &Chat, plus: &egui::Response) {
             .show(|ui| {
                 let send_files = crate::i18n::gettext(app.locale, "Send files");
                 if widgets::menu_item(ui, &app.palette, Some(Icon::Paperclip), &send_files) {
-                    app.actions.push(Action::Attach);
+                    app.actions.push(Action::Attach { documents: false });
+                }
+                // Pictures picked here keep their own bytes instead of
+                // becoming compressed photos.
+                let document = crate::i18n::gettext(app.locale, "Send as document");
+                if widgets::menu_item(ui, &app.palette, Some(Icon::FileText), &document) {
+                    app.actions.push(Action::Attach { documents: true });
                 }
                 let send_location = crate::i18n::gettext(app.locale, "Send location");
                 if widgets::menu_item(ui, &app.palette, Some(Icon::MapPin), &send_location) {
@@ -9531,6 +9538,8 @@ fn pending_strip(app: &mut App, ui: &mut egui::Ui) {
                     palette.raised_edge(palette.surface),
                 );
                 ui.painter().rect_filled(rect, radius, palette.surface);
+                // A document shows as the file it arrives as, even a picture.
+                let document = matches!(item, crate::app::Pending::Document(_));
                 match item {
                     crate::app::Pending::Picture {
                         width,
@@ -9584,8 +9593,8 @@ fn pending_strip(app: &mut App, ui: &mut egui::Ui) {
                             .corner_radius(6.0)
                             .paint_at(ui, inner);
                     }
-                    crate::app::Pending::File(path) => {
-                        if crate::app::Pending::is_picture_file(path) {
+                    crate::app::Pending::File(path) | crate::app::Pending::Document(path) => {
+                        if !document && crate::app::Pending::is_picture_file(path) {
                             widgets::file_image(ui, path)
                                 .fit_to_exact_size(Vec2::splat(tile - 8.0))
                                 .corner_radius(6.0)

@@ -758,6 +758,8 @@ pub enum Pending {
         texture: Option<egui::TextureHandle>,
     },
     File(PathBuf),
+    /// A file to send as a document with its own bytes, even a picture.
+    Document(PathBuf),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -2729,7 +2731,7 @@ impl App {
         }
         let attachment = self.attachment_drafts.get(chat)?.pending.first()?;
         Some(match attachment {
-            Pending::File(path) => path.file_name().map_or_else(
+            Pending::File(path) | Pending::Document(path) => path.file_name().map_or_else(
                 || "📎".to_owned(),
                 |name| {
                     name.to_string_lossy()
@@ -3016,9 +3018,17 @@ impl App {
                 }
             }
             Event::Incoming { chat, message } => self.maybe_notify(&chat, &message),
-            Event::Picked { chat, paths } => {
+            Event::Picked {
+                chat,
+                paths,
+                documents,
+            } => {
                 if live && self.open_chat.as_deref() == Some(chat.as_str()) {
-                    self.stage_files(paths);
+                    if documents {
+                        self.stage_documents(paths);
+                    } else {
+                        self.stage_files(paths);
+                    }
                 }
             }
             Event::InteractiveReplyState {
@@ -3987,8 +3997,17 @@ impl App {
                 self.unsent_voice = Some((chat, samples));
                 self.focus_composer = open;
             }
-            Unsent::Files { paths, caption } => {
-                self.restore_attachments(&chat, paths.into_iter().map(Pending::File), quoting);
+            Unsent::Files {
+                paths,
+                documents,
+                caption,
+            } => {
+                let pending = if documents {
+                    Pending::Document
+                } else {
+                    Pending::File
+                };
+                self.restore_attachments(&chat, paths.into_iter().map(pending), quoting);
                 self.restore_text(&chat, caption.unwrap_or_default());
             }
             Unsent::Image {
@@ -4657,13 +4676,20 @@ impl App {
 
     /// Adds files to the open chat's composer.
     fn stage_files(&mut self, paths: Vec<PathBuf>) {
+        self.stage(paths.into_iter().map(Pending::File));
+    }
+
+    /// Adds files to the open chat's composer to go as documents.
+    fn stage_documents(&mut self, paths: Vec<PathBuf>) {
+        self.stage(paths.into_iter().map(Pending::Document));
+    }
+
+    fn stage(&mut self, items: impl IntoIterator<Item = Pending>) {
         if self.open_chat.is_none() {
             self.toast_error("Open a chat first");
             return;
         }
-        for path in paths {
-            self.pending.push(Pending::File(path));
-        }
+        self.pending.extend(items);
         self.focus_composer = true;
     }
 
@@ -4713,9 +4739,10 @@ impl App {
         let mut mentions = mentions;
         self.emoji_start = None;
         self.mention_start = None;
-        let mut files = Vec::new();
+        // Files go in runs of one kind, in the order they were staged.
+        let mut runs: Vec<(bool, Vec<PathBuf>)> = Vec::new();
         for item in std::mem::take(&mut self.pending) {
-            match item {
+            let (documents, path) = match item {
                 Pending::Picture {
                     width,
                     height,
@@ -4731,16 +4758,23 @@ impl App {
                         mentions: std::mem::take(&mut mentions),
                         quoting: quoting.take(),
                     });
+                    continue;
                 }
-                Pending::File(path) => files.push(path),
+                Pending::File(path) => (false, path),
+                Pending::Document(path) => (true, path),
+            };
+            match runs.last_mut() {
+                Some((kind, paths)) if *kind == documents => paths.push(path),
+                _ => runs.push((documents, vec![path])),
             }
         }
-        if !files.is_empty() {
+        for (documents, paths) in runs {
             self.backend.send(Command::SendFiles {
-                chat,
-                paths: files,
+                chat: chat.clone(),
+                paths,
+                documents,
                 caption: caption.take(),
-                mentions,
+                mentions: std::mem::take(&mut mentions),
                 quoting: quoting.take(),
             });
         }
@@ -4764,6 +4798,7 @@ impl App {
         self.backend.send(Command::SendFiles {
             chat,
             paths,
+            documents: false,
             caption: None,
             mentions: Vec::new(),
             quoting: None,
@@ -5818,9 +5853,9 @@ impl App {
                 // `Event::MessageDeleted` removes it and prunes the selection.
                 self.backend.send(Command::DeleteLocal { chat, id });
             }
-            Action::Attach => {
+            Action::Attach { documents } => {
                 if let Some(chat) = self.open_chat.clone() {
-                    self.backend.send(Command::PickFiles(chat));
+                    self.backend.send(Command::PickFiles { chat, documents });
                 }
             }
             Action::SetComposerTools(open) => {
@@ -8875,6 +8910,7 @@ mod tests {
             } else {
                 Unsent::Files {
                     paths: vec!["Hidden account.pdf".into()],
+                    documents: false,
                     caption: Some(caption.into()),
                 }
             };
@@ -14037,6 +14073,7 @@ mod tests {
             },
             Unsent::Files {
                 paths: vec!["/fixture/a.pdf".into()],
+                documents: false,
                 caption: None,
             },
             Unsent::Gif,
@@ -14060,6 +14097,96 @@ mod tests {
         assert_eq!(app.reply_to.as_deref(), Some("original"));
         // Repeats of one error share a toast.
         assert_eq!(error_toasts(&app).len(), 1);
+    }
+
+    #[test]
+    fn picked_documents_are_sent_as_documents_in_the_order_they_were_staged() {
+        let root = tempfile::tempdir().unwrap();
+        let (mut app, _) = App::headless(AppDirs::under(root.path()), Settings::default());
+        let (backend, mut commands, events) = Backend::recording_with_events();
+        app.backend = backend;
+        let ctx = egui::Context::default();
+        let chat = "fixture@s.whatsapp.net";
+        app.open_chat = Some(chat.into());
+        app.apply(Action::Attach { documents: true }, &ctx);
+        assert!(matches!(
+            commands.try_recv(),
+            Ok(Command::PickFiles { chat: id, documents: true }) if id == chat
+        ));
+        app.pending.push(Pending::File("/fixture/a.png".into()));
+        events
+            .send(Event::Picked {
+                chat: chat.into(),
+                paths: vec!["/fixture/b.png".into(), "/fixture/c.pdf".into()],
+                documents: true,
+            })
+            .unwrap();
+        app.handle_events();
+        app.pending.push(Pending::File("/fixture/d.png".into()));
+        assert!(matches!(
+            app.pending.as_slice(),
+            [Pending::File(_), Pending::Document(b), Pending::Document(c), Pending::File(_)]
+                if b == std::path::Path::new("/fixture/b.png")
+                    && c == std::path::Path::new("/fixture/c.pdf")
+        ));
+        app.apply(
+            Action::SendPending {
+                account: app.account().id.clone(),
+                mentions: Vec::new(),
+                chat: chat.into(),
+                caption: "Caption fixture".into(),
+            },
+            &ctx,
+        );
+        let sent: Vec<_> = std::iter::from_fn(|| commands.try_recv().ok())
+            .filter_map(|command| match command {
+                Command::SendFiles {
+                    paths,
+                    documents,
+                    caption,
+                    ..
+                } => Some((paths, documents, caption)),
+                _ => None,
+            })
+            .collect();
+        // The caption goes with the first file, and each run keeps its kind.
+        assert_eq!(
+            sent,
+            vec![
+                (
+                    vec![PathBuf::from("/fixture/a.png")],
+                    false,
+                    Some("Caption fixture".to_owned())
+                ),
+                (
+                    vec![
+                        PathBuf::from("/fixture/b.png"),
+                        PathBuf::from("/fixture/c.pdf")
+                    ],
+                    true,
+                    None
+                ),
+                (vec![PathBuf::from("/fixture/d.png")], false, None),
+            ]
+        );
+        // A refused document comes back as a document.
+        events
+            .send(refused(
+                chat,
+                None,
+                Unsent::Files {
+                    paths: vec!["/fixture/b.png".into()],
+                    documents: true,
+                    caption: None,
+                },
+                Refusal::Offline,
+            ))
+            .unwrap();
+        app.handle_events();
+        assert!(matches!(
+            app.pending.as_slice(),
+            [Pending::Document(path)] if path == std::path::Path::new("/fixture/b.png")
+        ));
     }
 
     #[test]
