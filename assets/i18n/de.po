@@ -67,24 +67,23 @@ msgstr "{date} um {time}"
 
 #: src/util.rs:305 src/settings.rs:380
 msgid "Off"
-msgstr ""
+msgstr "Aus"
 
 #: src/util.rs:306
 msgid "24 hours"
-msgstr ""
+msgstr "24 Stunden"
 
 #: src/util.rs:307
 msgid "7 days"
-msgstr ""
+msgstr "7 Tage"
 
 #: src/util.rs:308
 msgid "90 days"
-msgstr ""
+msgstr "90 Tage"
 
 #: src/util.rs:311
-#, fuzzy
 msgid "Disappearing messages"
-msgstr "Nachrichten durchsuchen"
+msgstr "Selbstlöschende Nachrichten"
 
 #: src/util.rs:335
 #, rust-format
@@ -405,7 +404,7 @@ msgstr "Im Systemplayer öffnen"
 
 #: src/ui/conversation.rs:5395 src/ui/conversation.rs:5903
 msgid "Reload earlier messages"
-msgstr ""
+msgstr "Frühere Nachrichten neu laden"
 
 #: src/ui/conversation.rs:5396 src/ui/conversation.rs:5691
 msgid "Unstar"
@@ -437,9 +436,8 @@ msgid "Copy image"
 msgstr "Bild kopieren"
 
 #: src/ui/conversation.rs:6284
-#, fuzzy
 msgid "Location"
-msgstr "Live-Standort"
+msgstr "Standort"
 
 #: src/ui/conversation.rs:6329
 msgid "Live location ended"
@@ -459,13 +457,12 @@ msgid "Open WhatsApp on your phone to follow it."
 msgstr "Verfolge ihn in WhatsApp auf deinem Telefon."
 
 #: src/ui/conversation.rs:6400
-#, fuzzy
 msgid "Chat"
-msgstr "Chats"
+msgstr "Chatten"
 
 #: src/ui/conversation.rs:6415
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 #: src/ui/conversation.rs:6463
 #, rust-format
@@ -513,9 +510,8 @@ msgid "This message can only be seen on your phone."
 msgstr "Diese Nachricht ist nur auf deinem Telefon zu sehen."
 
 #: src/ui/conversation.rs:6955
-#, fuzzy
 msgid "Save all…"
-msgstr "Speichern unter…"
+msgstr "Alle speichern…"
 
 #: src/ui/conversation.rs:7661
 msgid "Message"
@@ -584,13 +580,15 @@ msgstr "Weiterleiten"
 #: src/ui/dialogs.rs:671
 msgid "Messages forwarded many times can be sent to one chat at a time"
 msgstr ""
+"Häufig weitergeleitete Nachrichten können jeweils nur an einen Chat gesendet "
+"werden"
 
 #: src/ui/dialogs.rs:679
 #, rust-format
 msgid "You can forward to up to {count} chat"
 msgid_plural "You can forward to up to {count} chats"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Du kannst an bis zu {count} Chat weiterleiten"
+msgstr[1] "Du kannst an bis zu {count} Chats weiterleiten"
 
 #: src/ui/dialogs.rs:705
 #, rust-format
@@ -616,9 +614,8 @@ msgstr[0] "{count} Nachricht ausgewählt"
 msgstr[1] "{count} Nachrichten ausgewählt"
 
 #: src/ui/dialogs.rs:924 src/ui/dialogs.rs:945
-#, fuzzy
 msgid "this chat"
-msgstr "{} Chat"
+msgstr "diesem Chat"
 
 #: src/ui/dialogs.rs:929
 #, rust-format
@@ -626,10 +623,12 @@ msgid ""
 "This deletes your chat with {name}, including all messages, on this computer "
 "and on your phone. It cannot be undone."
 msgstr ""
+"Dadurch wird dein Chat mit {name} samt allen Nachrichten auf diesem Computer "
+"und auf deinem Telefon gelöscht. Das kann nicht rückgängig gemacht werden."
 
 #: src/ui/dialogs.rs:935
 msgid "Delete chat?"
-msgstr ""
+msgstr "Chat löschen?"
 
 #: src/ui/dialogs.rs:937 src/ui/dialogs.rs:1327
 msgid "Delete"
@@ -642,16 +641,18 @@ msgid ""
 "media, on this computer and on your phone. The chat itself stays. It cannot "
 "be undone."
 msgstr ""
+"Dadurch werden alle Nachrichten in deinem Chat mit {name} samt "
+"heruntergeladener Medien auf diesem Computer und auf deinem Telefon "
+"gelöscht. Der Chat selbst bleibt bestehen. Das kann nicht rückgängig gemacht "
+"werden."
 
 #: src/ui/dialogs.rs:956
-#, fuzzy
 msgid "Clear chat?"
-msgstr "Löschen"
+msgstr "Chat leeren?"
 
 #: src/ui/dialogs.rs:958
-#, fuzzy
 msgid "Clear chat"
-msgstr "Löschen"
+msgstr "Chat leeren"
 
 #: src/ui/dialogs.rs:1052
 msgid "Sticker pack"
@@ -698,7 +699,7 @@ msgstr "Abbrechen"
 
 #: src/ui/dialogs.rs:1247
 msgid "Start over?"
-msgstr ""
+msgstr "Neu beginnen?"
 
 #: src/ui/dialogs.rs:1251
 msgid ""
@@ -707,16 +708,22 @@ msgid ""
 "your phone. Afterwards, remove the old ZapFast entry under Linked devices on "
 "your phone."
 msgstr ""
+"ZapFast bewahrt dein unlesbares Archiv als separate Datei auf, legt ein "
+"neues an und bittet dich, erneut zu verknüpfen. Dabei kommt der jüngste "
+"Verlauf von deinem Telefon zurück. Entferne danach auf deinem Telefon den "
+"alten ZapFast-Eintrag unter „Verknüpfte Geräte“."
 
 #: src/ui/dialogs.rs:1255
 msgid ""
 "If you can restore the original keyring instead, choose Cancel and Try "
 "again: nothing is lost that way."
 msgstr ""
+"Wenn du stattdessen den ursprünglichen Schlüsselbund wiederherstellen "
+"kannst, wähle „Abbrechen“ und dann „Try again“: So geht nichts verloren."
 
 #: src/ui/dialogs.rs:1258
 msgid "Start over"
-msgstr ""
+msgstr "Neu beginnen"
 
 #: src/ui/dialogs.rs:1266
 msgid ""
@@ -773,31 +780,32 @@ msgid ""
 "This deletes \"{name}\" and its stickers from this computer. To use it "
 "again, import it again."
 msgstr ""
+"Dadurch werden „{name}“ und seine Sticker von diesem Computer gelöscht. Um "
+"es wieder zu nutzen, importiere es erneut."
 
 #: src/ui/dialogs.rs:1347
-#, fuzzy
 msgid "Remove sticker pack?"
-msgstr "Dieses Pack entfernen"
+msgstr "Sticker-Pack entfernen?"
 
 #: src/ui/dialogs.rs:1349 src/ui/dialogs.rs:1407
 msgid "Remove"
 msgstr "Entfernen"
 
 #: src/ui/dialogs.rs:1359 src/ui/lock.rs:123
-#, fuzzy
 msgid "Unlink this computer?"
-msgstr "Diesen Computer abmelden"
+msgstr "Diesen Computer abmelden?"
 
 #: src/ui/dialogs.rs:1362
 msgid ""
 "This removes the device from WhatsApp and deletes the chats stored here. You "
 "can link again with a new code."
 msgstr ""
+"Dadurch wird das Gerät aus WhatsApp entfernt und die hier gespeicherten "
+"Chats werden gelöscht. Du kannst es mit einem neuen Code erneut verknüpfen."
 
 #: src/ui/dialogs.rs:1364 src/ui/lock.rs:139
-#, fuzzy
 msgid "Unlink"
-msgstr "Online"
+msgstr "Abmelden"
 
 #: src/ui/dialogs.rs:1380
 msgid "Clear the media cache?"
@@ -870,6 +878,8 @@ msgstr "Kartenlink oder Koordinaten einfügen"
 msgid ""
 "Short links only open online. Paste the full map link or the coordinates."
 msgstr ""
+"Kurzlinks lassen sich nur online öffnen. Füge den vollständigen Kartenlink "
+"oder die Koordinaten ein."
 
 #: src/ui/locations.rs:67
 msgid "That is not a location."
@@ -965,6 +975,8 @@ msgid ""
 "Asks your phone in the background for older messages in the open, pinned and "
 "ten most recent chats."
 msgstr ""
+"Fragt dein Telefon im Hintergrund nach älteren Nachrichten im geöffneten "
+"Chat, in angehefteten Chats und in den zehn neuesten Chats."
 
 #: src/ui/settings.rs:423
 msgid "Pause other media while recording or playing"
@@ -1023,15 +1035,17 @@ msgid "When off, they say only “New message”."
 msgstr "Wenn aus, steht dort nur „Neue Nachricht“."
 
 #: src/ui/settings.rs:505
-#, fuzzy
 msgid "Limit repeat notifications"
-msgstr "Desktop-Benachrichtigungen"
+msgstr "Wiederholte Benachrichtigungen begrenzen"
 
 #: src/ui/settings.rs:508
 msgid ""
 "After one notification, a chat stays quiet for 10 minutes. Opening the chat "
 "resets this. In groups, mentions and replies to you still notify."
 msgstr ""
+"Nach einer Benachrichtigung bleibt ein Chat 10 Minuten lang still. Das "
+"Öffnen des Chats setzt dies zurück. In Gruppen benachrichtigen Erwähnungen "
+"und Antworten an dich weiterhin."
 
 #: src/ui/settings.rs:534 src/ui/settings.rs:2059
 msgid "Play sounds for group messages"
@@ -1178,7 +1192,7 @@ msgstr "Konto hinzufügen"
 
 #: src/ui/settings.rs:744 src/ui/settings.rs:1656
 msgid "Remove this account"
-msgstr ""
+msgstr "Dieses Konto entfernen"
 
 #: src/ui/settings.rs:749
 msgid "Files"
@@ -1254,7 +1268,7 @@ msgstr "Quellcode"
 
 #: src/ui/settings.rs:867 src/ui/settings.rs:894
 msgid "App lock"
-msgstr ""
+msgstr "App-Sperre"
 
 #: src/ui/settings.rs:870
 msgid ""
@@ -1262,81 +1276,83 @@ msgid ""
 "this computer out of your chats and encrypts nothing more. A forgotten "
 "password means unlinking."
 msgstr ""
+"Fragt beim Start und nach einer Weile ohne Nutzung nach einem Passwort. Das "
+"hält andere Nutzer dieses Computers von deinen Chats fern, verschlüsselt "
+"aber nichts zusätzlich. Ein vergessenes Passwort bedeutet Abmelden."
 
 #: src/ui/settings.rs:877
 msgid "Turn off…"
-msgstr ""
+msgstr "Ausschalten…"
 
 #: src/ui/settings.rs:878
-#, fuzzy
 msgid "Change password…"
-msgstr "Ändern…"
+msgstr "Passwort ändern…"
 
 #: src/ui/settings.rs:881
 msgid "Set password…"
-msgstr ""
+msgstr "Passwort festlegen…"
 
 #: src/ui/settings.rs:895 src/ui/settings.rs:902
-#, fuzzy
 msgid "Lock after"
-msgstr "Gesperrt"
+msgstr "Sperren nach"
 
 #: src/ui/settings.rs:905
 msgid ""
 "Time without using ZapFast, also counted while it is in the tray. "
 "Ctrl+Shift+L locks it at once."
 msgstr ""
+"Zeit ohne Nutzung von ZapFast, auch im Tray gezählt. Strg+Umschalt+L sperrt "
+"sofort."
 
 #: src/ui/settings.rs:947
 msgid "Set an app lock password"
-msgstr ""
+msgstr "Passwort für die App-Sperre festlegen"
 
 #: src/ui/settings.rs:948
 msgid "Change the app lock password"
-msgstr ""
+msgstr "Passwort der App-Sperre ändern"
 
 #: src/ui/settings.rs:949
 msgid "Turn off the app lock"
-msgstr ""
+msgstr "App-Sperre ausschalten"
 
 #: src/ui/settings.rs:959
 msgid "Current password"
-msgstr ""
+msgstr "Aktuelles Passwort"
 
 #: src/ui/settings.rs:966
 #, rust-format
 msgid "New password, at least {count} characters"
-msgstr ""
+msgstr "Neues Passwort, mindestens {count} Zeichen"
 
 #: src/ui/settings.rs:971
 msgid "Type the new password again"
-msgstr ""
+msgstr "Neues Passwort wiederholen"
 
 #: src/ui/settings.rs:995
 #, rust-format
 msgid "The password needs at least {count} characters."
-msgstr ""
+msgstr "Das Passwort braucht mindestens {count} Zeichen."
 
 #: src/ui/settings.rs:997
 msgid "The two new passwords are different."
-msgstr ""
+msgstr "Die beiden neuen Passwörter stimmen nicht überein."
 
 #: src/ui/settings.rs:998 src/ui/lock.rs:85
 msgid "Wrong password. Try again."
-msgstr ""
+msgstr "Falsches Passwort. Versuche es erneut."
 
 #: src/ui/settings.rs:1005
 msgid "Turn on"
-msgstr ""
+msgstr "Einschalten"
 
 #: src/ui/settings.rs:1006
-#, fuzzy
 msgid "Change password"
-msgstr "Bild ändern"
+msgstr "Passwort ändern"
 
 #: src/ui/settings.rs:1007
 msgid "Turn off"
-msgstr ""
+msgstr "Ausschalten"
 
 #: src/ui/settings.rs:1110
 msgid "How to make a theme"
@@ -1728,7 +1744,7 @@ msgstr "Gib eine gültige internationale Telefonnummer ein"
 
 #: src/app.rs:1766
 msgid "Could not delete the removed account's files"
-msgstr ""
+msgstr "Die Dateien des entfernten Kontos konnten nicht gelöscht werden"
 
 #: src/app.rs:2386
 #, rust-format
@@ -1758,7 +1774,7 @@ msgstr "Anpinnen aufgehoben"
 
 #: src/app.rs:3630
 msgid "Loading chat history"
-msgstr ""
+msgstr "Chatverlauf wird geladen"
 
 #: src/app.rs:3724
 msgid "Could not use this image"
@@ -1770,7 +1786,7 @@ msgstr "In diesem Chat sind bereits drei Nachrichten angepinnt"
 
 #: src/app.rs:4016
 msgid "Connecting"
-msgstr ""
+msgstr "Verbindung wird hergestellt"
 
 #: src/app.rs:4647
 msgid "Not sent: ZapFast is not connected to WhatsApp."
@@ -1808,15 +1824,15 @@ msgstr "Du hast {limit} Labels, mehr hebt ZapFast nicht auf."
 #: src/app.rs:8160
 #, rust-format
 msgid "{}: {}"
-msgstr ""
+msgstr "{}: {}"
 
 #: src/app.rs:8514
 msgid "App lock password saved"
-msgstr ""
+msgstr "Passwort für die App-Sperre gespeichert"
 
 #: src/app.rs:8522
 msgid "App lock turned off"
-msgstr ""
+msgstr "App-Sperre ausgeschaltet"
 
 #: src/app.rs:8656
 msgid "This video opens in your system player"
@@ -2261,34 +2277,32 @@ msgstr "Foto"
 
 #: src/ui/lock.rs:17
 msgid "ZapFast is locked"
-msgstr ""
+msgstr "ZapFast ist gesperrt"
 
 #: src/ui/lock.rs:23
-#, fuzzy
 msgid "Unlinking this computer…"
-msgstr "Diesen Computer abmelden"
+msgstr "Computer wird abgemeldet…"
 
 #: src/ui/lock.rs:52
 msgid "Enter your password to unlock."
-msgstr ""
+msgstr "Gib dein Passwort ein, um zu entsperren."
 
 #: src/ui/lock.rs:66
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 #: src/ui/lock.rs:76
 #, rust-format
 msgid "Too many wrong passwords. Try again in {seconds} s."
-msgstr ""
+msgstr "Zu viele falsche Passwörter. Versuche es in {seconds} s erneut."
 
 #: src/ui/lock.rs:97
 msgid "Unlock"
-msgstr ""
+msgstr "Entsperren"
 
 #: src/ui/lock.rs:108
-#, fuzzy
 msgid "Forgot password? Unlink this computer"
-msgstr "Diesen Computer abmelden"
+msgstr "Passwort vergessen? Diesen Computer abmelden"
 
 #: src/ui/lock.rs:131
 msgid ""
@@ -2296,6 +2310,10 @@ msgid ""
 "device from WhatsApp, deletes the chats stored here, and turns the app lock "
 "off. You can link again with a new code."
 msgstr ""
+"Ohne das Passwort führt der einzige Weg zurück über das Abmelden. Dadurch "
+"wird das Gerät aus WhatsApp entfernt, die hier gespeicherten Chats werden "
+"gelöscht und die App-Sperre wird ausgeschaltet. Du kannst es mit einem neuen "
+"Code erneut verknüpfen."
 
 #. Translators: the body of a notification that hides who wrote and
 #. what: a message has arrived.
@@ -2306,24 +2324,23 @@ msgstr "Neue Nachricht"
 
 #: src/settings.rs:347
 msgid "After 1 minute"
-msgstr ""
+msgstr "Nach 1 Minute"
 
 #: src/settings.rs:348
 msgid "After 15 minutes"
-msgstr ""
+msgstr "Nach 15 Minuten"
 
 #: src/settings.rs:349
 msgid "After 1 hour"
-msgstr ""
+msgstr "Nach 1 Stunde"
 
 #: src/settings.rs:381
-#, fuzzy
 msgid "Direct messages"
-msgstr "Nachrichten auswählen"
+msgstr "Einzelchats"
 
 #: src/settings.rs:383
 msgid "Direct messages and groups"
-msgstr ""
+msgstr "Einzelchats und Gruppen"
 
 #: src/account.rs:275
 #, rust-format
@@ -2332,16 +2349,16 @@ msgstr "Konto {id}"
 
 #: src/ui/accounts.rs:33
 msgid "Switch account"
-msgstr ""
+msgstr "Konto wechseln"
 
 #: src/ui/accounts.rs:84
 msgid "Not linked"
-msgstr ""
+msgstr "Nicht verknüpft"
 
 #: src/ui/accounts.rs:232
 #, rust-format
 msgid "{count} unread chats"
-msgstr ""
+msgstr "Ungelesene Chats: {count}"
 
 #: src/ui/info.rs:39
 msgid "Media, links and docs"
@@ -2376,7 +2393,7 @@ msgstr[1] "{} Mitglieder"
 
 #: src/ui/info.rs:519
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: src/ui/info.rs:820
 #, rust-format
@@ -2464,10 +2481,6 @@ msgstr "Namen speichern (Enter)"
 #: src/ui/info.rs:1446
 msgid "Cancel (Escape)"
 msgstr "Abbrechen (Escape)"
-
-#, fuzzy
-#~ msgid "New message"
-#~ msgstr "Nachricht eingeben"
 
 #~ msgid "Group"
 #~ msgstr "Gruppe"
