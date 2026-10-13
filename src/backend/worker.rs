@@ -6436,6 +6436,14 @@ impl Worker {
         Ok(Some((context, shown)))
     }
 
+    /// The client, only while its connection is up. The handle outlives a
+    /// dropped connection (it stays through every reconnect), so a send that
+    /// only checked for it went out on a closed socket and failed with
+    /// "client is not connected" instead of going back to the composer.
+    fn connected_client(&self) -> Option<Arc<Client>> {
+        self.client.clone().filter(|client| client.is_connected())
+    }
+
     /// Hands a send that cannot go out back to the app.
     fn refuse(&self, chat: ChatId, quoting: Option<String>, unsent: Unsent, reason: Refusal) {
         self.emit(Event::SendRefused {
@@ -6461,7 +6469,7 @@ impl Worker {
                 return;
             }
         };
-        let (Some(client), Some(jid)) = (self.client.clone(), Self::jid_of(&chat)) else {
+        let (Some(client), Some(jid)) = (self.connected_client(), Self::jid_of(&chat)) else {
             self.refuse(chat, quoting, Unsent::Text(text), Refusal::Offline);
             return;
         };
@@ -6505,7 +6513,7 @@ impl Worker {
     }
 
     fn forward_messages(&mut self, from_chat: ChatId, messages: Vec<String>, to_chat: ChatId) {
-        let Some(client) = self.client.clone() else {
+        let Some(client) = self.connected_client() else {
             self.emit(Event::Error("Not connected to WhatsApp".to_owned()));
             return;
         };
@@ -7764,7 +7772,7 @@ impl Worker {
                 return;
             }
         };
-        let Some(client) = self.client.clone() else {
+        let Some(client) = self.connected_client() else {
             self.refuse(
                 chat,
                 quoting,
@@ -7858,7 +7866,7 @@ impl Worker {
                 return;
             }
         };
-        let Some(client) = self.client.clone() else {
+        let Some(client) = self.connected_client() else {
             self.refuse(chat, quoting, unsent(rgba, caption), Refusal::Offline);
             return;
         };
@@ -7917,7 +7925,7 @@ impl Worker {
                 return;
             }
         };
-        let Some(client) = self.client.clone() else {
+        let Some(client) = self.connected_client() else {
             self.refuse(chat, quoting, Unsent::Voice(samples), Refusal::Offline);
             return;
         };
@@ -7993,7 +8001,7 @@ impl Worker {
                 return;
             }
         };
-        let Some(client) = self.client.clone() else {
+        let Some(client) = self.connected_client() else {
             self.refuse(chat, quoting, Unsent::Sticker, Refusal::Offline);
             return;
         };
@@ -8036,7 +8044,7 @@ impl Worker {
                 return;
             }
         };
-        let Some(client) = self.client.clone() else {
+        let Some(client) = self.connected_client() else {
             self.refuse(chat, quoting, Unsent::Gif, Refusal::Offline);
             return;
         };
@@ -15630,6 +15638,64 @@ mod receipt_tests {
             }
         }
         // Nothing reached the archive, so nothing went out unquoted.
+        assert_eq!(
+            worker.archive.messages(PEER, None, 100).unwrap().len(),
+            before
+        );
+    }
+
+    #[tokio::test]
+    async fn every_send_path_refuses_while_the_client_is_not_connected() {
+        let (mut worker, events, _commands, _wa) = worker();
+        let directory = tempfile::tempdir().unwrap();
+        let store = whatsapp_rust::store::SqliteStore::new(
+            directory.path().join("session.db").to_str().unwrap(),
+        )
+        .await
+        .unwrap();
+        // Build only, never run: the handle exists, as it does between a
+        // dropped connection and the reconnect, but nothing is connected.
+        let bot = Bot::builder().with_backend(store).build().await.unwrap();
+        worker.client = Some(bot.client());
+        assert!(!worker.client.as_ref().unwrap().is_connected());
+        worker.archive.ensure_chat(PEER, "Fixture").unwrap();
+        let original = wa::Message::text("hi").encode_to_vec();
+        worker
+            .archive
+            .insert_message(&own_message("original", 100), Some(&original))
+            .unwrap();
+        let before = worker.archive.messages(PEER, None, 100).unwrap().len();
+        for quoting in [None, Some("original")] {
+            for (command, unsent) in reply_sends(quoting) {
+                let label = format!("{command:?}");
+                worker.handle_command(command).await;
+                let refused: Vec<_> = events
+                    .try_iter()
+                    .filter(|event| matches!(event, Event::SendRefused { .. }))
+                    .collect();
+                assert!(
+                    matches!(
+                        refused.as_slice(),
+                        [Event::SendRefused { chat, quoting: q, unsent: u, reason: Refusal::Offline }]
+                            if chat == PEER && q.as_deref() == quoting && *u == unsent
+                    ),
+                    "{label} with {quoting:?}: {refused:?}"
+                );
+            }
+        }
+        worker
+            .handle_command(Command::Forward {
+                from_chat: PEER.into(),
+                messages: vec!["original".into()],
+                to_chat: PEER.into(),
+            })
+            .await;
+        assert!(
+            events
+                .try_iter()
+                .any(|event| matches!(event, Event::Error(_)))
+        );
+        // Nothing was filed, so no bubble turned into a failed send.
         assert_eq!(
             worker.archive.messages(PEER, None, 100).unwrap().len(),
             before
