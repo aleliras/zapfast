@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-13 21:45+0200\n"
+"POT-Creation-Date: 2026-10-13 21:47+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: German\n"
@@ -481,6 +481,10 @@ msgstr "Ton an"
 #: src/ui/conversation.rs:7184 src/ui/call.rs:476
 msgid "Mute"
 msgstr "Stumm"
+
+#: src/ui/conversation.rs:7765
+msgid "Audio"
+msgstr "Audio"
 
 #: src/ui/dialogs.rs:683
 msgid "Show shortcut hints under the message box"

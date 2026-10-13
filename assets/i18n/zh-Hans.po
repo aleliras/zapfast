@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-13 21:45+0200\n"
+"POT-Creation-Date: 2026-10-13 21:47+0200\n"
 "PO-Revision-Date: 2026-09-25 23:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -462,6 +462,10 @@ msgstr "取消静音"
 #: src/ui/conversation.rs:7184 src/ui/call.rs:476
 msgid "Mute"
 msgstr "静音"
+
+#: src/ui/conversation.rs:7765
+msgid "Audio"
+msgstr "音频"
 
 #: src/ui/dialogs.rs:683
 msgid "Show shortcut hints under the message box"
