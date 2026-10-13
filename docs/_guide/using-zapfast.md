@@ -629,7 +629,13 @@ it, and `Ctrl+B` brings the full list back.
 ## Notifications and the tray
 
 Closing the window keeps ZapFast linked in the tray. Click the tray icon or
-launch the app again to reopen it. Launchers that support the Unity Launcher API
+launch the app again to reopen it. To quit, use **Quit** in the tray menu, or
+**Quit** in the Dock icon's menu on macOS, or on Linux **Quit ZapFast** in the
+launcher's right-click menu (KDE Plasma's task manager and application menu,
+GNOME's Dash). On every platform, `zapfast quit` in a terminal or a script quits
+the running copy the same way, and does nothing when none runs. A copy from
+before this command is left running, and the command says so and fails.
+Launchers that support the Unity Launcher API
 show the unread count as a badge on the app icon: KDE Plasma's taskbar, with
 **Show badges** enabled in the Task Manager settings, and GNOME's Dash to Dock
 or Dash to Panel. Windows overlays a compact unread-message count on ZapFast's
