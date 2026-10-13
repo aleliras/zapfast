@@ -93,6 +93,14 @@ impl Account {
         backend: Backend,
     ) -> Self {
         let open_chat = settings.last_chat.clone();
+        let chat_filter = match settings
+            .list_filter
+            .as_deref()
+            .and_then(crate::model::ListFilter::parse)
+        {
+            Some(crate::model::ListFilter::Chip(chip)) => chip,
+            _ => ChatFilter::All,
+        };
         Self {
             id,
             dirs,
@@ -144,7 +152,7 @@ impl Account {
             new_contact_pending: false,
             pair_phone: String::new(),
             show_archived: false,
-            chat_filter: ChatFilter::All,
+            chat_filter,
             labels: Vec::new(),
             account_privacy: crate::privacy::Snapshot::default(),
             interactive_sending: HashSet::new(),

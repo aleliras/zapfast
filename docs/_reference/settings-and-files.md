@@ -16,7 +16,7 @@ On Linux:
 | Account list | `~/.config/zapfast/accounts.json` | Which numbers are linked here and which one is showing |
 | Session keys | `~/.local/state/zapfast/accounts/<id>/session.db` | Deleting it unlinks that number |
 | Message archive | `~/.local/state/zapfast/accounts/<id>/archive.db` | Encrypted; the only copy of history WhatsApp will not send again |
-| Per-number settings | `~/.local/state/zapfast/accounts/<id>/settings.json` | Notifications, receipts, typing, automatic downloads, background history, the last open chat, and the wallpaper |
+| Per-number settings | `~/.local/state/zapfast/accounts/<id>/settings.json` | Notifications, receipts, typing, automatic downloads, background history, the last open chat, the chat-list chip or label, and the wallpaper |
 | Stickers and packs | `~/.local/state/zapfast/accounts/<id>/stickers/` | Plain WebP files; each pack is a folder |
 | Wallpaper image | `~/.local/state/zapfast/accounts/<id>/wallpaper.jpg` | Copy of the chosen picture (or `.png`, `.webp`, `.gif`) |
 | Attachments, avatars | `~/.cache/zapfast/accounts/<id>/` | Safe to delete; available files download again when viewed |
