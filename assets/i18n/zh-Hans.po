@@ -67,24 +67,23 @@ msgstr "{date} {time}"
 
 #: src/util.rs:305 src/settings.rs:380
 msgid "Off"
-msgstr ""
+msgstr "关闭"
 
 #: src/util.rs:306
 msgid "24 hours"
-msgstr ""
+msgstr "24 小时"
 
 #: src/util.rs:307
 msgid "7 days"
-msgstr ""
+msgstr "7 天"
 
 #: src/util.rs:308
 msgid "90 days"
-msgstr ""
+msgstr "90 天"
 
 #: src/util.rs:311
-#, fuzzy
 msgid "Disappearing messages"
-msgstr "搜索消息"
+msgstr "限时消息"
 
 #: src/util.rs:335
 #, rust-format
@@ -399,7 +398,7 @@ msgstr "用系统播放器打开"
 
 #: src/ui/conversation.rs:5395 src/ui/conversation.rs:5903
 msgid "Reload earlier messages"
-msgstr ""
+msgstr "重新加载更早的消息"
 
 #: src/ui/conversation.rs:5396 src/ui/conversation.rs:5691
 msgid "Unstar"
@@ -494,9 +493,8 @@ msgid "This message can only be seen on your phone."
 msgstr "此消息只能在手机上查看。"
 
 #: src/ui/conversation.rs:6955
-#, fuzzy
 msgid "Save all…"
-msgstr "另存为…"
+msgstr "全部保存…"
 
 #: src/ui/conversation.rs:7661
 msgid "Message"
@@ -563,13 +561,13 @@ msgstr "转发"
 
 #: src/ui/dialogs.rs:671
 msgid "Messages forwarded many times can be sent to one chat at a time"
-msgstr ""
+msgstr "多次转发的消息每次只能发送到一个聊天"
 
 #: src/ui/dialogs.rs:679
 #, rust-format
 msgid "You can forward to up to {count} chat"
 msgid_plural "You can forward to up to {count} chats"
-msgstr[0] ""
+msgstr[0] "最多可转发到 {count} 个聊天"
 
 #: src/ui/dialogs.rs:705
 #, rust-format
@@ -593,9 +591,8 @@ msgid_plural "{count} selected messages"
 msgstr[0] "{count} 条消息已选择"
 
 #: src/ui/dialogs.rs:924 src/ui/dialogs.rs:945
-#, fuzzy
 msgid "this chat"
-msgstr "{} 个聊天"
+msgstr "对方"
 
 #: src/ui/dialogs.rs:929
 #, rust-format
@@ -603,10 +600,11 @@ msgid ""
 "This deletes your chat with {name}, including all messages, on this computer "
 "and on your phone. It cannot be undone."
 msgstr ""
+"这会在此电脑和你的手机上删除你与 {name} 的聊天及其所有消息。此操作无法撤销。"
 
 #: src/ui/dialogs.rs:935
 msgid "Delete chat?"
-msgstr ""
+msgstr "要删除聊天吗？"
 
 #: src/ui/dialogs.rs:937 src/ui/dialogs.rs:1327
 msgid "Delete"
@@ -619,16 +617,16 @@ msgid ""
 "media, on this computer and on your phone. The chat itself stays. It cannot "
 "be undone."
 msgstr ""
+"这会在此电脑和你的手机上清空你与 {name} 的聊天中的所有消息，包括已下载的媒"
+"体。聊天本身会保留。此操作无法撤销。"
 
 #: src/ui/dialogs.rs:956
-#, fuzzy
 msgid "Clear chat?"
-msgstr "清除"
+msgstr "要清空聊天吗？"
 
 #: src/ui/dialogs.rs:958
-#, fuzzy
 msgid "Clear chat"
-msgstr "清除"
+msgstr "清空聊天"
 
 #: src/ui/dialogs.rs:1052
 msgid "Sticker pack"
@@ -675,7 +673,7 @@ msgstr "取消"
 
 #: src/ui/dialogs.rs:1247
 msgid "Start over?"
-msgstr ""
+msgstr "要重新开始吗？"
 
 #: src/ui/dialogs.rs:1251
 msgid ""
@@ -684,16 +682,21 @@ msgid ""
 "your phone. Afterwards, remove the old ZapFast entry under Linked devices on "
 "your phone."
 msgstr ""
+"ZapFast 会把无法读取的存档另存为单独的文件，新建一个存档，并请你重新关联。重"
+"新关联后，最近的历史记录会从手机恢复。之后，请在手机的“已关联的设备”中移除旧"
+"的 ZapFast 条目。"
 
 #: src/ui/dialogs.rs:1255
 msgid ""
 "If you can restore the original keyring instead, choose Cancel and Try "
 "again: nothing is lost that way."
 msgstr ""
+"如果你能恢复原来的密钥环，请选择“取消”，然后选择“Try again”：这样不会丢失任何"
+"内容。"
 
 #: src/ui/dialogs.rs:1258
 msgid "Start over"
-msgstr ""
+msgstr "重新开始"
 
 #: src/ui/dialogs.rs:1266
 msgid ""
@@ -741,32 +744,31 @@ msgstr "为我删除？"
 msgid ""
 "This deletes \"{name}\" and its stickers from this computer. To use it "
 "again, import it again."
-msgstr ""
+msgstr "这会从此电脑删除“{name}”及其贴图。如需再次使用，请重新导入。"
 
 #: src/ui/dialogs.rs:1347
-#, fuzzy
 msgid "Remove sticker pack?"
-msgstr "移除此贴图包"
+msgstr "要移除贴图包吗？"
 
 #: src/ui/dialogs.rs:1349 src/ui/dialogs.rs:1407
 msgid "Remove"
 msgstr "移除"
 
 #: src/ui/dialogs.rs:1359 src/ui/lock.rs:123
-#, fuzzy
 msgid "Unlink this computer?"
-msgstr "取消关联此电脑"
+msgstr "要取消关联此电脑吗？"
 
 #: src/ui/dialogs.rs:1362
 msgid ""
 "This removes the device from WhatsApp and deletes the chats stored here. You "
 "can link again with a new code."
 msgstr ""
+"这会从 WhatsApp 移除此设备，并删除保存在这里的聊天。你可以用新的代码重新关"
+"联。"
 
 #: src/ui/dialogs.rs:1364 src/ui/lock.rs:139
-#, fuzzy
 msgid "Unlink"
-msgstr "在线状态"
+msgstr "取消关联"
 
 #: src/ui/dialogs.rs:1380
 msgid "Clear the media cache?"
@@ -832,7 +834,7 @@ msgstr "粘贴地图链接或坐标"
 #: src/ui/locations.rs:58
 msgid ""
 "Short links only open online. Paste the full map link or the coordinates."
-msgstr ""
+msgstr "短链接只能在线打开。请粘贴完整的地图链接或坐标。"
 
 #: src/ui/locations.rs:67
 msgid "That is not a location."
@@ -925,7 +927,7 @@ msgstr "获取更早的历史记录"
 msgid ""
 "Asks your phone in the background for older messages in the open, pinned and "
 "ten most recent chats."
-msgstr ""
+msgstr "在后台向手机请求当前打开的聊天、置顶聊天和最近十个聊天中的更早消息。"
 
 #: src/ui/settings.rs:423
 msgid "Pause other media while recording or playing"
@@ -978,15 +980,16 @@ msgid "When off, they say only “New message”."
 msgstr "关闭后，通知只显示“新消息”。"
 
 #: src/ui/settings.rs:505
-#, fuzzy
 msgid "Limit repeat notifications"
-msgstr "桌面通知"
+msgstr "限制重复通知"
 
 #: src/ui/settings.rs:508
 msgid ""
 "After one notification, a chat stays quiet for 10 minutes. Opening the chat "
 "resets this. In groups, mentions and replies to you still notify."
 msgstr ""
+"通知一次后，该聊天会安静 10 分钟。打开该聊天会重新计时。在群组中，提及你和回"
+"复你的消息仍会通知。"
 
 #: src/ui/settings.rs:534 src/ui/settings.rs:2059
 msgid "Play sounds for group messages"
@@ -1123,7 +1126,7 @@ msgstr "添加账号"
 
 #: src/ui/settings.rs:744 src/ui/settings.rs:1656
 msgid "Remove this account"
-msgstr ""
+msgstr "移除此账号"
 
 #: src/ui/settings.rs:749
 msgid "Files"
@@ -1199,7 +1202,7 @@ msgstr "源代码"
 
 #: src/ui/settings.rs:867 src/ui/settings.rs:894
 msgid "App lock"
-msgstr ""
+msgstr "应用锁"
 
 #: src/ui/settings.rs:870
 msgid ""
@@ -1207,81 +1210,81 @@ msgid ""
 "this computer out of your chats and encrypts nothing more. A forgotten "
 "password means unlinking."
 msgstr ""
+"启动时以及闲置一段时间后要求输入密码。它能阻止使用此电脑的其他人查看你的聊"
+"天，但不会额外加密任何内容。忘记密码只能取消关联。"
 
 #: src/ui/settings.rs:877
 msgid "Turn off…"
-msgstr ""
+msgstr "关闭…"
 
 #: src/ui/settings.rs:878
-#, fuzzy
 msgid "Change password…"
-msgstr "更改…"
+msgstr "更改密码…"
 
 #: src/ui/settings.rs:881
 msgid "Set password…"
-msgstr ""
+msgstr "设置密码…"
 
 #: src/ui/settings.rs:895 src/ui/settings.rs:902
-#, fuzzy
 msgid "Lock after"
-msgstr "已锁定"
+msgstr "锁定时间"
 
 #: src/ui/settings.rs:905
 msgid ""
 "Time without using ZapFast, also counted while it is in the tray. "
 "Ctrl+Shift+L locks it at once."
 msgstr ""
+"未使用 ZapFast 的时长，在托盘中时也会计时。按 Ctrl+Shift+L 可立即锁定。"
 
 #: src/ui/settings.rs:947
 msgid "Set an app lock password"
-msgstr ""
+msgstr "设置应用锁密码"
 
 #: src/ui/settings.rs:948
 msgid "Change the app lock password"
-msgstr ""
+msgstr "更改应用锁密码"
 
 #: src/ui/settings.rs:949
 msgid "Turn off the app lock"
-msgstr ""
+msgstr "关闭应用锁"
 
 #: src/ui/settings.rs:959
 msgid "Current password"
-msgstr ""
+msgstr "当前密码"
 
 #: src/ui/settings.rs:966
 #, rust-format
 msgid "New password, at least {count} characters"
-msgstr ""
+msgstr "新密码，至少 {count} 个字符"
 
 #: src/ui/settings.rs:971
 msgid "Type the new password again"
-msgstr ""
+msgstr "再次输入新密码"
 
 #: src/ui/settings.rs:995
 #, rust-format
 msgid "The password needs at least {count} characters."
-msgstr ""
+msgstr "密码至少需要 {count} 个字符。"
 
 #: src/ui/settings.rs:997
 msgid "The two new passwords are different."
-msgstr ""
+msgstr "两次输入的新密码不一致。"
 
 #: src/ui/settings.rs:998 src/ui/lock.rs:85
 msgid "Wrong password. Try again."
-msgstr ""
+msgstr "密码错误，请重试。"
 
 #: src/ui/settings.rs:1005
 msgid "Turn on"
-msgstr ""
+msgstr "开启"
 
 #: src/ui/settings.rs:1006
-#, fuzzy
 msgid "Change password"
-msgstr "更换头像"
+msgstr "更改密码"
 
 #: src/ui/settings.rs:1007
 msgid "Turn off"
-msgstr ""
+msgstr "关闭"
 
 #: src/ui/settings.rs:1110
 msgid "How to make a theme"
@@ -1664,7 +1667,7 @@ msgstr "请输入有效的国际电话号码"
 
 #: src/app.rs:1766
 msgid "Could not delete the removed account's files"
-msgstr ""
+msgstr "无法删除已移除账号的文件"
 
 #: src/app.rs:2386
 #, rust-format
@@ -1694,7 +1697,7 @@ msgstr "已取消置顶"
 
 #: src/app.rs:3630
 msgid "Loading chat history"
-msgstr ""
+msgstr "正在加载聊天记录"
 
 #: src/app.rs:3724
 msgid "Could not use this image"
@@ -1706,7 +1709,7 @@ msgstr "此聊天已有三条置顶消息"
 
 #: src/app.rs:4016
 msgid "Connecting"
-msgstr ""
+msgstr "正在连接"
 
 #: src/app.rs:4647
 msgid "Not sent: ZapFast is not connected to WhatsApp."
@@ -1741,7 +1744,7 @@ msgstr "你已有 {limit} 个标签，这是 ZapFast 的上限。"
 #: src/app.rs:8160
 #, rust-format
 msgid "{}: {}"
-msgstr ""
+msgstr "{}：{}"
 
 #: src/app.rs:8514
 msgid "App lock password saved"
@@ -1869,9 +1872,8 @@ msgid "Recent"
 msgstr "最近"
 
 #: src/ui/picker.rs:1191
-#, fuzzy
 msgid "Received"
-msgstr "已归档"
+msgstr "收到的"
 
 #: src/ui/picker.rs:1192
 msgid "Add stickers"
@@ -1900,9 +1902,8 @@ msgid ""
 msgstr "右键点击任意贴图即可加入收藏。收藏会与手机同步。"
 
 #: src/ui/picker.rs:1297
-#, fuzzy
 msgid "Stickers people send you appear here."
-msgstr "你发送的贴图会出现在这里。"
+msgstr "别人发给你的贴图会出现在这里。"
 
 #: src/ui/picker.rs:1312
 msgid "Remove this pack"
@@ -2181,34 +2182,32 @@ msgstr "照片"
 
 #: src/ui/lock.rs:17
 msgid "ZapFast is locked"
-msgstr ""
+msgstr "ZapFast 已锁定"
 
 #: src/ui/lock.rs:23
-#, fuzzy
 msgid "Unlinking this computer…"
-msgstr "取消关联此电脑"
+msgstr "正在取消关联此电脑…"
 
 #: src/ui/lock.rs:52
 msgid "Enter your password to unlock."
-msgstr ""
+msgstr "输入密码以解锁。"
 
 #: src/ui/lock.rs:66
 msgid "Password"
-msgstr ""
+msgstr "密码"
 
 #: src/ui/lock.rs:76
 #, rust-format
 msgid "Too many wrong passwords. Try again in {seconds} s."
-msgstr ""
+msgstr "密码错误次数过多，请在 {seconds} 秒后重试。"
 
 #: src/ui/lock.rs:97
 msgid "Unlock"
-msgstr ""
+msgstr "解锁"
 
 #: src/ui/lock.rs:108
-#, fuzzy
 msgid "Forgot password? Unlink this computer"
-msgstr "取消关联此电脑"
+msgstr "忘记密码？取消关联此电脑"
 
 #: src/ui/lock.rs:131
 msgid ""
@@ -2216,6 +2215,8 @@ msgid ""
 "device from WhatsApp, deletes the chats stored here, and turns the app lock "
 "off. You can link again with a new code."
 msgstr ""
+"没有密码时，唯一的办法是取消关联。这会从 WhatsApp 移除此设备，删除保存在这里"
+"的聊天，并关闭应用锁。你可以用新的代码重新关联。"
 
 #. Translators: the body of a notification that hides who wrote and
 #. what: a message has arrived.
@@ -2226,24 +2227,23 @@ msgstr "新消息"
 
 #: src/settings.rs:347
 msgid "After 1 minute"
-msgstr ""
+msgstr "1 分钟后"
 
 #: src/settings.rs:348
 msgid "After 15 minutes"
-msgstr ""
+msgstr "15 分钟后"
 
 #: src/settings.rs:349
 msgid "After 1 hour"
-msgstr ""
+msgstr "1 小时后"
 
 #: src/settings.rs:381
-#, fuzzy
 msgid "Direct messages"
-msgstr "选择消息"
+msgstr "单聊"
 
 #: src/settings.rs:383
 msgid "Direct messages and groups"
-msgstr ""
+msgstr "单聊和群组"
 
 #: src/account.rs:275
 #, rust-format
@@ -2252,16 +2252,16 @@ msgstr "账号 {id}"
 
 #: src/ui/accounts.rs:33
 msgid "Switch account"
-msgstr ""
+msgstr "切换账号"
 
 #: src/ui/accounts.rs:84
 msgid "Not linked"
-msgstr ""
+msgstr "未关联"
 
 #: src/ui/accounts.rs:232
 #, rust-format
 msgid "{count} unread chats"
-msgstr ""
+msgstr "{count} 个未读聊天"
 
 #: src/ui/info.rs:39
 msgid "Media, links and docs"
@@ -2295,7 +2295,7 @@ msgstr[0] "{} 位成员"
 
 #: src/ui/info.rs:519
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 #: src/ui/info.rs:820
 #, rust-format
@@ -2382,10 +2382,6 @@ msgstr "保存名称（Enter）"
 #: src/ui/info.rs:1446
 msgid "Cancel (Escape)"
 msgstr "取消（Esc）"
-
-#, fuzzy
-#~ msgid "New message"
-#~ msgstr "输入消息"
 
 #~ msgid "Group"
 #~ msgstr "群组"
