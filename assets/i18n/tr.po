@@ -66,24 +66,23 @@ msgstr "{date} {time}"
 
 #: src/util.rs:305 src/settings.rs:380
 msgid "Off"
-msgstr ""
+msgstr "Kapalı"
 
 #: src/util.rs:306
 msgid "24 hours"
-msgstr ""
+msgstr "24 saat"
 
 #: src/util.rs:307
 msgid "7 days"
-msgstr ""
+msgstr "7 gün"
 
 #: src/util.rs:308
 msgid "90 days"
-msgstr ""
+msgstr "90 gün"
 
 #: src/util.rs:311
-#, fuzzy
 msgid "Disappearing messages"
-msgstr "Mesajlarda ara"
+msgstr "Süreli mesajlar"
 
 #: src/util.rs:335
 #, rust-format
@@ -187,7 +186,7 @@ msgstr "Aralık"
 
 #: src/ui/chats.rs:156 src/ui/chats.rs:455 src/app.rs:3100
 msgid "Starred"
-msgstr ""
+msgstr "Yıldızlı"
 
 #: src/ui/chats.rs:195 src/ui/chats.rs:494 src/ui/settings.rs:398
 msgid "Chats"
@@ -199,7 +198,7 @@ msgstr "Ara"
 
 #: src/ui/chats.rs:309 src/ui/chats.rs:1799
 msgid "Starred messages"
-msgstr ""
+msgstr "Yıldızlı mesajlar"
 
 #: src/ui/chats.rs:617
 msgid "Archived"
@@ -211,11 +210,11 @@ msgstr "Kilitli"
 
 #: src/ui/chats.rs:680
 msgid "No starred messages"
-msgstr ""
+msgstr "Yıldızlı mesaj yok"
 
 #: src/ui/chats.rs:683
 msgid "Right-click a message and choose Star to keep it here."
-msgstr ""
+msgstr "Bir mesajı burada tutmak için sağ tıklayıp Yıldızla'yı seçin."
 
 #: src/ui/chats.rs:928
 msgid "No favorites yet"
@@ -343,9 +342,8 @@ msgid "Send as document"
 msgstr "Belge olarak gönder"
 
 #: src/ui/conversation.rs:1994 src/ui/locations.rs:16
-#, fuzzy
 msgid "Send location"
-msgstr "Canlı konum"
+msgstr "Konum gönder"
 
 #: src/ui/conversation.rs:1999
 msgid "Create poll"
@@ -362,16 +360,16 @@ msgstr "Sesli mesajı iptal et"
 
 #: src/ui/conversation.rs:2321
 msgid "You pinned a message"
-msgstr ""
+msgstr "Bir mesajı sabitlediniz"
 
 #: src/ui/conversation.rs:2324
 msgid "A message was pinned"
-msgstr ""
+msgstr "Bir mesaj sabitlendi"
 
 #: src/ui/conversation.rs:2326
 #, rust-format
 msgid "{} pinned a message"
-msgstr ""
+msgstr "{} bir mesajı sabitledi"
 
 #: src/ui/conversation.rs:2837 src/notify/badge_windows.rs:255
 #, rust-format
@@ -404,15 +402,15 @@ msgstr "Sistem oynatıcısında aç"
 
 #: src/ui/conversation.rs:5395 src/ui/conversation.rs:5903
 msgid "Reload earlier messages"
-msgstr ""
+msgstr "Önceki mesajları yeniden yükle"
 
 #: src/ui/conversation.rs:5396 src/ui/conversation.rs:5691
 msgid "Unstar"
-msgstr ""
+msgstr "Yıldızı kaldır"
 
 #: src/ui/conversation.rs:5397 src/ui/conversation.rs:5693
 msgid "Star"
-msgstr ""
+msgstr "Yıldızla"
 
 #: src/ui/conversation.rs:5681
 msgid "Reply privately"
@@ -420,16 +418,15 @@ msgstr "Özel olarak yanıtla"
 
 #: src/ui/conversation.rs:5707
 msgid "Unpin message"
-msgstr ""
+msgstr "Sabitlemeyi kaldır"
 
 #: src/ui/conversation.rs:5709
 msgid "Pin message"
-msgstr ""
+msgstr "Mesajı sabitle"
 
 #: src/ui/conversation.rs:5736
-#, fuzzy
 msgid "Open in the viewer"
-msgstr "Sistem oynatıcısında aç"
+msgstr "Görüntüleyicide aç"
 
 #: src/ui/conversation.rs:5838 src/ui/image_preview.rs:258
 #: src/ui/image_preview.rs:583
@@ -511,9 +508,8 @@ msgid "This message can only be seen on your phone."
 msgstr "Bu mesaj yalnızca telefonunuzda görülebilir."
 
 #: src/ui/conversation.rs:6955
-#, fuzzy
 msgid "Save all…"
-msgstr "Farklı kaydet…"
+msgstr "Tümünü kaydet…"
 
 #: src/ui/conversation.rs:7661
 msgid "Message"
@@ -582,13 +578,14 @@ msgstr "İlet"
 #: src/ui/dialogs.rs:671
 msgid "Messages forwarded many times can be sent to one chat at a time"
 msgstr ""
+"Çok kez iletilen mesajlar tek seferde yalnızca bir sohbete gönderilebilir"
 
 #: src/ui/dialogs.rs:679
 #, rust-format
 msgid "You can forward to up to {count} chat"
 msgid_plural "You can forward to up to {count} chats"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "En fazla {count} sohbete iletebilirsiniz"
+msgstr[1] "En fazla {count} sohbete iletebilirsiniz"
 
 #: src/ui/dialogs.rs:705
 #, rust-format
@@ -614,9 +611,8 @@ msgstr[0] "{count} mesaj seçildi"
 msgstr[1] "{count} mesaj seçildi"
 
 #: src/ui/dialogs.rs:924 src/ui/dialogs.rs:945
-#, fuzzy
 msgid "this chat"
-msgstr "{} sohbet"
+msgstr "bu sohbet"
 
 #: src/ui/dialogs.rs:929
 #, rust-format
@@ -624,10 +620,12 @@ msgid ""
 "This deletes your chat with {name}, including all messages, on this computer "
 "and on your phone. It cannot be undone."
 msgstr ""
+"Bu işlem {name} ile sohbetinizi, tüm mesajlarıyla birlikte bu bilgisayarda "
+"ve telefonunuzda siler. Geri alınamaz."
 
 #: src/ui/dialogs.rs:935
 msgid "Delete chat?"
-msgstr ""
+msgstr "Sohbet silinsin mi?"
 
 #: src/ui/dialogs.rs:937 src/ui/dialogs.rs:1327
 msgid "Delete"
@@ -640,16 +638,17 @@ msgid ""
 "media, on this computer and on your phone. The chat itself stays. It cannot "
 "be undone."
 msgstr ""
+"Bu işlem {name} ile sohbetinizdeki tüm mesajları, indirilen medya dahil, bu "
+"bilgisayarda ve telefonunuzda temizler. Sohbetin kendisi kalır. Geri "
+"alınamaz."
 
 #: src/ui/dialogs.rs:956
-#, fuzzy
 msgid "Clear chat?"
-msgstr "Temizle"
+msgstr "Sohbet temizlensin mi?"
 
 #: src/ui/dialogs.rs:958
-#, fuzzy
 msgid "Clear chat"
-msgstr "Temizle"
+msgstr "Sohbeti temizle"
 
 #: src/ui/dialogs.rs:1052
 msgid "Sticker pack"
@@ -696,7 +695,7 @@ msgstr "İptal"
 
 #: src/ui/dialogs.rs:1247
 msgid "Start over?"
-msgstr ""
+msgstr "Baştan başlansın mı?"
 
 #: src/ui/dialogs.rs:1251
 msgid ""
@@ -705,16 +704,22 @@ msgid ""
 "your phone. Afterwards, remove the old ZapFast entry under Linked devices on "
 "your phone."
 msgstr ""
+"ZapFast okunamayan arşivinizi ayrı bir dosya olarak saklar, yenisini "
+"oluşturur ve sizden tekrar bağlamanızı ister. Tekrar bağlandığınızda son "
+"geçmiş telefonunuzdan geri gelir. Ardından telefonunuzda Bağlı cihazlar "
+"altındaki eski ZapFast kaydını kaldırın."
 
 #: src/ui/dialogs.rs:1255
 msgid ""
 "If you can restore the original keyring instead, choose Cancel and Try "
 "again: nothing is lost that way."
 msgstr ""
+"Bunun yerine özgün anahtarlığı geri yükleyebiliyorsanız İptal'i, ardından "
+"“Try again”i seçin: böylece hiçbir şey kaybolmaz."
 
 #: src/ui/dialogs.rs:1258
 msgid "Start over"
-msgstr ""
+msgstr "Baştan başla"
 
 #: src/ui/dialogs.rs:1266
 msgid ""
@@ -771,30 +776,28 @@ msgid ""
 "This deletes \"{name}\" and its stickers from this computer. To use it "
 "again, import it again."
 msgstr ""
+"Bu işlem “{name}” paketini ve çıkartmalarını bu bilgisayardan siler. Yeniden "
+"kullanmak için tekrar içe aktarın."
 
 #: src/ui/dialogs.rs:1347
-#, fuzzy
 msgid "Remove sticker pack?"
-msgstr "Bu paketi kaldır"
+msgstr "Çıkartma paketi kaldırılsın mı?"
 
 #: src/ui/dialogs.rs:1349 src/ui/dialogs.rs:1407
-#, fuzzy
 msgid "Remove"
-msgstr "Fotoğrafı kaldır"
+msgstr "Kaldır"
 
 #: src/ui/dialogs.rs:1359 src/ui/lock.rs:123
 msgid "Unlink this computer?"
 msgstr "Bu bilgisayarın bağlantısı kaldırılsın mı?"
 
 #: src/ui/dialogs.rs:1362
-#, fuzzy
 msgid ""
 "This removes the device from WhatsApp and deletes the chats stored here. You "
 "can link again with a new code."
 msgstr ""
-"Parola olmadan tekrar giriş yapmanın tek yolu bağlantıyı kaldırmaktır. Bu "
-"işlem cihazı WhatsApp'tan kaldırır, burada saklanan sohbetleri siler ve "
-"uygulama kilidini kapatır. Yeni bir kodla tekrar bağlayabilirsiniz."
+"Bu işlem cihazı WhatsApp'tan kaldırır ve burada saklanan sohbetleri siler. "
+"Yeni bir kodla tekrar bağlayabilirsiniz."
 
 #: src/ui/dialogs.rs:1364 src/ui/lock.rs:139
 msgid "Unlink"
@@ -824,15 +827,16 @@ msgid "Clear"
 msgstr "Temizle"
 
 #: src/ui/dialogs.rs:1402
-#, fuzzy
 msgid "Remove this account?"
-msgstr "Bu paketi kaldır"
+msgstr "Bu hesap kaldırılsın mı?"
 
 #: src/ui/dialogs.rs:1405
 msgid ""
 "This unlinks the number on this computer and deletes its local chats. Other "
 "accounts stay."
 msgstr ""
+"Bu işlem numaranın bu bilgisayardaki bağlantısını kaldırır ve yerel "
+"sohbetlerini siler. Diğer hesaplar kalır."
 
 #: src/ui/dialogs.rs:1457
 msgid "Leave this channel?"
@@ -861,16 +865,18 @@ msgstr "Telefonunuzdaki kişilere de kaydet"
 
 #: src/ui/locations.rs:29
 msgid "Paste a map link or coordinates"
-msgstr ""
+msgstr "Bir harita bağlantısı veya koordinat yapıştırın"
 
 #: src/ui/locations.rs:58
 msgid ""
 "Short links only open online. Paste the full map link or the coordinates."
 msgstr ""
+"Kısa bağlantılar yalnızca çevrim içi açılır. Tam harita bağlantısını veya "
+"koordinatları yapıştırın."
 
 #: src/ui/locations.rs:67
 msgid "That is not a location."
-msgstr ""
+msgstr "Bu bir konum değil."
 
 #: src/ui/settings.rs:255
 msgid "Settings"
@@ -962,6 +968,8 @@ msgid ""
 "Asks your phone in the background for older messages in the open, pinned and "
 "ten most recent chats."
 msgstr ""
+"Açık, sabitlenmiş ve en son on sohbetteki eski mesajları arka planda "
+"telefonunuzdan ister."
 
 #: src/ui/settings.rs:423
 msgid "Pause other media while recording or playing"
@@ -1015,15 +1023,17 @@ msgid "When off, they say only “New message”."
 msgstr "Kapalıyken yalnızca “Yeni mesaj” yazar."
 
 #: src/ui/settings.rs:505
-#, fuzzy
 msgid "Limit repeat notifications"
-msgstr "Masaüstü bildirimleri"
+msgstr "Tekrarlayan bildirimleri sınırla"
 
 #: src/ui/settings.rs:508
 msgid ""
 "After one notification, a chat stays quiet for 10 minutes. Opening the chat "
 "resets this. In groups, mentions and replies to you still notify."
 msgstr ""
+"Bir bildirimden sonra sohbet 10 dakika sessiz kalır. Sohbeti açmak bunu "
+"sıfırlar. Gruplarda sizden bahsedilmesi ve size verilen yanıtlar yine "
+"bildirilir."
 
 #: src/ui/settings.rs:534 src/ui/settings.rs:2059
 msgid "Play sounds for group messages"
@@ -1166,14 +1176,12 @@ msgid "Unlink this computer"
 msgstr "Bu bilgisayarın bağlantısını kaldır"
 
 #: src/ui/settings.rs:743 src/ui/settings.rs:1680 src/ui/accounts.rs:123
-#, fuzzy
 msgid "Add account"
-msgstr "Hesap"
+msgstr "Hesap ekle"
 
 #: src/ui/settings.rs:744 src/ui/settings.rs:1656
-#, fuzzy
 msgid "Remove this account"
-msgstr "Bu paketi kaldır"
+msgstr "Bu hesabı kaldır"
 
 #: src/ui/settings.rs:749
 msgid "Files"
@@ -1726,7 +1734,7 @@ msgstr "Geçerli bir uluslararası telefon numarası girin"
 
 #: src/app.rs:1766
 msgid "Could not delete the removed account's files"
-msgstr ""
+msgstr "Kaldırılan hesabın dosyaları silinemedi"
 
 #: src/app.rs:2386
 #, rust-format
@@ -1744,19 +1752,19 @@ msgstr "Medya önbelleği temizlendi"
 
 #: src/app.rs:3102
 msgid "Star removed"
-msgstr ""
+msgstr "Yıldız kaldırıldı"
 
 #: src/app.rs:3138
 msgid "Pinned for 7 days"
-msgstr ""
+msgstr "7 günlüğüne sabitlendi"
 
 #: src/app.rs:3140
 msgid "Pin removed"
-msgstr ""
+msgstr "Sabitleme kaldırıldı"
 
 #: src/app.rs:3630
 msgid "Loading chat history"
-msgstr ""
+msgstr "Sohbet geçmişi yükleniyor"
 
 #: src/app.rs:3724
 msgid "Could not use this image"
@@ -1764,11 +1772,11 @@ msgstr "Bu görsel kullanılamadı"
 
 #: src/app.rs:3946 src/app.rs:7425
 msgid "This chat already has three pinned messages"
-msgstr ""
+msgstr "Bu sohbette zaten üç sabitlenmiş mesaj var"
 
 #: src/app.rs:4016
 msgid "Connecting"
-msgstr ""
+msgstr "Bağlanıyor"
 
 #: src/app.rs:4647
 msgid "Not sent: ZapFast is not connected to WhatsApp."
@@ -1805,7 +1813,7 @@ msgstr "ZapFast'in tutabileceği maksimum sınır olan {limit} etikete ulaştın
 #: src/app.rs:8160
 #, rust-format
 msgid "{}: {}"
-msgstr ""
+msgstr "{}: {}"
 
 #: src/app.rs:8514
 msgid "App lock password saved"
@@ -2181,42 +2189,39 @@ msgstr "Sola döndür"
 
 #: src/ui/image_preview.rs:237
 msgid "Close preview (Esc)"
-msgstr ""
+msgstr "Önizlemeyi kapat (Esc)"
 
 #: src/ui/image_preview.rs:250 src/ui/image_preview.rs:586
 msgid "Open in another app"
 msgstr "Başka bir uygulamada aç"
 
 #: src/ui/image_preview.rs:292
-#, fuzzy
 msgid "Zoom in"
-msgstr "Yakınlaştırma"
+msgstr "Yakınlaştır"
 
 #: src/ui/image_preview.rs:302
 msgid "Fit"
-msgstr ""
+msgstr "Sığdır"
 
 #: src/ui/image_preview.rs:303
 msgid "Show at original size"
-msgstr ""
+msgstr "Özgün boyutta göster"
 
 #: src/ui/image_preview.rs:309
-#, fuzzy
 msgid "Fit to the window (0)"
-msgstr "Pencereyi kapla"
+msgstr "Pencereye sığdır (0)"
 
 #: src/ui/image_preview.rs:325
-#, fuzzy
 msgid "Zoom out"
-msgstr "Yakınlaştırma"
+msgstr "Uzaklaştır"
 
 #: src/ui/image_preview.rs:342
 msgid "Reply"
-msgstr ""
+msgstr "Yanıtla"
 
 #: src/ui/image_preview.rs:355
 msgid "React"
-msgstr ""
+msgstr "Tepki ver"
 
 #: src/ui/image_preview.rs:399 src/ui/image_preview.rs:584
 msgid "Save as…"
@@ -2224,14 +2229,12 @@ msgstr "Farklı kaydet…"
 
 #: src/ui/image_preview.rs:415 src/ui/image_preview.rs:770
 #: src/ui/image_preview.rs:778 src/ui/image_preview.rs:860
-#, fuzzy
 msgid "Download"
-msgstr "İndirilenler"
+msgstr "İndir"
 
 #: src/ui/image_preview.rs:436
-#, fuzzy
 msgid "Show in the chat"
-msgstr "Bu sohbetlere iletilsin mi?"
+msgstr "Sohbette göster"
 
 #: src/ui/image_preview.rs:491
 msgid "Show the photo"
@@ -2243,15 +2246,15 @@ msgstr "Hareketli fotoğrafı oynat"
 
 #: src/ui/image_preview.rs:693
 msgid "This image could not be displayed in ZapFast."
-msgstr ""
+msgstr "Bu görüntü ZapFast'te gösterilemedi."
 
 #: src/ui/image_preview.rs:696
 msgid "Open externally"
-msgstr ""
+msgstr "Harici olarak aç"
 
 #: src/ui/image_preview.rs:858
 msgid "Play or pause the video"
-msgstr ""
+msgstr "Videoyu oynat veya duraklat"
 
 #: src/ui/image_preview.rs:1014 src/ui/info.rs:1061
 msgid "Video"
@@ -2320,31 +2323,30 @@ msgid "After 1 hour"
 msgstr "1 saat sonra"
 
 #: src/settings.rs:381
-#, fuzzy
 msgid "Direct messages"
-msgstr "Mesajları seç"
+msgstr "Bireysel sohbetler"
 
 #: src/settings.rs:383
 msgid "Direct messages and groups"
-msgstr ""
+msgstr "Bireysel sohbetler ve gruplar"
 
 #: src/account.rs:275
-#, fuzzy, rust-format
+#, rust-format
 msgid "Account {id}"
-msgstr "Hesap"
+msgstr "Hesap {id}"
 
 #: src/ui/accounts.rs:33
 msgid "Switch account"
-msgstr ""
+msgstr "Hesap değiştir"
 
 #: src/ui/accounts.rs:84
 msgid "Not linked"
-msgstr ""
+msgstr "Bağlı değil"
 
 #: src/ui/accounts.rs:232
 #, rust-format
 msgid "{count} unread chats"
-msgstr ""
+msgstr "{count} okunmamış sohbet"
 
 #: src/ui/info.rs:39
 msgid "Media, links and docs"
@@ -2379,7 +2381,7 @@ msgstr[1] "{} üye"
 
 #: src/ui/info.rs:519
 msgid "Description"
-msgstr ""
+msgstr "Açıklama"
 
 #: src/ui/info.rs:820
 #, rust-format
