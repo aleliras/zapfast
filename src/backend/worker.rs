@@ -3905,11 +3905,29 @@ impl Worker {
             sender,
             from_me,
             body,
+            sent_at,
             ..
         } = reaction;
         if let Some(updated) = self.apply_reaction(&chat, &target, &sender, from_me, body, secrets)
         {
+            // As on WhatsApp, someone reacting to one of our messages brings
+            // the chat up the list; history (which passes its secrets) and a
+            // removed reaction do not.
+            let raised = secrets.is_none()
+                && !from_me
+                && updated.from_me
+                && updated
+                    .reactions
+                    .iter()
+                    .any(|reaction| reaction.sender == sender && !reaction.emoji.is_empty());
             self.emit(Event::MessageUpdated(Box::new(updated)));
+            if raised {
+                let at = (sent_at / 1000).min(crate::util::now());
+                if let Err(error) = self.archive.touch_activity(&chat, at) {
+                    log::warn!("could not date a chat by its reaction: {error}");
+                }
+                self.emit_chat(&chat);
+            }
         }
     }
 
@@ -15618,6 +15636,54 @@ mod receipt_tests {
         assert_eq!(stored.reactions[0].emoji, "🏆");
         assert!(!stored.reactions[0].from_me);
         assert_eq!(stored.reactions[0].sender, PEER);
+    }
+
+    #[test]
+    fn a_reaction_to_our_message_raises_the_chat() {
+        let (mut worker, _events, _inbox, _wa) = worker();
+        worker.archive.ensure_chat(PEER, "Ada").unwrap();
+        worker
+            .archive
+            .insert_message(&own_message("ours", 10), None)
+            .unwrap();
+        worker
+            .archive
+            .insert_message(&incoming("theirs", 11), None)
+            .unwrap();
+        let activity = |worker: &Worker| worker.archive.chat(PEER).unwrap().unwrap().last_activity;
+        let before = activity(&worker);
+        let react = |worker: &mut Worker, target: &str, emoji: &str, at: i64| {
+            let reaction = {
+                let mut proto = wa::message::ReactionMessage::default();
+                proto.key = MessageField::some({
+                    let mut proto = wa::MessageKey::default();
+                    proto.remote_jid = Some(PEER.into());
+                    proto.id = Some(target.into());
+                    proto
+                });
+                proto.text = Some(emoji.into());
+                proto.sender_timestamp_ms = Some(at * 1000);
+                proto
+            };
+            worker.store_plain_reaction(PEER, PEER, false, &reaction, at * 1000);
+        };
+
+        react(&mut worker, "theirs", "👍", 500);
+        assert_eq!(activity(&worker), before, "only reactions to our messages");
+        react(&mut worker, "ours", "", 600);
+        assert_eq!(activity(&worker), before, "a removal raises nothing");
+        react(&mut worker, "ours", "❤️", 700);
+        assert_eq!(activity(&worker), 700);
+        assert_eq!(
+            worker
+                .archive
+                .message(PEER, "ours")
+                .unwrap()
+                .unwrap()
+                .reactions[0]
+                .emoji,
+            "❤️"
+        );
     }
 
     #[test]
