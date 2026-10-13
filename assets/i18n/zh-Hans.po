@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-13 22:15+0200\n"
+"POT-Creation-Date: 2026-10-13 22:18+0200\n"
 "PO-Revision-Date: 2026-09-25 23:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -34,7 +34,7 @@ msgstr "未读"
 msgid "Private"
 msgstr "私聊"
 
-#: src/model.rs:161 src/ui/picker.rs:1188
+#: src/model.rs:161 src/ui/picker.rs:1190
 msgid "Favorites"
 msgstr "收藏"
 
@@ -230,22 +230,22 @@ msgstr "给自己发消息"
 msgid "Draft:"
 msgstr "草稿："
 
-#: src/ui/chats.rs:1612 src/ui/chats.rs:1999 src/ui/picker.rs:1615
+#: src/ui/chats.rs:1612 src/ui/chats.rs:1999 src/ui/picker.rs:1621
 msgid "Remove from favorites"
 msgstr "取消收藏"
 
 #: src/ui/chats.rs:1614 src/ui/chats.rs:2001 src/ui/conversation.rs:4843
-#: src/ui/dialogs.rs:1059 src/ui/picker.rs:1616
+#: src/ui/dialogs.rs:1049 src/ui/picker.rs:1622
 msgid "Add to favorites"
 msgstr "添加到收藏"
 
 #: src/ui/chats.rs:1624 src/ui/chats.rs:2025 src/ui/conversation.rs:244
-#: src/ui/dialogs.rs:1233 src/ui/dialogs.rs:1779
+#: src/ui/dialogs.rs:1241 src/ui/dialogs.rs:1787
 msgid "Leave group"
 msgstr "退出群组"
 
 #: src/ui/chats.rs:1625 src/ui/chats.rs:2023 src/ui/conversation.rs:242
-#: src/ui/dialogs.rs:1231 src/ui/dialogs.rs:1777
+#: src/ui/dialogs.rs:1239 src/ui/dialogs.rs:1785
 msgid "Leave channel"
 msgstr "退出频道"
 
@@ -491,154 +491,250 @@ msgstr "静音"
 msgid "Audio"
 msgstr "音频"
 
-#: src/ui/dialogs.rs:683
+#: src/ui/dialogs.rs:687
 msgid "Show shortcut hints under the message box"
 msgstr "在消息输入框下显示快捷键提示"
 
-#: src/ui/dialogs.rs:885
+#: src/ui/dialogs.rs:747 src/ui/dialogs.rs:768
+#, fuzzy
+msgid "this chat"
+msgstr "{} 个聊天"
+
+#: src/ui/dialogs.rs:752
+#, rust-format
+msgid ""
+"This deletes your chat with {name}, including all messages, on this computer "
+"and on your phone. It cannot be undone."
+msgstr ""
+
+#: src/ui/dialogs.rs:758
+msgid "Delete chat?"
+msgstr ""
+
+#: src/ui/dialogs.rs:760 src/ui/dialogs.rs:1121
+msgid "Delete"
+msgstr ""
+
+#: src/ui/dialogs.rs:773
+#, rust-format
+msgid ""
+"This clears every message in your chat with {name}, including downloaded "
+"media, on this computer and on your phone. The chat itself stays. It cannot "
+"be undone."
+msgstr ""
+
+#: src/ui/dialogs.rs:779
+#, fuzzy
+msgid "Clear chat?"
+msgstr "清除"
+
+#: src/ui/dialogs.rs:781
+#, fuzzy
+msgid "Clear chat"
+msgstr "清除"
+
+#: src/ui/dialogs.rs:875
 msgid "Sticker pack"
 msgstr "贴图包"
 
-#: src/ui/dialogs.rs:890
+#: src/ui/dialogs.rs:880
 msgid "Downloading the pack…"
 msgstr "正在下载贴图包…"
 
-#: src/ui/dialogs.rs:914
+#: src/ui/dialogs.rs:904
 msgid "Add to my stickers"
 msgstr "添加到我的贴图"
 
-#: src/ui/dialogs.rs:921 src/ui/message_info.rs:28 src/ui/labels.rs:224
+#: src/ui/dialogs.rs:911 src/ui/message_info.rs:28 src/ui/labels.rs:224
 msgid "Close"
 msgstr "关闭"
 
-#: src/ui/dialogs.rs:938
+#: src/ui/dialogs.rs:928
 msgid "Make a sticker"
 msgstr "制作贴图"
 
-#: src/ui/dialogs.rs:1002
+#: src/ui/dialogs.rs:992
 msgid "Size"
 msgstr "大小"
 
-#: src/ui/dialogs.rs:1017
+#: src/ui/dialogs.rs:1007
 msgid "Keep the transparent background"
 msgstr "保留透明背景"
 
-#: src/ui/dialogs.rs:1034
+#: src/ui/dialogs.rs:1024
 msgid "Emojis that describe it, like 😂 or ❤️"
 msgstr "描述它的表情，例如 😂 或 ❤️"
 
-#: src/ui/dialogs.rs:1051 src/ui/locations.rs:80
+#: src/ui/dialogs.rs:1041 src/ui/locations.rs:80
 msgid "Send"
 msgstr "发送"
 
-#: src/ui/dialogs.rs:1066 src/ui/dialogs.rs:1199 src/ui/dialogs.rs:1261
+#: src/ui/dialogs.rs:1056 src/ui/dialogs.rs:1202 src/ui/dialogs.rs:1269
 #: src/ui/locations.rs:75 src/ui/settings.rs:1003 src/ui/settings.rs:1566
 #: src/ui/lock.rs:142
 msgid "Cancel"
 msgstr "取消"
 
-#: src/ui/dialogs.rs:1118
+#: src/ui/dialogs.rs:1070
+msgid "Start over?"
+msgstr ""
+
+#: src/ui/dialogs.rs:1074
+msgid ""
+"ZapFast keeps your unreadable archive as a separate file, creates a new one, "
+"and asks you to link again. Linking again brings back recent history from "
+"your phone. Afterwards, remove the old ZapFast entry under Linked devices on "
+"your phone."
+msgstr ""
+
+#: src/ui/dialogs.rs:1078
+msgid ""
+"If you can restore the original keyring instead, choose Cancel and Try "
+"again: nothing is lost that way."
+msgstr ""
+
+#: src/ui/dialogs.rs:1081
+msgid "Start over"
+msgstr ""
+
+#: src/ui/dialogs.rs:1099
+msgid "Delete for everyone?"
+msgstr ""
+
+#: src/ui/dialogs.rs:1102
 msgid ""
 "Everyone in this chat will see \"This message was deleted\" instead. It "
 "cannot be undone."
 msgstr ""
 
-#: src/ui/dialogs.rs:1126
+#: src/ui/dialogs.rs:1108
+msgid "Delete for me?"
+msgstr ""
+
+#: src/ui/dialogs.rs:1111
 msgid ""
 "This removes the message from your phone and linked devices. Other people "
 "keep their copy. Connect to WhatsApp to delete it. This cannot be undone."
 msgstr ""
 
-#: src/ui/dialogs.rs:1180
+#: src/ui/dialogs.rs:1135
+#, rust-format
+msgid ""
+"This deletes \"{name}\" and its stickers from this computer. To use it "
+"again, import it again."
+msgstr ""
+
+#: src/ui/dialogs.rs:1141
+#, fuzzy
+msgid "Remove sticker pack?"
+msgstr "移除此贴图包"
+
+#: src/ui/dialogs.rs:1143 src/ui/dialogs.rs:1173
+msgid "Remove"
+msgstr "移除"
+
+#: src/ui/dialogs.rs:1153 src/ui/lock.rs:123
+#, fuzzy
+msgid "Unlink this computer?"
+msgstr "取消关联此电脑"
+
+#: src/ui/dialogs.rs:1156
+msgid ""
+"This removes the device from WhatsApp and deletes the chats stored here. You "
+"can link again with a new code."
+msgstr ""
+
+#: src/ui/dialogs.rs:1158 src/ui/lock.rs:139
+#, fuzzy
+msgid "Unlink"
+msgstr "在线状态"
+
+#: src/ui/dialogs.rs:1168
 msgid "Remove this account?"
 msgstr "移除此账号？"
 
-#: src/ui/dialogs.rs:1186
+#: src/ui/dialogs.rs:1171
 msgid ""
 "This unlinks the number on this computer and deletes its local chats. Other "
 "accounts stay."
 msgstr "这会解除此电脑上的号码关联并删除本地聊天。其他账号不受影响。"
 
-#: src/ui/dialogs.rs:1195
-msgid "Remove"
-msgstr "移除"
-
-#: src/ui/dialogs.rs:1215
+#: src/ui/dialogs.rs:1223
 msgid "Leave this channel?"
 msgstr "退出此频道？"
 
-#: src/ui/dialogs.rs:1217
+#: src/ui/dialogs.rs:1225
 msgid "Leave this group?"
 msgstr "退出此群组？"
 
-#: src/ui/dialogs.rs:1224
+#: src/ui/dialogs.rs:1232
 msgid ""
 "You will not receive new messages. The local history stays on this computer."
 msgstr "你将不再收到新消息。本机上的历史记录会保留。"
 
-#: src/ui/dialogs.rs:1244
+#: src/ui/dialogs.rs:1252
 msgid "Leave channel and archive"
 msgstr "退出频道并归档"
 
-#: src/ui/dialogs.rs:1246
+#: src/ui/dialogs.rs:1254
 msgid "Leave group and archive"
 msgstr "退出群组并归档"
 
-#: src/ui/dialogs.rs:1471
+#: src/ui/dialogs.rs:1479
 msgid "Also save to your phone's contacts"
 msgstr "同时保存到手机联系人"
 
-#: src/ui/dialogs.rs:1536
+#: src/ui/dialogs.rs:1544
 msgid "Group"
 msgstr "群组"
 
-#: src/ui/dialogs.rs:1538
+#: src/ui/dialogs.rs:1546
 msgid "Channel"
 msgstr "频道"
 
-#: src/ui/dialogs.rs:1540
+#: src/ui/dialogs.rs:1548
 msgid "Contact"
 msgstr "联系人"
 
-#: src/ui/dialogs.rs:1593
+#: src/ui/dialogs.rs:1601
 msgid "Edit group name"
 msgstr "编辑群组名称"
 
-#: src/ui/dialogs.rs:1723
+#: src/ui/dialogs.rs:1731
 msgid "Saving…"
 msgstr "正在保存…"
 
-#: src/ui/dialogs.rs:1733
+#: src/ui/dialogs.rs:1741
 #, rust-format
 msgid "{} member"
 msgid_plural "{} members"
 msgstr[0] "{} 位成员"
 
-#: src/ui/dialogs.rs:1809
+#: src/ui/dialogs.rs:1817
 msgid "Description"
 msgstr ""
 
-#: src/ui/dialogs.rs:2094
+#: src/ui/dialogs.rs:2102
 msgid "Change group photo"
 msgstr "更换群组头像"
 
-#: src/ui/dialogs.rs:2100
+#: src/ui/dialogs.rs:2108
 msgid "Change photo"
 msgstr "更换头像"
 
-#: src/ui/dialogs.rs:2101
+#: src/ui/dialogs.rs:2109
 msgid "Remove photo"
 msgstr "移除头像"
 
-#: src/ui/dialogs.rs:2141
+#: src/ui/dialogs.rs:2149
 msgid "Group name"
 msgstr "群组名称"
 
-#: src/ui/dialogs.rs:2184
+#: src/ui/dialogs.rs:2192
 msgid "Save name (Enter)"
 msgstr "保存名称（Enter）"
 
-#: src/ui/dialogs.rs:2196
+#: src/ui/dialogs.rs:2204
 msgid "Cancel (Escape)"
 msgstr "取消（Esc）"
 
@@ -1610,110 +1706,110 @@ msgstr "重命名或改颜色"
 msgid "Delete this label. Its chats keep their messages."
 msgstr "删除此标签。其中的聊天会保留消息。"
 
-#: src/ui/picker.rs:1187
+#: src/ui/picker.rs:1189
 msgid "Recent"
 msgstr "最近"
 
-#: src/ui/picker.rs:1189
+#: src/ui/picker.rs:1191
 #, fuzzy
 msgid "Received"
 msgstr "已归档"
 
-#: src/ui/picker.rs:1190
+#: src/ui/picker.rs:1192
 msgid "Add stickers"
 msgstr "添加贴图"
 
-#: src/ui/picker.rs:1225
+#: src/ui/picker.rs:1227
 msgid "Search by emoji, word, or pack"
 msgstr "按表情、文字或贴图包搜索"
 
-#: src/ui/picker.rs:1264
+#: src/ui/picker.rs:1266
 msgid "No stickers match your search."
 msgstr "没有匹配的贴图。"
 
-#: src/ui/picker.rs:1278
+#: src/ui/picker.rs:1280
 msgid "Loading your stickers…"
 msgstr "正在加载你的贴图…"
 
-#: src/ui/picker.rs:1280
+#: src/ui/picker.rs:1282
 msgid "Stickers you send appear here."
 msgstr "你发送的贴图会出现在这里。"
 
-#: src/ui/picker.rs:1289
+#: src/ui/picker.rs:1291
 msgid ""
 "Right-click any sticker to add it to your favorites. They stay in sync with "
 "your phone."
 msgstr "右键点击任意贴图即可加入收藏。收藏会与手机同步。"
 
-#: src/ui/picker.rs:1295
+#: src/ui/picker.rs:1297
 #, fuzzy
 msgid "Stickers people send you appear here."
 msgstr "你发送的贴图会出现在这里。"
 
-#: src/ui/picker.rs:1310
+#: src/ui/picker.rs:1312
 msgid "Remove this pack"
 msgstr "移除此贴图包"
 
-#: src/ui/picker.rs:1324
+#: src/ui/picker.rs:1326
 msgid "Send this pack to the chat"
 msgstr "把这个贴图包发送到聊天"
 
-#: src/ui/picker.rs:1338
+#: src/ui/picker.rs:1340
 msgid "Nothing here yet. Right-click any sticker to add it to this pack."
 msgstr "这里还是空的。右键点击任意贴图即可加入此贴图包。"
 
-#: src/ui/picker.rs:1411
+#: src/ui/picker.rs:1417
 msgid "Import a pack"
 msgstr "导入贴图包"
 
-#: src/ui/picker.rs:1419
+#: src/ui/picker.rs:1425
 msgid ""
 "Paste a signal.art link from signalstickers.org, or open a .wastickers file."
 msgstr "粘贴 signalstickers.org 的 signal.art 链接，或打开 .wastickers 文件。"
 
-#: src/ui/picker.rs:1429
+#: src/ui/picker.rs:1435
 msgid "Make your own"
 msgstr "自己制作"
 
-#: src/ui/picker.rs:1437
+#: src/ui/picker.rs:1443
 msgid ""
 "Start a pack, then right-click any sticker to add it. Or turn a picture into "
 "a sticker."
 msgstr "新建一个贴图包，然后右键点击贴图加入。也可以把图片做成贴图。"
 
-#: src/ui/picker.rs:1449
+#: src/ui/picker.rs:1455
 msgid "Make a sticker from a picture…"
 msgstr "用图片制作贴图…"
 
-#: src/ui/picker.rs:1464
+#: src/ui/picker.rs:1470
 msgid "Create pack"
 msgstr "创建贴图包"
 
-#: src/ui/picker.rs:1475
+#: src/ui/picker.rs:1481
 msgid "New pack…"
 msgstr "新建贴图包…"
 
-#: src/ui/picker.rs:1508
+#: src/ui/picker.rs:1514
 msgid "Find packs"
 msgstr "查找贴图包"
 
-#: src/ui/picker.rs:1509
+#: src/ui/picker.rs:1515
 msgid "Open file"
 msgstr "打开文件"
 
-#: src/ui/picker.rs:1524
+#: src/ui/picker.rs:1530
 msgid "Paste a signal.art link"
 msgstr "粘贴 signal.art 链接"
 
-#: src/ui/picker.rs:1552
+#: src/ui/picker.rs:1558
 msgid "Browse signalstickers.org"
 msgstr "浏览 signalstickers.org"
 
-#: src/ui/picker.rs:1568
+#: src/ui/picker.rs:1574
 msgid "Importing the pack…"
 msgstr "正在导入贴图包…"
 
-#: src/ui/picker.rs:1617
+#: src/ui/picker.rs:1623
 msgid "Remove from recents"
 msgstr "从最近中移除"
 
@@ -1867,22 +1963,12 @@ msgstr ""
 msgid "Forgot password? Unlink this computer"
 msgstr "取消关联此电脑"
 
-#: src/ui/lock.rs:123
-#, fuzzy
-msgid "Unlink this computer?"
-msgstr "取消关联此电脑"
-
 #: src/ui/lock.rs:131
 msgid ""
 "Without the password, the only way back in is to unlink. This removes the "
 "device from WhatsApp, deletes the chats stored here, and turns the app lock "
 "off. You can link again with a new code."
 msgstr ""
-
-#: src/ui/lock.rs:139
-#, fuzzy
-msgid "Unlink"
-msgstr "在线状态"
 
 #. Translators: the body of a notification that hides who wrote and
 #. what: a message has arrived.

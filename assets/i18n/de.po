@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-13 22:15+0200\n"
+"POT-Creation-Date: 2026-10-13 22:18+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: German\n"
@@ -34,7 +34,7 @@ msgstr "Ungelesen"
 msgid "Private"
 msgstr "Privat"
 
-#: src/model.rs:161 src/ui/picker.rs:1188
+#: src/model.rs:161 src/ui/picker.rs:1190
 msgid "Favorites"
 msgstr "Favoriten"
 
@@ -230,22 +230,22 @@ msgstr "Nachricht an dich selbst"
 msgid "Draft:"
 msgstr "Entwurf:"
 
-#: src/ui/chats.rs:1612 src/ui/chats.rs:1999 src/ui/picker.rs:1615
+#: src/ui/chats.rs:1612 src/ui/chats.rs:1999 src/ui/picker.rs:1621
 msgid "Remove from favorites"
 msgstr "Aus Favoriten entfernen"
 
 #: src/ui/chats.rs:1614 src/ui/chats.rs:2001 src/ui/conversation.rs:4843
-#: src/ui/dialogs.rs:1059 src/ui/picker.rs:1616
+#: src/ui/dialogs.rs:1049 src/ui/picker.rs:1622
 msgid "Add to favorites"
 msgstr "Zu Favoriten hinzufügen"
 
 #: src/ui/chats.rs:1624 src/ui/chats.rs:2025 src/ui/conversation.rs:244
-#: src/ui/dialogs.rs:1233 src/ui/dialogs.rs:1779
+#: src/ui/dialogs.rs:1241 src/ui/dialogs.rs:1787
 msgid "Leave group"
 msgstr "Gruppe verlassen"
 
 #: src/ui/chats.rs:1625 src/ui/chats.rs:2023 src/ui/conversation.rs:242
-#: src/ui/dialogs.rs:1231 src/ui/dialogs.rs:1777
+#: src/ui/dialogs.rs:1239 src/ui/dialogs.rs:1785
 msgid "Leave channel"
 msgstr "Kanal verlassen"
 
@@ -510,53 +510,117 @@ msgstr "Stumm"
 msgid "Audio"
 msgstr "Audio"
 
-#: src/ui/dialogs.rs:683
+#: src/ui/dialogs.rs:687
 msgid "Show shortcut hints under the message box"
 msgstr "Tastenkürzel-Hinweise unter dem Eingabefeld anzeigen"
 
-#: src/ui/dialogs.rs:885
+#: src/ui/dialogs.rs:747 src/ui/dialogs.rs:768
+#, fuzzy
+msgid "this chat"
+msgstr "{} Chat"
+
+#: src/ui/dialogs.rs:752
+#, rust-format
+msgid ""
+"This deletes your chat with {name}, including all messages, on this computer "
+"and on your phone. It cannot be undone."
+msgstr ""
+
+#: src/ui/dialogs.rs:758
+msgid "Delete chat?"
+msgstr ""
+
+#: src/ui/dialogs.rs:760 src/ui/dialogs.rs:1121
+msgid "Delete"
+msgstr ""
+
+#: src/ui/dialogs.rs:773
+#, rust-format
+msgid ""
+"This clears every message in your chat with {name}, including downloaded "
+"media, on this computer and on your phone. The chat itself stays. It cannot "
+"be undone."
+msgstr ""
+
+#: src/ui/dialogs.rs:779
+#, fuzzy
+msgid "Clear chat?"
+msgstr "Löschen"
+
+#: src/ui/dialogs.rs:781
+#, fuzzy
+msgid "Clear chat"
+msgstr "Löschen"
+
+#: src/ui/dialogs.rs:875
 msgid "Sticker pack"
 msgstr "Sticker-Pack"
 
-#: src/ui/dialogs.rs:890
+#: src/ui/dialogs.rs:880
 msgid "Downloading the pack…"
 msgstr "Pack wird heruntergeladen…"
 
-#: src/ui/dialogs.rs:914
+#: src/ui/dialogs.rs:904
 msgid "Add to my stickers"
 msgstr "Zu meinen Stickern hinzufügen"
 
-#: src/ui/dialogs.rs:921 src/ui/message_info.rs:28 src/ui/labels.rs:224
+#: src/ui/dialogs.rs:911 src/ui/message_info.rs:28 src/ui/labels.rs:224
 msgid "Close"
 msgstr "Schließen"
 
-#: src/ui/dialogs.rs:938
+#: src/ui/dialogs.rs:928
 msgid "Make a sticker"
 msgstr "Sticker erstellen"
 
-#: src/ui/dialogs.rs:1002
+#: src/ui/dialogs.rs:992
 msgid "Size"
 msgstr "Größe"
 
-#: src/ui/dialogs.rs:1017
+#: src/ui/dialogs.rs:1007
 msgid "Keep the transparent background"
 msgstr "Transparenten Hintergrund behalten"
 
-#: src/ui/dialogs.rs:1034
+#: src/ui/dialogs.rs:1024
 msgid "Emojis that describe it, like 😂 or ❤️"
 msgstr "Passende Emojis, etwa 😂 oder ❤️"
 
-#: src/ui/dialogs.rs:1051 src/ui/locations.rs:80
+#: src/ui/dialogs.rs:1041 src/ui/locations.rs:80
 msgid "Send"
 msgstr "Senden"
 
-#: src/ui/dialogs.rs:1066 src/ui/dialogs.rs:1199 src/ui/dialogs.rs:1261
+#: src/ui/dialogs.rs:1056 src/ui/dialogs.rs:1202 src/ui/dialogs.rs:1269
 #: src/ui/locations.rs:75 src/ui/settings.rs:1003 src/ui/settings.rs:1566
 #: src/ui/lock.rs:142
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: src/ui/dialogs.rs:1118
+#: src/ui/dialogs.rs:1070
+msgid "Start over?"
+msgstr ""
+
+#: src/ui/dialogs.rs:1074
+msgid ""
+"ZapFast keeps your unreadable archive as a separate file, creates a new one, "
+"and asks you to link again. Linking again brings back recent history from "
+"your phone. Afterwards, remove the old ZapFast entry under Linked devices on "
+"your phone."
+msgstr ""
+
+#: src/ui/dialogs.rs:1078
+msgid ""
+"If you can restore the original keyring instead, choose Cancel and Try "
+"again: nothing is lost that way."
+msgstr ""
+
+#: src/ui/dialogs.rs:1081
+msgid "Start over"
+msgstr ""
+
+#: src/ui/dialogs.rs:1099
+msgid "Delete for everyone?"
+msgstr ""
+
+#: src/ui/dialogs.rs:1102
 msgid ""
 "Everyone in this chat will see \"This message was deleted\" instead. It "
 "cannot be undone."
@@ -564,7 +628,11 @@ msgstr ""
 "Alle in diesem Chat sehen stattdessen „Diese Nachricht wurde gelöscht“. Dies "
 "kann nicht rückgängig gemacht werden."
 
-#: src/ui/dialogs.rs:1126
+#: src/ui/dialogs.rs:1108
+msgid "Delete for me?"
+msgstr ""
+
+#: src/ui/dialogs.rs:1111
 msgid ""
 "This removes the message from your phone and linked devices. Other people "
 "keep their copy. Connect to WhatsApp to delete it. This cannot be undone."
@@ -573,11 +641,43 @@ msgstr ""
 "entfernt. Andere Personen behalten ihre Kopie. Verbinde dich mit WhatsApp, "
 "um sie zu löschen. Dies kann nicht rückgängig gemacht werden."
 
-#: src/ui/dialogs.rs:1180
+#: src/ui/dialogs.rs:1135
+#, rust-format
+msgid ""
+"This deletes \"{name}\" and its stickers from this computer. To use it "
+"again, import it again."
+msgstr ""
+
+#: src/ui/dialogs.rs:1141
+#, fuzzy
+msgid "Remove sticker pack?"
+msgstr "Dieses Pack entfernen"
+
+#: src/ui/dialogs.rs:1143 src/ui/dialogs.rs:1173
+msgid "Remove"
+msgstr "Entfernen"
+
+#: src/ui/dialogs.rs:1153 src/ui/lock.rs:123
+#, fuzzy
+msgid "Unlink this computer?"
+msgstr "Diesen Computer abmelden"
+
+#: src/ui/dialogs.rs:1156
+msgid ""
+"This removes the device from WhatsApp and deletes the chats stored here. You "
+"can link again with a new code."
+msgstr ""
+
+#: src/ui/dialogs.rs:1158 src/ui/lock.rs:139
+#, fuzzy
+msgid "Unlink"
+msgstr "Online"
+
+#: src/ui/dialogs.rs:1168
 msgid "Remove this account?"
 msgstr "Dieses Konto entfernen?"
 
-#: src/ui/dialogs.rs:1186
+#: src/ui/dialogs.rs:1171
 msgid ""
 "This unlinks the number on this computer and deletes its local chats. Other "
 "accounts stay."
@@ -585,89 +685,85 @@ msgstr ""
 "Dadurch wird die Nummer auf diesem Computer getrennt und die lokalen Chats "
 "gelöscht. Andere Konten bleiben."
 
-#: src/ui/dialogs.rs:1195
-msgid "Remove"
-msgstr "Entfernen"
-
-#: src/ui/dialogs.rs:1215
+#: src/ui/dialogs.rs:1223
 msgid "Leave this channel?"
 msgstr "Diesen Kanal verlassen?"
 
-#: src/ui/dialogs.rs:1217
+#: src/ui/dialogs.rs:1225
 msgid "Leave this group?"
 msgstr "Diese Gruppe verlassen?"
 
-#: src/ui/dialogs.rs:1224
+#: src/ui/dialogs.rs:1232
 msgid ""
 "You will not receive new messages. The local history stays on this computer."
 msgstr ""
 "Du erhältst keine neuen Nachrichten mehr. Der lokale Verlauf bleibt auf "
 "diesem Computer."
 
-#: src/ui/dialogs.rs:1244
+#: src/ui/dialogs.rs:1252
 msgid "Leave channel and archive"
 msgstr "Kanal verlassen und archivieren"
 
-#: src/ui/dialogs.rs:1246
+#: src/ui/dialogs.rs:1254
 msgid "Leave group and archive"
 msgstr "Gruppe verlassen und archivieren"
 
-#: src/ui/dialogs.rs:1471
+#: src/ui/dialogs.rs:1479
 msgid "Also save to your phone's contacts"
 msgstr "Auch in den Kontakten deines Telefons speichern"
 
-#: src/ui/dialogs.rs:1536
+#: src/ui/dialogs.rs:1544
 msgid "Group"
 msgstr "Gruppe"
 
-#: src/ui/dialogs.rs:1538
+#: src/ui/dialogs.rs:1546
 msgid "Channel"
 msgstr "Kanal"
 
-#: src/ui/dialogs.rs:1540
+#: src/ui/dialogs.rs:1548
 msgid "Contact"
 msgstr "Kontakt"
 
-#: src/ui/dialogs.rs:1593
+#: src/ui/dialogs.rs:1601
 msgid "Edit group name"
 msgstr "Gruppennamen bearbeiten"
 
-#: src/ui/dialogs.rs:1723
+#: src/ui/dialogs.rs:1731
 msgid "Saving…"
 msgstr "Wird gespeichert…"
 
-#: src/ui/dialogs.rs:1733
+#: src/ui/dialogs.rs:1741
 #, rust-format
 msgid "{} member"
 msgid_plural "{} members"
 msgstr[0] "{} Mitglied"
 msgstr[1] "{} Mitglieder"
 
-#: src/ui/dialogs.rs:1809
+#: src/ui/dialogs.rs:1817
 msgid "Description"
 msgstr ""
 
-#: src/ui/dialogs.rs:2094
+#: src/ui/dialogs.rs:2102
 msgid "Change group photo"
 msgstr "Gruppenbild ändern"
 
-#: src/ui/dialogs.rs:2100
+#: src/ui/dialogs.rs:2108
 msgid "Change photo"
 msgstr "Bild ändern"
 
-#: src/ui/dialogs.rs:2101
+#: src/ui/dialogs.rs:2109
 msgid "Remove photo"
 msgstr "Bild entfernen"
 
-#: src/ui/dialogs.rs:2141
+#: src/ui/dialogs.rs:2149
 msgid "Group name"
 msgstr "Gruppenname"
 
-#: src/ui/dialogs.rs:2184
+#: src/ui/dialogs.rs:2192
 msgid "Save name (Enter)"
 msgstr "Namen speichern (Enter)"
 
-#: src/ui/dialogs.rs:2196
+#: src/ui/dialogs.rs:2204
 msgid "Cancel (Escape)"
 msgstr "Abbrechen (Escape)"
 
@@ -1672,35 +1768,35 @@ msgstr "Umbenennen oder umfärben"
 msgid "Delete this label. Its chats keep their messages."
 msgstr "Dieses Label löschen. Seine Chats behalten ihre Nachrichten."
 
-#: src/ui/picker.rs:1187
+#: src/ui/picker.rs:1189
 msgid "Recent"
 msgstr "Zuletzt verwendet"
 
-#: src/ui/picker.rs:1189
+#: src/ui/picker.rs:1191
 msgid "Received"
 msgstr "Empfangen"
 
-#: src/ui/picker.rs:1190
+#: src/ui/picker.rs:1192
 msgid "Add stickers"
 msgstr "Sticker hinzufügen"
 
-#: src/ui/picker.rs:1225
+#: src/ui/picker.rs:1227
 msgid "Search by emoji, word, or pack"
 msgstr "Nach Emoji, Wort oder Pack suchen"
 
-#: src/ui/picker.rs:1264
+#: src/ui/picker.rs:1266
 msgid "No stickers match your search."
 msgstr "Keine Sticker passen zu deiner Suche."
 
-#: src/ui/picker.rs:1278
+#: src/ui/picker.rs:1280
 msgid "Loading your stickers…"
 msgstr "Deine Sticker werden geladen…"
 
-#: src/ui/picker.rs:1280
+#: src/ui/picker.rs:1282
 msgid "Stickers you send appear here."
 msgstr "Hier erscheinen Sticker, die du sendest."
 
-#: src/ui/picker.rs:1289
+#: src/ui/picker.rs:1291
 msgid ""
 "Right-click any sticker to add it to your favorites. They stay in sync with "
 "your phone."
@@ -1708,40 +1804,40 @@ msgstr ""
 "Klicke mit der rechten Maustaste auf einen Sticker, um ihn zu deinen "
 "Favoriten hinzuzufügen. Sie bleiben mit deinem Telefon synchron."
 
-#: src/ui/picker.rs:1295
+#: src/ui/picker.rs:1297
 msgid "Stickers people send you appear here."
 msgstr "Hier erscheinen Sticker, die du bekommst."
 
-#: src/ui/picker.rs:1310
+#: src/ui/picker.rs:1312
 msgid "Remove this pack"
 msgstr "Dieses Pack entfernen"
 
-#: src/ui/picker.rs:1324
+#: src/ui/picker.rs:1326
 msgid "Send this pack to the chat"
 msgstr "Dieses Pack in den Chat senden"
 
-#: src/ui/picker.rs:1338
+#: src/ui/picker.rs:1340
 msgid "Nothing here yet. Right-click any sticker to add it to this pack."
 msgstr ""
 "Noch nichts hier. Klicke mit der rechten Maustaste auf einen Sticker, um ihn "
 "diesem Pack hinzuzufügen."
 
-#: src/ui/picker.rs:1411
+#: src/ui/picker.rs:1417
 msgid "Import a pack"
 msgstr "Pack importieren"
 
-#: src/ui/picker.rs:1419
+#: src/ui/picker.rs:1425
 msgid ""
 "Paste a signal.art link from signalstickers.org, or open a .wastickers file."
 msgstr ""
 "Füge einen signal.art-Link von signalstickers.org ein oder öffne "
 "eine .wastickers-Datei."
 
-#: src/ui/picker.rs:1429
+#: src/ui/picker.rs:1435
 msgid "Make your own"
 msgstr "Selbst gestalten"
 
-#: src/ui/picker.rs:1437
+#: src/ui/picker.rs:1443
 msgid ""
 "Start a pack, then right-click any sticker to add it. Or turn a picture into "
 "a sticker."
@@ -1749,39 +1845,39 @@ msgstr ""
 "Lege ein Pack an und füge dann mit einem Rechtsklick beliebige Sticker "
 "hinzu. Oder mach aus einem Bild einen Sticker."
 
-#: src/ui/picker.rs:1449
+#: src/ui/picker.rs:1455
 msgid "Make a sticker from a picture…"
 msgstr "Sticker aus einem Bild machen…"
 
-#: src/ui/picker.rs:1464
+#: src/ui/picker.rs:1470
 msgid "Create pack"
 msgstr "Pack erstellen"
 
-#: src/ui/picker.rs:1475
+#: src/ui/picker.rs:1481
 msgid "New pack…"
 msgstr "Neues Pack…"
 
-#: src/ui/picker.rs:1508
+#: src/ui/picker.rs:1514
 msgid "Find packs"
 msgstr "Packs finden"
 
-#: src/ui/picker.rs:1509
+#: src/ui/picker.rs:1515
 msgid "Open file"
 msgstr "Datei öffnen"
 
-#: src/ui/picker.rs:1524
+#: src/ui/picker.rs:1530
 msgid "Paste a signal.art link"
 msgstr "signal.art-Link einfügen"
 
-#: src/ui/picker.rs:1552
+#: src/ui/picker.rs:1558
 msgid "Browse signalstickers.org"
 msgstr "signalstickers.org durchsuchen"
 
-#: src/ui/picker.rs:1568
+#: src/ui/picker.rs:1574
 msgid "Importing the pack…"
 msgstr "Pack wird importiert…"
 
-#: src/ui/picker.rs:1617
+#: src/ui/picker.rs:1623
 msgid "Remove from recents"
 msgstr "Aus „Zuletzt verwendet“ entfernen"
 
@@ -1937,22 +2033,12 @@ msgstr ""
 msgid "Forgot password? Unlink this computer"
 msgstr "Diesen Computer abmelden"
 
-#: src/ui/lock.rs:123
-#, fuzzy
-msgid "Unlink this computer?"
-msgstr "Diesen Computer abmelden"
-
 #: src/ui/lock.rs:131
 msgid ""
 "Without the password, the only way back in is to unlink. This removes the "
 "device from WhatsApp, deletes the chats stored here, and turns the app lock "
 "off. You can link again with a new code."
 msgstr ""
-
-#: src/ui/lock.rs:139
-#, fuzzy
-msgid "Unlink"
-msgstr "Online"
 
 #. Translators: the body of a notification that hides who wrote and
 #. what: a message has arrived.
