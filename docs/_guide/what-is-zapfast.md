@@ -9,7 +9,9 @@ nav_order: 0
 ## Why ZapFast
 
 WhatsApp has no official Linux app. ZapFast is a native WhatsApp client
-written in Rust with [egui](https://github.com/emilk/egui). It connects through
+written in Rust with [egui](https://www.egui.rs) and
+[fastframe](https://fastframe.dev), the framework behind a family of native
+desktop apps. It connects through
 [whatsapp-rust](https://github.com/oxidezap/whatsapp-rust). ZapFast is a
 single binary with no browser engine and uses a layout similar to WhatsApp Web.
 In our Linux test, it opens in under a second and uses about 200 MB of idle
@@ -92,8 +94,8 @@ ZapFast connects through
 of the [whatsmeow](https://github.com/tulir/whatsmeow) lineage. WhatsApp
 Web defines the companion-device model. ZapFast is a sibling of
 [Spotifast](https://spotifast.rocks), a native client for Spotify. Both are
-built on [fastframe](https://github.com/crmne/fastframe), the shared foundation
-for native Rust apps built with egui.
+built on [fastframe](https://fastframe.dev), the shared foundation for native
+Rust apps built with [egui](https://www.egui.rs).
 
 ZapFast is an independent project, not affiliated with or endorsed by
 WhatsApp LLC or Meta. WhatsApp is a trademark of WhatsApp LLC.
