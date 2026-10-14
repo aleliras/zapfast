@@ -762,7 +762,7 @@ impl Shell {
         } else {
             28.0 / ctx.zoom_factor()
         };
-        fastframe_macos::align_traffic_lights(frame, ctx, title_bar);
+        fastframe_titlebar::align_traffic_lights(frame, ctx, title_bar);
         zapfast::backdrop::apply(frame, &app.palette, self.transparent);
         #[cfg(feature = "demo")]
         {

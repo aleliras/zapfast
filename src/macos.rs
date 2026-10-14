@@ -1,6 +1,6 @@
 //! Main-thread AppKit application menus. The menu outlives windows, just like
 //! the link and tray; reopening replaces only its repaint callback. The
-//! traffic lights are placed by fastframe-macos. The Messages theme's
+//! traffic lights are placed by fastframe-titlebar. The Messages theme's
 //! translucent sidebar is AppKit's own sidebar material, behind the window.
 
 use std::cell::RefCell;
