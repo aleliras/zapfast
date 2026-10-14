@@ -458,6 +458,11 @@ so and the same button answers. A computer without a camera, or with one another
 program is using, still takes part in a video call: you see the other side, and
 your camera stays off.
 
+Your picture follows the connection. A call starts at a moderate quality and
+rises to 720p at 20 frames a second while the other side reports a clean
+connection; when it reports loss, or the connection cannot keep up, ZapFast
+sends a smaller picture at a lower frame rate rather than one that freezes.
+
 Calls open the system's default microphone and speaker, and the first camera.
 The pickers move a call to another device while it runs without changing your
 system's defaults; a device that goes away falls back to the default, and the

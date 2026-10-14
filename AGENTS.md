@@ -166,7 +166,11 @@ protocol. These notes are for coding agents and new contributors.
   cameras through linuxvideo on Linux (pure Rust, no build-time bindings) and
   nokhwa on macOS and Windows, converts every layout to YUV 4:2:0, and the
   call's capture thread encodes it with openh264 (Constrained Baseline, 720p
-  at most, 20 fps) into the library's timed `VideoSource`; the peer's access
+  at most, 20 fps) into the library's timed `VideoSource`. `src/video_rate.rs`
+  adapts the bitrate (from 700 kbit/s) and the step of size and frame rate
+  (480p15, 540p20, 720p20) to the peer's RTCP loss, its REMB, and dropped
+  video; the camera is thinned to every nth frame of its measured rate and
+  stamped from capture time, never thinned by elapsed time; the peer's access
   units decode on a thread of their own and reach the window as
   `Event::CallVideo` frames. A camera that cannot open leaves a video call
   receive-only rather than refusing it. Call history is `Content::Call`

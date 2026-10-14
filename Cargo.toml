@@ -116,6 +116,9 @@ resvg = { version = "0.45", default-features = false }
 # Desktop notifications through D-Bus on Linux and system frameworks elsewhere.
 notify-rust = { version = "4", default-features = false, features = ["z"] }
 openh264 = "0.9"
+# The encoder option a call's camera uses to change its bitrate mid-stream,
+# which openh264 does not wrap. Already included through openh264.
+openh264-sys2 = { version = "0.9", default-features = false }
 mp4 = "0.14"
 # The 0.22 release ends the sound of an interleaved MP4 at the first packet of
 # another track, so a video that has a picture and a sound track plays a tenth
