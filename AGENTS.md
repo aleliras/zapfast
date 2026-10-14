@@ -68,9 +68,9 @@ protocol. These notes are for coding agents and new contributors.
   Chats, Calls and Starred at the top, the one on screen lit (Calls and
   Starred are left through Chats or Escape, never toggled); Archived and
   Locked (while there are such chats; they open in the list column),
-  Settings and our own avatar at the bottom. The chats' avatars fill it
-  between the two (`chats::compact_list`), beside the list or with it
-  hidden; beside it they scroll on their own (`ScrollPane::Rail`). On macOS the traffic lights reach
+  Settings and our own avatar at the bottom. While the list is hidden the
+  chats' avatars fill it between the two (`chats::compact_list`); beside the
+  list they would only repeat it. On macOS the traffic lights reach
   past it over the header beside it, which leaves `rail::lights_overhang`
   free; a narrow window hides the rail with the list. The Calls tab keeps
   the open chat beside its history (`App::chat_view`), and a picked call row

@@ -63,8 +63,6 @@ pub struct CallTexture {
 pub enum ScrollPane {
     /// The chat list, or the rail's avatars while the list is hidden.
     Chats,
-    /// The rail's avatars beside the shown list.
-    Rail,
     /// The open chat's messages.
     Messages,
 }
@@ -409,9 +407,6 @@ pub struct App {
     /// A sent message moves its chat up, so the chat list goes to the top,
     /// if it is near the top already (the list decides, from its offset).
     pub scroll_chats_to_top: bool,
-    /// The same request for the rail's avatars, which scroll on their own
-    /// beside the list.
-    pub scroll_rail_to_top: bool,
     pub composer: String,
     composer_mentions: Vec<ComposerMention>,
     /// Byte offset of the `:` starting the active emoji query.
@@ -1299,7 +1294,6 @@ impl App {
             zoom_applied: false,
             wallpaper_image: crate::wallpaper::CustomImage::default(),
             scroll_chats_to_top: false,
-            scroll_rail_to_top: false,
             composer: String::new(),
             composer_mentions: Vec::new(),
             emoji_start: None,
@@ -5323,7 +5317,6 @@ impl App {
     fn follow_sent_chat(&mut self) {
         if !self.favorites_order() {
             self.scroll_chats_to_top = true;
-            self.scroll_rail_to_top = true;
         }
     }
 
