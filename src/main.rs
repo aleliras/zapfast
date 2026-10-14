@@ -453,6 +453,7 @@ fn run() -> eframe::Result<()> {
                     Ok(Box::new(Shell {
                         app,
                         window_recovery_checked: false,
+                        stalls: Default::default(),
                         transparent,
                         update_receipt: receipt,
                         #[cfg(target_os = "windows")]
@@ -619,6 +620,8 @@ fn native_options(
 struct Shell {
     /// Whether this window's first frame checked that a monitor shows it.
     window_recovery_checked: bool,
+    /// Logs an update that froze the window for a moment.
+    stalls: fastframe_shell::StallWatch,
     /// Whether this window was made transparent, for the Messages theme.
     transparent: bool,
     update_receipt: Option<fastframe_update::Receipt>,
@@ -717,6 +720,25 @@ impl eframe::App for Shell {
     }
 
     fn logic(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        let mut stalls = std::mem::take(&mut self.stalls);
+        stalls.logic(|| self.window_logic(ctx, frame));
+        self.stalls = stalls;
+    }
+
+    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        let mut stalls = std::mem::take(&mut self.stalls);
+        stalls.ui(|| self.window_ui(ui));
+        self.stalls = stalls;
+    }
+
+    /// Saves essential state before the window closes.
+    fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
+        self.app.save_state();
+    }
+}
+
+impl Shell {
+    fn window_logic(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         if !std::mem::replace(&mut self.window_recovery_checked, true) {
             fastframe_shell::window::recover_offscreen(ctx, frame);
         }
@@ -757,7 +779,7 @@ impl eframe::App for Shell {
         }
     }
 
-    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+    fn window_ui(&mut self, ui: &mut egui::Ui) {
         let app = &mut *self.app;
         #[cfg(feature = "demo")]
         if std::mem::take(&mut self.open_phone_menu) {
@@ -791,11 +813,6 @@ impl eframe::App for Shell {
             // itself, since there is no backend to answer them.
             None => zapfast::demo::tour::respond(app),
         }
-    }
-
-    /// Saves essential state before the window closes.
-    fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
-        self.app.save_state();
     }
 }
 
