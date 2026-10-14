@@ -59,8 +59,10 @@ pub struct CallTexture {
 /// A pane that scrolls on its own, which a scroll gesture stays with.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ScrollPane {
-    /// The chat list, or its collapsed avatar column.
+    /// The chat list, or the rail's avatars while the list is hidden.
     Chats,
+    /// The rail's avatars beside the shown list.
+    Rail,
     /// The open chat's messages.
     Messages,
 }
@@ -405,6 +407,9 @@ pub struct App {
     /// A sent message moves its chat up, so the chat list goes to the top,
     /// if it is near the top already (the list decides, from its offset).
     pub scroll_chats_to_top: bool,
+    /// The same request for the rail's avatars, which scroll on their own
+    /// beside the list.
+    pub scroll_rail_to_top: bool,
     pub composer: String,
     composer_mentions: Vec<ComposerMention>,
     /// Byte offset of the `:` starting the active emoji query.
@@ -1278,6 +1283,7 @@ impl App {
             zoom_applied: false,
             wallpaper_image: crate::wallpaper::CustomImage::default(),
             scroll_chats_to_top: false,
+            scroll_rail_to_top: false,
             composer: String::new(),
             composer_mentions: Vec::new(),
             emoji_start: None,
@@ -5298,6 +5304,7 @@ impl App {
     fn follow_sent_chat(&mut self) {
         if !self.favorites_order() {
             self.scroll_chats_to_top = true;
+            self.scroll_rail_to_top = true;
         }
     }
 
@@ -7632,6 +7639,15 @@ impl App {
                 self.show_archived = false;
                 self.unread_kept.clear();
                 self.remember_list_filter();
+            }
+            Action::SetCallFilter(filter) => {
+                self.call_filter = filter;
+                // Kept for the next start, as the chat list's chip is.
+                let key = filter.key();
+                if self.account().settings.call_filter != key {
+                    self.account_mut().settings.call_filter = key;
+                    self.account_mut().mark_settings_dirty();
+                }
             }
             Action::JoinGroup => {
                 use crate::model::InviteState;

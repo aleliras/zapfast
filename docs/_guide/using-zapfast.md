@@ -478,7 +478,10 @@ every call of the number on screen, newest first, with calls in a row from the
 same person folded into one row with a count. Each row says which way the call
 went (a missed call's name is red), when, and how it went, and its phone or
 camera button calls back the same way. The search field finds calls by name or
-number. The chat you had open stays beside the list; clicking a row opens that
+number. The chips under it show **All** calls or only the **Missed** ones (calls
+to you that nobody answered, group calls included); a search looks among the
+calls the chip shows, and ZapFast remembers the chip for each number. The chat
+you had open stays beside the list; clicking a row opens that
 person's chat there instead, at the call, with the voice and video buttons in
 its header. With no chat open, the pane beside the list offers **Start call**.
 The **New call** button in the list's header (or **Start call**) opens a list
@@ -686,10 +689,12 @@ A thin rail runs down the left of the chat list: **Chats**, **Calls**
 top, the one on screen lit; **Archived** and **Locked** (while you have
 archived or locked chats), **Settings**, and your own picture (the account
 switcher) at the bottom. The chat list's header keeps its title, **New
-chat**, and the button beside it (`Ctrl+B`), which hides the list: the chats'
-avatars then fill the rail between its top and bottom buttons. Unread chats
-show their badge, hovering names a chat, clicking opens it, and `Ctrl+B` or
-the button under **Starred** brings the full list back.
+chat**, and the button beside it (`Ctrl+B`), which hides the list. Between
+the rail's top and bottom buttons are the avatars of the chats the list shows,
+with the list on screen or hidden, scrolling on their own when they do not all
+fit. Unread chats show their badge, hovering names a chat, and clicking opens
+it. While the list is hidden, `Ctrl+B` or the button under **Starred** brings
+it back.
 
 ## Notifications and the tray
 
