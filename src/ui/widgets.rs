@@ -1127,16 +1127,33 @@ pub fn bubble_corners(tail: Option<Side>) -> CornerRadius {
 /// message of a run a small tail at the top corner toward the sender, as the
 /// phone draws it. A handful of vertices; bubbles off screen are culled
 /// before tessellation. `pixels_per_point` sets the soft edge the Messages
-/// style draws for itself.
+/// style draws for itself, and `screen` is the span of the view the bubble
+/// scrolls in, down which Messages shades your own balloons; WhatsApp's
+/// style ignores both.
 pub fn bubble_shape(
     palette: &Palette,
     rect: Rect,
     fill: Color32,
     tail: Option<Side>,
     pixels_per_point: f32,
+    screen: egui::Rangef,
 ) -> egui::Shape {
     if palette.bubbles == theme::BubbleStyle::Messages {
-        return messages_bubble_shape(rect, fill, tail, 1.0 / pixels_per_point);
+        // Your own balloons run from the palette's colour at the top of the
+        // view to a deeper one at its bottom, as ChatKit's dynamic gradient
+        // does; incoming ones are flat.
+        let gradient = palette
+            .bubble_out_gradient()
+            .filter(|_| fill == palette.bubble_out);
+        let color = |point: egui::Pos2| match gradient {
+            Some((top, bottom)) if screen.span() > 0.0 => top.lerp_to_gamma(
+                bottom,
+                ((point.y - screen.min) / screen.span()).clamp(0.0, 1.0),
+            ),
+            _ => fill,
+        };
+        let outline = messages_balloon(rect, tail, MESSAGES_SCALE);
+        return egui::Shape::mesh(fill_outline(&outline, color, 1.0 / pixels_per_point));
     }
     let corners = bubble_corners(tail);
     let shadow = palette.bubble_shadow();
@@ -1189,106 +1206,211 @@ pub fn bubble_shape(
     egui::Shape::Vec(shapes)
 }
 
-/// How round a Messages bubble is: a single line reads as a pill.
-pub const MESSAGES_BUBBLE_RADIUS: u8 = 17;
+/// The text size Messages lays its balloons out for on the Mac: ChatKit's
+/// `CKUIBehaviorMac.balloonTextFont` is the 13 pt system font.
+pub const MESSAGES_TEXT_SIZE: f32 = 13.0;
+/// The size of a message's text in ZapFast, every theme alike.
+pub const MESSAGE_TEXT_SIZE: f32 = 14.5;
+/// How much larger than Messages' own a ZapFast balloon is drawn: its
+/// geometry keeps Apple's proportions to the text it holds.
+pub const MESSAGES_SCALE: f32 = MESSAGE_TEXT_SIZE / MESSAGES_TEXT_SIZE;
 
-/// A bubble as macOS Messages draws it: flat, round, and on the last message
-/// of a run a tail that curls out of its bottom corner toward the sender.
-/// The tail is part of the bubble's outline, so the side runs straight down
-/// into it; that outline is concave under the tail, so it is filled as a
-/// mesh of its own, with a feathered edge `feather` points wide.
-fn messages_bubble_shape(
-    rect: Rect,
-    fill: Color32,
-    tail: Option<Side>,
-    feather: f32,
-) -> egui::Shape {
-    let Some(side) = tail else {
-        let radius = f32::from(MESSAGES_BUBBLE_RADIUS).min(rect.height() / 2.0);
-        return egui::Shape::rect_filled(rect, CornerRadius::from(radius), fill);
-    };
-    egui::Shape::mesh(fill_outline(&messages_outline(rect, side), fill, feather))
+/// How round a picture without a bubble is in the Messages style: a single
+/// line's corner, [`balloon::PILL_RADIUS`] at [`MESSAGES_SCALE`], rounded.
+pub const MESSAGES_BUBBLE_RADIUS: u8 = 15;
+
+/// Apple's message balloon, as the vector artwork ChatKit masks Messages'
+/// balloons with on the Mac: the `mac-bubble`, `mac-bubble-tailless` and
+/// `mac-bubble-multiline` images of
+/// `/System/iOSSupport/System/Library/PrivateFrameworks/ChatKit.framework/Resources/Assets.car`
+/// (macOS 27, build 26A428), read with `assetutil --info` for their sizes and
+/// stretch insets, their PDF paths copied number for number. Lengths are
+/// Messages' points at its 13 pt text; x runs out of the balloon toward the
+/// tail, y up from the balloon's bottom edge, as in the PDFs.
+///
+/// The images are 43 points wide, a 38 point body and 5 points beside it for
+/// the tail, tailless ones too, so a run's balloons line their bodies up. A
+/// single line is 27 points high with circular 13.5 point corners; the
+/// multi-line image swaps them for Apple's continuous corner, 14 points each
+/// way. Both stretch only between their corners, so the body's straight
+/// edges grow and the corners and tail keep their size.
+pub mod balloon {
+    /// One step of an outline: a straight line or a cubic Bézier curve to a
+    /// point, its control points before it.
+    #[derive(Clone, Copy, Debug)]
+    pub enum Step {
+        Line([f32; 2]),
+        Cubic([f32; 2], [f32; 2], [f32; 2]),
+    }
+
+    /// A single line's corner radius (`mac-bubble.pdf`: `0 13.5 m` to
+    /// `13.5 27`).
+    pub const PILL_RADIUS: f32 = 13.5;
+    /// How far a multi-line balloon's continuous corner reaches along each
+    /// edge (`mac-bubble-multiline.pdf`: `14 0` to `0 14`).
+    pub const CORNER: f32 = 14.0;
+    /// Where a circular corner's control points sit, as a share of its
+    /// radius from the corner: Apple's own `6.044156` of `13.5`.
+    pub const ARC_HANDLE: f32 = 6.044_156 / 13.5;
+    /// A continuous corner from the point [`CORNER`] along one edge to the
+    /// point as far along the other, `[along the first, along the second]`
+    /// from the corner itself. Three cubics, symmetric about the diagonal.
+    pub const CONTINUOUS: [Step; 3] = [
+        Step::Cubic(
+            [11.29805, 0.0],
+            [8.841_847, 0.654_906_2],
+            [6.767_773, 1.828_331],
+        ),
+        Step::Cubic(
+            [4.693_699, 3.001_756],
+            [3.001_756, 4.693_699],
+            [1.828_331, 6.767_773],
+        ),
+        Step::Cubic([0.654_906_2, 8.841_847], [0.0, 11.29805], [0.0, 14.0]),
+    ];
+    /// How high above the bottom edge the side leaves its straight line and
+    /// curls into the tail.
+    pub const TAIL_RISE: f32 = 7.5;
+    /// The tail, from [`TAIL_RISE`] up the side to its tip and back along
+    /// its underside to the bottom edge, 2 points out: identical in the
+    /// single- and multi-line images. The 0.9314 line is Apple's.
+    pub const TAIL: [Step; 5] = [
+        Step::Cubic([0.0, 6.097_317], [0.27846, 4.847_764], [0.79683, 3.789_906]),
+        Step::Line([0.9314, 3.529_458]),
+        Step::Cubic(
+            [1.53598, 2.418_347],
+            [2.41835, 1.535_982],
+            [3.52946, 0.931_395_6],
+        ),
+        Step::Cubic(
+            [3.92285, 0.717_337_5],
+            [4.34493, 0.538_100_6],
+            [TIP[0], TIP[1]],
+        ),
+        Step::Cubic([3.9079, 0.138_131_4], [2.97008, 0.0], [2.0, 0.0]),
+    ];
+    /// The tail's tip: how far past the body's side it reaches, and how
+    /// high above the bottom edge.
+    pub const TIP: [f32; 2] = [4.7935, 0.395_861_1];
+    /// Under a single line's tail, the notch back up into the body and its
+    /// rounded corner down to the bottom edge, [`PILL_RADIUS`] in.
+    pub const PILL_NOTCH: [Step; 2] = [
+        Step::Cubic(
+            [-0.76855, 0.0],
+            [-3.27432, 1.125_069],
+            [-5.08506, 2.942_948],
+        ),
+        Step::Cubic([-7.39191, 1.101_345], [-10.31734, 0.0], [-PILL_RADIUS, 0.0]),
+    ];
+    /// The same notch under several lines, which joins the continuous
+    /// corner's last two curves, [`CORNER`] in.
+    pub const MULTILINE_NOTCH: [Step; 3] = [
+        Step::Cubic(
+            [-0.77363, 0.0],
+            [-3.28353, 1.129_208],
+            [-5.09503, 2.952_977],
+        ),
+        Step::Cubic(
+            [-5.61882, 2.537_802],
+            [-6.17784, 2.162_092],
+            [-6.76777, 1.828_331],
+        ),
+        Step::Cubic([-8.84185, 0.654_906_2], [-11.29805, 0.0], [-CORNER, 0.0]),
+    ];
+    /// The body of the single-line image: 38 by 27 points.
+    pub const PILL_SIZE: [f32; 2] = [38.0, 27.0];
+    /// The tallest balloon still drawn as a single line. Messages picks the
+    /// image by its line count: one line of its 13 pt text is 29.3 points
+    /// high with the 7 point insets above and below it
+    /// (`CKUIBehaviorMac.textBalloonPillContentInsets`), two are 44.6; ZapFast
+    /// splits the difference.
+    pub const SINGLE_LINE_MAX: f32 = 37.0;
 }
 
-/// How far a Messages tail's tip reaches out past the bubble's side.
-pub const MESSAGES_TAIL_REACH: f32 = 8.0;
-/// How high above the bottom edge the notch under a Messages tail rises,
-/// and how far inside the side its top is.
-const MESSAGES_TAIL_NOTCH: f32 = 4.0;
-const MESSAGES_TAIL_NOTCH_IN: f32 = 2.0;
-/// How far in from the side the bubble's corner under the notch meets the
-/// bottom edge.
-const MESSAGES_TAIL_FOOT: f32 = 11.0;
-/// How far up the side a Messages tail starts to curl out.
-const MESSAGES_TAIL_RISE: f32 = 16.0;
-/// Points per rounded corner, and per curve of the tail.
-const OUTLINE_STEPS: usize = 8;
-
-/// The outline of a Messages bubble with its tail on `side`, clockwise on
-/// screen: three rounded corners, the side straight down into the tail's
-/// curl, its tip level with the bottom edge, and under it a notch where the
-/// tail's underside meets the bubble's rounded bottom corner. Nothing goes
-/// below the bottom edge.
-pub fn messages_outline(rect: Rect, side: Side) -> Vec<egui::Pos2> {
-    let radius = f32::from(MESSAGES_BUBBLE_RADIUS).min(rect.height() / 2.0);
-    let (left, top, right, bottom) = (rect.left(), rect.top(), rect.right(), rect.bottom());
-    let arc = |centre: egui::Pos2, from: f32, to: f32| {
-        (0..=OUTLINE_STEPS).map(move |step| {
-            let angle = (from + (to - from) * step as f32 / OUTLINE_STEPS as f32).to_radians();
-            centre + radius * vec2(angle.cos(), angle.sin())
-        })
+/// The outline of a Messages balloon whose body fills `rect`, clockwise on
+/// screen, flattened to points: Apple's corners, and with `tail` its curl out
+/// of the bottom corner on that side, reaching [`balloon::TIP`] past it. All
+/// lengths are Apple's times `scale`, shrunk together for a balloon too small
+/// for them, so the outline never crosses itself.
+pub fn messages_balloon(rect: Rect, tail: Option<Side>, scale: f32) -> Vec<egui::Pos2> {
+    use balloon::Step;
+    let multiline = rect.height() > balloon::SINGLE_LINE_MAX * scale;
+    // A single line is at least the image's own height; anything smaller,
+    // or narrower than two corners, takes all of Apple's lengths down
+    // together.
+    let fit = if multiline {
+        2.0 * balloon::CORNER
+    } else {
+        balloon::PILL_SIZE[1]
     };
-    // Control points never below `bottom`, so neither are the curves.
-    let cubic = |a: egui::Pos2, b: egui::Pos2, c: egui::Pos2, d: egui::Pos2| {
-        (1..=OUTLINE_STEPS).map(move |step| {
-            let t = step as f32 / OUTLINE_STEPS as f32;
-            let u = 1.0 - t;
-            (a.to_vec2() * (u * u * u)
-                + b.to_vec2() * (3.0 * u * u * t)
-                + c.to_vec2() * (3.0 * u * t * t)
-                + d.to_vec2() * (t * t * t))
-                .to_pos2()
-        })
+    let scale = scale
+        .min(rect.height() / fit)
+        .min(rect.width() / fit)
+        .max(0.0);
+    let (left, top, right, bottom) = (rect.left(), rect.top(), rect.right(), rect.bottom());
+    let mut points = Vec::new();
+    // A corner from the point `reach` along `first` from `corner` to the
+    // point as far along `second`.
+    let corner = |points: &mut Vec<egui::Pos2>, at: egui::Pos2, first: Vec2, second: Vec2| {
+        let place = |[a, b]: [f32; 2]| at + first * (a * scale) + second * (b * scale);
+        if multiline {
+            let start = place([balloon::CORNER, 0.0]);
+            trace(points, start, &balloon::CONTINUOUS, place);
+        } else {
+            let r = balloon::PILL_RADIUS;
+            let h = r * balloon::ARC_HANDLE;
+            let start = place([r, 0.0]);
+            trace(
+                points,
+                start,
+                &[Step::Cubic([h, 0.0], [0.0, h], [0.0, r])],
+                place,
+            );
+        }
     };
     // Drawn with the tail on the right, then mirrored for the left.
-    let start = pos2(right, (bottom - MESSAGES_TAIL_RISE).max(top + radius));
-    let tip = pos2(right + MESSAGES_TAIL_REACH, bottom);
-    // The top of the notch under the tail, just inside the side, and where
-    // the bubble's bottom corner comes back down to the bottom edge.
-    let notch = pos2(right - MESSAGES_TAIL_NOTCH_IN, bottom - MESSAGES_TAIL_NOTCH);
-    let foot = pos2(right - MESSAGES_TAIL_FOOT, bottom);
-    let mut points: Vec<egui::Pos2> = arc(pos2(left + radius, top + radius), 180.0, 270.0)
-        .chain(arc(pos2(right - radius, top + radius), 270.0, 360.0))
-        .collect();
-    points.push(start);
-    // Out of the side with its tangent, then bending out and down into the
-    // tip, high enough above the notch for the tail to taper to it.
-    points.extend(cubic(
-        start,
-        pos2(right, bottom - (bottom - start.y) * 0.35),
-        pos2(right + MESSAGES_TAIL_REACH * 0.55, bottom - 3.0),
-        tip,
-    ));
-    // Under it, the notch WhatsApp's tail has on iOS: the tail's underside
-    // rises from the tip to a point just inside the side, and the bubble's
-    // bottom corner comes back down from it, rounded, to the bottom edge.
-    points.extend(cubic(
-        tip,
-        pos2(right + MESSAGES_TAIL_REACH * 0.55, bottom - 0.3),
-        pos2(notch.x + 2.5, notch.y + 1.8),
-        notch,
-    ));
-    points.extend(cubic(
-        notch,
-        pos2(notch.x - 0.5, bottom - 1.5),
-        pos2(foot.x + 3.0, bottom),
-        foot,
-    ));
-    points.extend(arc(pos2(left + radius, bottom - radius), 90.0, 180.0));
-    // On a single line the last arc ends where the first began.
+    let side = tail.unwrap_or(Side::Right);
+    // Top left, from the left side to the top edge, then top right.
+    corner(&mut points, pos2(left, top), vec2(0.0, 1.0), vec2(1.0, 0.0));
+    corner(
+        &mut points,
+        pos2(right, top),
+        vec2(-1.0, 0.0),
+        vec2(0.0, 1.0),
+    );
+    if tail.is_some() {
+        // Down the side into the tail, and under it back to the bottom
+        // edge. Apple's y runs up from the bottom edge.
+        let place = |[x, y]: [f32; 2]| pos2(right + x * scale, bottom - y * scale);
+        let start = place([0.0, balloon::TAIL_RISE]);
+        points.push(start);
+        trace(&mut points, start, &balloon::TAIL, place);
+        let notch: &[Step] = if multiline {
+            &balloon::MULTILINE_NOTCH
+        } else {
+            &balloon::PILL_NOTCH
+        };
+        trace(&mut points, place([2.0, 0.0]), notch, place);
+    } else {
+        corner(
+            &mut points,
+            pos2(right, bottom),
+            vec2(0.0, -1.0),
+            vec2(-1.0, 0.0),
+        );
+    }
+    corner(
+        &mut points,
+        pos2(left, bottom),
+        vec2(1.0, 0.0),
+        vec2(0.0, -1.0),
+    );
+    // Straight edges join the corners; drop the points that repeat where
+    // one curve ends and the next begins, the last one included.
+    points.dedup_by(|b, a| a.distance(*b) < 1e-4);
     if points
         .last()
-        .is_some_and(|last| last.distance(points[0]) < 1e-3)
+        .is_some_and(|last| last.distance(points[0]) < 1e-4)
     {
         points.pop();
     }
@@ -1302,10 +1424,54 @@ pub fn messages_outline(rect: Rect, side: Side) -> Vec<egui::Pos2> {
     points
 }
 
-/// Fills a simple polygon, convex or not, in `color`: triangulated by ear
-/// clipping, with a strip `feather` points wide around it that fades to
-/// clear, as egui anti-aliases its own shapes.
-fn fill_outline(points: &[egui::Pos2], color: Color32, feather: f32) -> egui::Mesh {
+/// Appends `steps` from `start`, placed by `place`, as points: each curve
+/// cut into chords about two points long.
+fn trace(
+    points: &mut Vec<egui::Pos2>,
+    start: egui::Pos2,
+    steps: &[balloon::Step],
+    place: impl Fn([f32; 2]) -> egui::Pos2,
+) {
+    let mut from = start;
+    if points.last().is_none_or(|last| last.distance(start) > 1e-4) {
+        points.push(start);
+    }
+    for step in steps {
+        match *step {
+            balloon::Step::Line(to) => {
+                from = place(to);
+                points.push(from);
+            }
+            balloon::Step::Cubic(b, c, d) => {
+                let (b, c, d) = (place(b), place(c), place(d));
+                let length = from.distance(b) + b.distance(c) + c.distance(d);
+                let count = ((length / 2.0).ceil() as usize).clamp(1, 16);
+                points.extend((1..=count).map(|i| {
+                    let t = i as f32 / count as f32;
+                    let u = 1.0 - t;
+                    (from.to_vec2() * (u * u * u)
+                        + b.to_vec2() * (3.0 * u * u * t)
+                        + c.to_vec2() * (3.0 * u * t * t)
+                        + d.to_vec2() * (t * t * t))
+                        .to_pos2()
+                }));
+                from = d;
+            }
+        }
+    }
+}
+
+/// Fills a simple polygon, convex or not, in the colour `color` gives each
+/// point: triangulated by ear clipping, with a strip `feather` points wide
+/// around it that fades to clear, as egui anti-aliases its own shapes. The
+/// fill and its edge are one mesh, so no seam can open between them at any
+/// scale. A colour that changes linearly over the polygon, such as a
+/// vertical gradient, comes out exact, whatever the triangles.
+fn fill_outline(
+    points: &[egui::Pos2],
+    color: impl Fn(egui::Pos2) -> Color32,
+    feather: f32,
+) -> egui::Mesh {
     let count = points.len();
     let mut mesh = egui::Mesh::default();
     if count < 3 {
@@ -1334,7 +1500,7 @@ fn fill_outline(points: &[egui::Pos2], color: Color32, feather: f32) -> egui::Me
         // Keep the strip's width along both edges at a corner.
         let scale = 1.0 / normal.dot(before).max(0.5);
         let offset = normal * (feather / 2.0) * scale;
-        mesh.colored_vertex(point - offset, color);
+        mesh.colored_vertex(point - offset, color(point));
         mesh.colored_vertex(point + offset, Color32::TRANSPARENT);
     }
     // The edge strip: inner vertices are even, their faded partners odd.
@@ -1872,7 +2038,7 @@ mod tests {
         let palette = Palette::light();
         for (side, outside) in [(Side::Left, 92.0), (Side::Right, 308.0)] {
             let egui::Shape::Vec(shapes) =
-                bubble_shape(&palette, rect, palette.bubble_out, Some(side), 2.0)
+                bubble_shape(&palette, rect, palette.bubble_out, Some(side), 2.0, SCREEN)
             else {
                 panic!("a bubble is a list of shapes");
             };
@@ -1891,7 +2057,8 @@ mod tests {
             assert_eq!(tip.copied(), Some(pos2(outside, rect.top())));
         }
         // Later messages of a run draw no tail.
-        let egui::Shape::Vec(shapes) = bubble_shape(&palette, rect, palette.bubble_in, None, 2.0)
+        let egui::Shape::Vec(shapes) =
+            bubble_shape(&palette, rect, palette.bubble_in, None, 2.0, SCREEN)
         else {
             panic!("a bubble is a list of shapes");
         };
@@ -1902,115 +2069,255 @@ mod tests {
         );
     }
 
-    /// A Messages bubble and its tail are one outline: the side runs
-    /// straight down and curls, its tangent unbroken, out to a tip level
-    /// with the bottom edge; under it a notch rises and comes back down onto
-    /// that edge, and nothing juts below it. Checked for both sides and a
-    /// single line.
+    /// WhatsApp's bubbles are drawn exactly as before the Messages balloon
+    /// was rebuilt: every shape, point and colour of a tailed and a tailless
+    /// bubble, in both palettes, hashes to the value recorded then.
     #[test]
-    fn messages_tails_flow_out_of_the_side() {
-        for height in [34.0, 80.0] {
-            let rect = Rect::from_min_size(pos2(100.0, 100.0), vec2(200.0, height));
-            for side in [Side::Right, Side::Left] {
-                // Mirrored back, in the same order, the left tail is checked
-                // as a right one.
-                let mut outline = messages_outline(rect, side);
-                if side == Side::Left {
-                    for point in &mut outline {
-                        point.x = rect.left() + rect.right() - point.x;
+    fn whatsapp_bubbles_are_unchanged() {
+        let rect = Rect::from_min_size(pos2(100.5, 50.25), vec2(213.75, 41.5));
+        // FNV-1a, stable across toolchains, over every shape's debug text.
+        let mut fingerprint: u64 = 0xcbf2_9ce4_8422_2325;
+        for palette in [Palette::dark(), Palette::light()] {
+            for tail in [None, Some(Side::Left), Some(Side::Right)] {
+                for (fill, ppp) in [(palette.bubble_out, 1.0), (palette.bubble_in, 1.5)] {
+                    let shape = bubble_shape(&palette, rect, fill, tail, ppp, SCREEN);
+                    for byte in format!("{shape:?}").bytes() {
+                        fingerprint = (fingerprint ^ u64::from(byte)).wrapping_mul(0x100_0000_01b3);
                     }
-                    outline.reverse();
                 }
-                let (right, bottom) = (rect.right(), rect.bottom());
-                assert!(
-                    outline.iter().all(|point| point.y <= bottom + 1e-3),
-                    "{side:?} {height}: something juts below the bottom edge"
-                );
-                let tip = outline
-                    .iter()
-                    .position(|point| (point.x - (right + MESSAGES_TAIL_REACH)).abs() < 1e-3)
-                    .expect("the tip reaches past the side");
-                assert!(
-                    (outline[tip].y - bottom).abs() < 1e-3,
-                    "the tip is level with the bottom"
-                );
-                // Up from the tip: the curl, then the straight side, with
-                // no corner of the bubble's own between them.
-                let side_start = outline
-                    .iter()
-                    .position(|point| (point.x - right).abs() < 1e-3)
-                    .expect("the side");
-                let curl = &outline[side_start..=tip];
-                assert!(
-                    curl.windows(2)
-                        .all(|pair| pair[1].x >= pair[0].x - 1e-3 && pair[1].y >= pair[0].y - 1e-3),
-                    "{side:?} {height}: the side turns back on itself into the tail"
-                );
-                // The side's last stretch and the curl's first step point
-                // the same way: straight down.
-                let first = curl[2] - curl[1];
-                assert!(
-                    first.x.abs() < first.y * 0.25,
-                    "{side:?} {height}: a kink where the side meets the tail"
-                );
-                // From the tip, the notch underneath: in toward the bubble
-                // all the way, up to its top just inside the side, then
-                // back down onto the bottom edge.
-                let foot = outline[tip + 1..]
-                    .iter()
-                    .position(|point| (point.y - bottom).abs() < 1e-3)
-                    .map(|at| tip + 1 + at)
-                    .expect("the corner comes back down onto the bottom edge");
-                let notch = (tip..=foot)
-                    .min_by(|&a, &b| outline[a].y.total_cmp(&outline[b].y))
-                    .unwrap();
-                assert!(
-                    (outline[notch]
-                        - pos2(right - MESSAGES_TAIL_NOTCH_IN, bottom - MESSAGES_TAIL_NOTCH))
-                    .length()
-                        < 1e-3,
-                    "{side:?} {height}: the notch's top"
-                );
-                let (up, down) = (&outline[tip..=notch], &outline[notch..=foot]);
-                assert!(
-                    up.windows(2)
-                        .chain(down.windows(2))
-                        .all(|pair| pair[1].x <= pair[0].x + 1e-3),
-                    "{side:?} {height}: the notch turns back on itself"
-                );
-                assert!(
-                    up.windows(2).all(|pair| pair[1].y <= pair[0].y + 1e-3)
-                        && down.windows(2).all(|pair| pair[1].y >= pair[0].y - 1e-3),
-                    "{side:?} {height}: the notch is not one rise and one fall"
-                );
-                assert!(
-                    (outline[foot].x - (right - MESSAGES_TAIL_FOOT)).abs() < 1e-3,
-                    "{side:?} {height}: the corner meets the bottom edge inside the side"
-                );
+            }
+        }
+        println!("whatsapp bubble fingerprint {fingerprint:#x}");
+        assert_eq!(fingerprint, WHATSAPP_BUBBLES);
+    }
+
+    /// The fingerprint [`whatsapp_bubbles_are_unchanged`] recorded.
+    const WHATSAPP_BUBBLES: u64 = 0x179b_3424_7615_2b9a;
+
+    /// Every shape-checking test below draws into this view.
+    const SCREEN: egui::Rangef = egui::Rangef {
+        min: 0.0,
+        max: 800.0,
+    };
+
+    /// Twice the signed area of `outline`: positive when it runs clockwise
+    /// on screen, where y grows down.
+    fn twice_area(outline: &[egui::Pos2]) -> f32 {
+        (0..outline.len())
+            .map(|i| {
+                let (a, b) = (outline[i], outline[(i + 1) % outline.len()]);
+                a.x * b.y - b.x * a.y
+            })
+            .sum()
+    }
+
+    /// The balloon mirrored back from the left, in the same order, so its
+    /// tail is checked as a right one.
+    fn as_right(rect: Rect, side: Side, scale: f32) -> Vec<egui::Pos2> {
+        let mut outline = messages_balloon(rect, Some(side), scale);
+        if side == Side::Left {
+            for point in &mut outline {
+                point.x = rect.left() + rect.right() - point.x;
+            }
+            outline.reverse();
+        }
+        outline
+    }
+
+    /// One line of Messages' text and two, at a scale: 29.3 and 44.6 points
+    /// high at its own size.
+    fn balloons(scale: f32) -> [Rect; 2] {
+        [29.3, 44.6]
+            .map(|height| Rect::from_min_size(pos2(100.0, 100.0), vec2(180.0, height) * scale))
+    }
+
+    /// The tail curls out of the bottom corner exactly as far as Apple's:
+    /// its tip 4.7935 points past the body's side and 0.3959 above its
+    /// bottom, nothing below the bottom edge or past the other side, and
+    /// the side straight down to 7.5 points above the bottom.
+    #[test]
+    fn messages_tail_reaches_as_far_as_apples() {
+        for scale in [1.0, MESSAGES_SCALE, 2.0] {
+            for rect in balloons(scale) {
+                for side in [Side::Right, Side::Left] {
+                    let outline = as_right(rect, side, scale);
+                    let tip = outline
+                        .iter()
+                        .copied()
+                        .max_by(|a, b| a.x.total_cmp(&b.x))
+                        .unwrap();
+                    let expected = pos2(
+                        rect.right() + balloon::TIP[0] * scale,
+                        rect.bottom() - balloon::TIP[1] * scale,
+                    );
+                    assert!(
+                        tip.distance(expected) < 1e-3,
+                        "{side:?} at {scale}: the tip is at {tip:?}, not {expected:?}"
+                    );
+                    assert!(
+                        outline.iter().all(|point| point.y <= rect.bottom() + 1e-3
+                            && point.y >= rect.top() - 1e-3
+                            && point.x >= rect.left() - 1e-3),
+                        "{side:?} at {scale}: the balloon leaves its body's bounds"
+                    );
+                    // The side: points on the body's edge reach down to the
+                    // tail's start and no further.
+                    let lowest_on_side = outline
+                        .iter()
+                        .filter(|point| (point.x - rect.right()).abs() < 1e-3)
+                        .map(|point| point.y)
+                        .fold(f32::MIN, f32::max);
+                    assert!(
+                        (lowest_on_side - (rect.bottom() - balloon::TAIL_RISE * scale)).abs()
+                            < 1e-3,
+                        "{side:?} at {scale}: the side leaves for the tail at {lowest_on_side}"
+                    );
+                }
+                // Without a tail the body is all there is.
+                let tailless = messages_balloon(rect, None, scale);
+                let right = tailless.iter().map(|p| p.x).fold(f32::MIN, f32::max);
+                assert!((right - rect.right()).abs() < 1e-3);
             }
         }
     }
 
-    /// The tailed outline is filled exactly, concave curl and all: its
-    /// triangles cover the outline's area and no more, and an edge strip
-    /// fades it out. A tailless bubble stays one rounded rectangle.
+    /// A single line has circular corners of 13.5 points; several lines
+    /// Apple's continuous corner, which meets its edges 14 points from the
+    /// corner and passes through the joins of its three curves.
     #[test]
-    fn messages_tails_are_filled_as_their_outline() {
+    fn messages_corners_are_apples() {
+        for scale in [1.0, MESSAGES_SCALE, 2.0] {
+            let [single, multiple] = balloons(scale);
+            let radius = balloon::PILL_RADIUS * scale;
+            let centre = single.left_top() + vec2(radius, radius);
+            let corner: Vec<_> = messages_balloon(single, None, scale)
+                .into_iter()
+                .filter(|point| point.x <= centre.x && point.y <= centre.y)
+                .collect();
+            assert!(corner.len() > 4, "the corner is a curve");
+            for point in &corner {
+                // Apple's arc is a cubic, a few thousandths off the circle.
+                assert!(
+                    (point.distance(centre) - radius).abs() < 0.01 * scale,
+                    "{point:?} is off the {radius} point corner"
+                );
+            }
+            let outline = messages_balloon(multiple, None, scale);
+            let reach = balloon::CORNER * scale;
+            for expected in [
+                multiple.left_top() + vec2(0.0, reach),
+                multiple.left_top() + vec2(reach, 0.0),
+                multiple.right_top() + vec2(-6.767_773, 1.828_331) * scale,
+                multiple.right_top() + vec2(-1.828_331, 6.767_773) * scale,
+                multiple.left_bottom() + vec2(6.767_773, -1.828_331) * scale,
+            ] {
+                assert!(
+                    outline.iter().any(|point| point.distance(expected) < 1e-3),
+                    "the continuous corner misses {expected:?} at {scale}"
+                );
+            }
+            // A taller balloon of several lines keeps the same corners.
+            let tall = Rect::from_min_size(multiple.min, vec2(multiple.width(), 300.0));
+            assert!(
+                messages_balloon(tall, Some(Side::Right), scale)
+                    .iter()
+                    .any(|point| point.distance(tall.right_top() + vec2(-reach, 0.0)) < 1e-3)
+            );
+        }
+    }
+
+    /// Every balloon, any size, tail or none, is one closed outline that
+    /// never crosses itself, runs clockwise, and repeats no point.
+    #[test]
+    fn messages_balloons_are_simple_closed_outlines() {
+        let crosses = |a: egui::Pos2, b: egui::Pos2, c: egui::Pos2, d: egui::Pos2| {
+            let turn = |p: egui::Pos2, q: egui::Pos2, r: egui::Pos2| {
+                (q - p).x * (r - p).y - (q - p).y * (r - p).x
+            };
+            let (d1, d2) = (turn(a, b, c), turn(a, b, d));
+            let (d3, d4) = (turn(c, d, a), turn(c, d, b));
+            d1 * d2 < 0.0 && d3 * d4 < 0.0
+        };
+        let sizes = [
+            vec2(10.0, 10.0),
+            vec2(30.0, 20.0),
+            vec2(36.0, 32.7),
+            vec2(400.0, 32.7),
+            vec2(60.0, 49.8),
+            vec2(420.0, 240.0),
+        ];
+        for scale in [1.0, MESSAGES_SCALE, 2.0] {
+            for size in sizes {
+                let rect = Rect::from_min_size(pos2(12.5, 40.25), size);
+                for tail in [None, Some(Side::Left), Some(Side::Right)] {
+                    let outline = messages_balloon(rect, tail, scale);
+                    let n = outline.len();
+                    assert!(n >= 8, "{size:?} {tail:?}: {n} points");
+                    assert!(
+                        twice_area(&outline) > 0.0,
+                        "{size:?} {tail:?}: not clockwise"
+                    );
+                    for i in 0..n {
+                        assert!(
+                            outline[i].distance(outline[(i + 1) % n]) > 1e-5,
+                            "{size:?} {tail:?}: a point repeats at {i}"
+                        );
+                        for j in i + 2..n {
+                            if (j + 1) % n == i {
+                                continue;
+                            }
+                            assert!(
+                                !crosses(
+                                    outline[i],
+                                    outline[(i + 1) % n],
+                                    outline[j],
+                                    outline[(j + 1) % n]
+                                ),
+                                "{size:?} {tail:?} at {scale}: edges {i} and {j} cross"
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// The balloon grows with the text it holds: at twice the scale, a body
+    /// twice the size has a tail reaching twice as far and four times the
+    /// area. ZapFast's scale is its text size over Messages' 13 points.
+    #[test]
+    fn messages_balloons_scale_with_text_size() {
+        assert_eq!(MESSAGES_SCALE, MESSAGE_TEXT_SIZE / MESSAGES_TEXT_SIZE);
+        assert_eq!(
+            MESSAGES_BUBBLE_RADIUS,
+            (balloon::PILL_RADIUS * MESSAGES_SCALE).round() as u8
+        );
+        for (rect, tail) in balloons(1.0).into_iter().zip([Some(Side::Right), None]) {
+            let small = messages_balloon(rect, tail, 1.0);
+            let big = messages_balloon(Rect::from_min_size(rect.min, rect.size() * 2.0), tail, 2.0);
+            let ratio = twice_area(&big) / twice_area(&small);
+            assert!((ratio - 4.0).abs() < 0.02, "{ratio}");
+            let reach = |outline: &[egui::Pos2]| {
+                outline.iter().map(|p| p.x).fold(f32::MIN, f32::max) - rect.left()
+            };
+            assert!((reach(&big) - 2.0 * reach(&small)).abs() < 1e-3);
+        }
+    }
+
+    /// The outline is filled exactly, concave notch and all: its triangles
+    /// cover its area and no more, every point has a filled vertex and a
+    /// clear one just outside, a feather one pixel wide at every scale, all
+    /// in one mesh so nothing can open between tail and body. Tailless
+    /// balloons are meshes too.
+    #[test]
+    fn messages_balloons_are_filled_as_their_outline() {
         let palette = Palette::messages();
-        let rect = Rect::from_min_size(pos2(100.0, 100.0), vec2(200.0, 40.0));
-        for side in [Side::Right, Side::Left] {
-            let outline = messages_outline(rect, side);
+        let rect = Rect::from_min_size(pos2(100.0, 100.0), vec2(200.0, 34.0));
+        for tail in [Some(Side::Right), Some(Side::Left), None] {
+            let outline = messages_balloon(rect, tail, MESSAGES_SCALE);
             let area = |a: egui::Pos2, b: egui::Pos2, c: egui::Pos2| {
                 ((b - a).x * (c - a).y - (b - a).y * (c - a).x).abs() / 2.0
             };
-            let polygon: f32 = (0..outline.len())
-                .map(|i| {
-                    let (a, b) = (outline[i], outline[(i + 1) % outline.len()]);
-                    a.x * b.y - b.x * a.y
-                })
-                .sum::<f32>()
-                .abs()
-                / 2.0;
             let triangles = ear_clip(&outline, 1.0);
             assert_eq!(triangles.len(), outline.len() - 2);
             let covered: f32 = triangles
@@ -2023,29 +2330,64 @@ mod tests {
                     )
                 })
                 .sum();
+            let polygon = twice_area(&outline) / 2.0;
             assert!(
                 (covered - polygon).abs() < 0.5,
-                "{side:?}: {covered} for {polygon}"
+                "{tail:?}: {covered} for {polygon}"
             );
-            let egui::Shape::Mesh(mesh) =
-                bubble_shape(&palette, rect, palette.bubble_out, Some(side), 2.0)
-            else {
-                panic!("a tailed bubble is one mesh");
-            };
-            // Each point has a filled vertex and a clear one outside it.
-            assert_eq!(mesh.vertices.len(), outline.len() * 2);
-            assert!(
-                mesh.vertices
-                    .iter()
-                    .skip(1)
-                    .step_by(2)
-                    .all(|v| v.color == Color32::TRANSPARENT)
-            );
+            for ppp in [1.0, 1.25, 1.5, 2.0] {
+                let egui::Shape::Mesh(mesh) =
+                    bubble_shape(&palette, rect, palette.bubble_in, tail, ppp, SCREEN)
+                else {
+                    panic!("a Messages balloon is one mesh");
+                };
+                assert_eq!(mesh.vertices.len(), outline.len() * 2);
+                for (pair, point) in mesh.vertices.chunks(2).zip(&outline) {
+                    assert_eq!(pair[0].color, palette.bubble_in);
+                    assert_eq!(pair[1].color, Color32::TRANSPARENT);
+                    // Half a pixel either side of the outline, wider only
+                    // where a sharp corner keeps the strip's width.
+                    let inner = pair[0].pos.distance(*point) * ppp;
+                    let outer = pair[1].pos.distance(*point) * ppp;
+                    assert!((0.499..=1.001).contains(&inner), "{inner} at {ppp}");
+                    assert!((inner - outer).abs() < 1e-3, "{inner} and {outer}");
+                }
+                // The fill uses only filled vertices, so it meets the
+                // feather along shared edges.
+                let strip = 6 * outline.len();
+                assert!(mesh.indices[strip..].iter().all(|index| index % 2 == 0));
+            }
         }
-        assert!(matches!(
-            bubble_shape(&palette, rect, palette.bubble_in, None, 2.0),
-            egui::Shape::Rect(_)
-        ));
+    }
+
+    /// Your own balloons shade from the palette's colour at the top of the
+    /// view to Messages' deeper one at its bottom; others' stay flat, and
+    /// WhatsApp's palettes have no gradient.
+    #[test]
+    fn messages_own_balloons_shade_down_the_view() {
+        for palette in [Palette::messages(), Palette::messages_light()] {
+            let (top, bottom) = palette.bubble_out_gradient().expect("a gradient");
+            assert_eq!(top, palette.bubble_out);
+            let at = |y: f32| Rect::from_min_size(pos2(100.0, y), vec2(200.0, 34.0));
+            let colour = |rect: Rect, fill: Color32| {
+                let egui::Shape::Mesh(mesh) =
+                    bubble_shape(&palette, rect, fill, Some(Side::Right), 2.0, SCREEN)
+                else {
+                    panic!("a Messages balloon is one mesh");
+                };
+                mesh.vertices[0].color
+            };
+            let high = colour(at(0.0), palette.bubble_out);
+            let low = colour(at(SCREEN.max - 34.0), palette.bubble_out);
+            assert_eq!(colour(at(-200.0), palette.bubble_out), top);
+            assert!(high != low && low != top);
+            let lum = |c: Color32| u32::from(c.r()) + u32::from(c.g()) + u32::from(c.b());
+            assert!(lum(low) < lum(high), "deeper toward the bottom");
+            assert_eq!(colour(at(SCREEN.max + 200.0), palette.bubble_out), bottom);
+            assert_eq!(colour(at(400.0), palette.bubble_in), palette.bubble_in);
+        }
+        assert_eq!(Palette::dark().bubble_out_gradient(), None);
+        assert_eq!(Palette::light().bubble_out_gradient(), None);
     }
 
     /// The knob radius and the track outline a switch paints in one state.

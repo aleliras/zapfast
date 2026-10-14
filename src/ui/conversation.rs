@@ -25,9 +25,32 @@ use super::widgets;
 
 /// Group-message avatar size.
 const SENDER_AVATAR: f32 = 28.0;
-const BODY_SIZE: f32 = 14.5;
-/// Extra space above the first message of a run from one side.
+const BODY_SIZE: f32 = widgets::MESSAGE_TEXT_SIZE;
+/// Extra space above the first message of a run from one side. With the
+/// list's 3 points between rows, runs stand 8 points apart and a run's
+/// bubbles 3, Messages' own spacing on the Mac
+/// (`CKUIBehaviorMac.balloonNonContiguousSpace` and
+/// `balloonContiguousSpace`).
 const RUN_GAP: f32 = 5.0;
+/// How much of the transcript's width a bubble may take in the Messages
+/// style (`CKUIBehaviorMac.balloonMaxWidthPercent`), and in WhatsApp's.
+const MESSAGES_WIDTH_SHARE: f32 = 0.65;
+const WHATSAPP_WIDTH_SHARE: f32 = 0.72;
+/// The transcript's side margin in the Messages style: Messages' 11 points
+/// (`CKUIBehaviorMac.minTranscriptMarginInsets`) plus the 5 points beside
+/// each balloon's body that its tail curls into, at ZapFast's text size.
+const MESSAGES_SIDE_MARGIN: i8 = 17;
+/// The transcript's side margin in WhatsApp's style.
+const WHATSAPP_SIDE_MARGIN: i8 = 18;
+/// Room around a Messages bubble's contents: Messages' 12 points beside its
+/// text and 7 above and below (`CKUIBehaviorMac.textBalloonPillContentInsets`)
+/// at ZapFast's text size, 13.4 and 7.8, rounded.
+const MESSAGES_BUBBLE_MARGIN: Margin = Margin {
+    left: 13,
+    right: 13,
+    top: 8,
+    bottom: 8,
+};
 /// The side of a selecting row's check box, and the column that holds it.
 const SELECT_BOX: f32 = 18.0;
 const SELECT_GUTTER: f32 = SELECT_BOX + 14.0;
@@ -2708,8 +2731,13 @@ fn messages(app: &mut App, ui: &mut egui::Ui, chat: &Chat, under: f32) {
             if filler > 0.0 {
                 ui.add_space(filler);
             }
+            let side = if palette.bubbles == theme::BubbleStyle::Messages {
+                MESSAGES_SIDE_MARGIN
+            } else {
+                WHATSAPP_SIDE_MARGIN
+            };
             let measured = Frame::new()
-                .inner_margin(Margin::symmetric(18, 10))
+                .inner_margin(Margin::symmetric(side, 10))
                 .show(ui, |ui| {
                     ui.set_width(ui.available_width());
                     ui.spacing_mut().item_spacing.y = 3.0;
@@ -3542,6 +3570,7 @@ fn typing_bubble(ui: &mut egui::Ui, view: &View<'_>, typers: &[(String, String)]
                 palette.bubble_in,
                 Some(widgets::Side::Left),
                 ui.ctx().pixels_per_point(),
+                ui.clip_rect().y_range(),
             ),
         );
     });
@@ -3778,8 +3807,14 @@ fn bubble(
     };
     let with_avatar = !own && shows_sender_pictures(view.chat);
     let carousel = matches!(&message.content, Content::Interactive { card: Some(card), .. } if !card.carousel.is_empty());
-    let max_width = ((ui.available_width() * if carousel { 0.95 } else { 0.72 })
-        .min(if carousel { 920.0 } else { 560.0 })
+    let share = if carousel {
+        0.95
+    } else if view.palette.bubbles == theme::BubbleStyle::Messages {
+        MESSAGES_WIDTH_SHARE
+    } else {
+        WHATSAPP_WIDTH_SHARE
+    };
+    let max_width = ((ui.available_width() * share).min(if carousel { 920.0 } else { 560.0 })
         - if with_avatar {
             SENDER_AVATAR + 8.0
         } else {
@@ -4326,6 +4361,23 @@ fn same_run(message: &Message, next: &Message) -> bool {
     message.from_me == next.from_me && (message.from_me || message.sender == next.sender)
 }
 
+/// Room around a bubble's contents: none around a picture that stands
+/// without one, Messages' insets in its style, WhatsApp's otherwise.
+fn bubble_margin(palette: &Palette, message: &Message, over_picture: bool) -> Margin {
+    if bare_picture(palette, message) {
+        Margin::ZERO
+    } else if palette.bubbles == theme::BubbleStyle::Messages {
+        MESSAGES_BUBBLE_MARGIN
+    } else {
+        Margin {
+            left: 10,
+            right: 10,
+            top: 6,
+            bottom: if over_picture { 6 } else { 5 },
+        }
+    }
+}
+
 /// Draws a message bubble and its menu.
 #[allow(clippy::too_many_arguments)]
 fn bubble_frame(
@@ -4367,16 +4419,7 @@ fn bubble_frame(
     let over_picture = album.is_none() && time_over_picture(message);
     let mut tiles: Vec<(Rect, String)> = Vec::new();
     let inner = Frame::new()
-        .inner_margin(if bare_picture(&palette, message) {
-            Margin::ZERO
-        } else {
-            Margin {
-                left: 10,
-                right: 10,
-                top: 6,
-                bottom: if over_picture { 6 } else { 5 },
-            }
-        })
+        .inner_margin(bubble_margin(&palette, message, over_picture))
         .show(ui, |ui| {
             ui.set_max_width(max_width);
             ui.spacing_mut().item_spacing.y = 4.0;
@@ -4406,7 +4449,14 @@ fn bubble_frame(
             // Cards share the bubble's settled width: at least CARD_WIDTH and
             // no more than the cap. Text spans that width and stays left-aligned.
             // Bubbles without cards use the natural text width.
-            let cap = ((max_width - 20.0).min(ui.available_width())).max(0.0);
+            let inset = if palette.bubbles == theme::BubbleStyle::Messages
+                && !bare_picture(&palette, message)
+            {
+                MESSAGES_BUBBLE_MARGIN.sum().x
+            } else {
+                20.0
+            };
+            let cap = ((max_width - inset).min(ui.available_width())).max(0.0);
             let last = album
                 .and_then(|messages| messages.last())
                 .unwrap_or(message);
@@ -4473,6 +4523,8 @@ fn bubble_frame(
                 fill,
                 tail,
                 ui.ctx().pixels_per_point(),
+                // The transcript's viewport: own balloons shade down it.
+                ui.clip_rect().y_range(),
             ),
         );
     }
@@ -4734,6 +4786,39 @@ const QUOTE_BAR: f32 = 4.0;
 const QUOTE_RADIUS: u8 = 6;
 
 /// Draws a stored quote and routes navigation to its source conversation.
+/// How a quoted reply is coloured inside its bubble.
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct QuoteColours {
+    fill: Color32,
+    bar: Color32,
+    name: Color32,
+    text: Color32,
+}
+
+/// The quote's colours. On your own Messages balloon, iMessage blue, it is
+/// all white, as Messages draws what sits on that blue: a bold white name,
+/// its text at Apple's secondary 60% white
+/// (`CKUITheme.blue_balloonTranslationSecondaryTextColor`), the bar at 60%
+/// and the fill a 15% white wash over the bubble. Elsewhere the bar and name
+/// take `tint`, the quoted sender's colour, over the window's.
+fn quote_colours(palette: &Palette, own: bool, tint: impl FnOnce() -> Color32) -> QuoteColours {
+    if own && palette.bubbles == theme::BubbleStyle::Messages {
+        return QuoteColours {
+            fill: Color32::WHITE.gamma_multiply(0.15),
+            bar: Color32::WHITE.gamma_multiply(0.6),
+            name: Color32::WHITE,
+            text: Color32::WHITE.gamma_multiply(0.6),
+        };
+    }
+    let tint = tint();
+    QuoteColours {
+        fill: palette.window.gamma_multiply(0.35),
+        bar: tint,
+        name: tint,
+        text: palette.secondary,
+    }
+}
+
 fn quote_block(
     ui: &mut egui::Ui,
     view: &View<'_>,
@@ -4757,18 +4842,20 @@ fn quote_block(
     } else {
         palette.bubble_in
     };
-    let tint = theme::readable_on(
-        bubble,
-        if mine {
-            palette.accent
-        } else {
-            palette.sender(crate::util::hue(&quoted.sender))
-        },
-        palette.text,
-        3.0,
-    );
+    let colours = quote_colours(&palette, message.from_me, || {
+        theme::readable_on(
+            bubble,
+            if mine {
+                palette.accent
+            } else {
+                palette.sender(crate::util::hue(&quoted.sender))
+            },
+            palette.text,
+            3.0,
+        )
+    });
     let response = Frame::new()
-        .fill(palette.window.gamma_multiply(0.35))
+        .fill(colours.fill)
         .corner_radius(CornerRadius::same(QUOTE_RADIUS))
         .inner_margin(Margin {
             left: QUOTE_BAR as i8 + 7,
@@ -4786,8 +4873,8 @@ fn quote_block(
                 |ui| {
                     ui.set_width(inner_width);
                     ui.spacing_mut().item_spacing.y = 1.0;
-                    widgets::rich_text(ui, &who, theme::semibold(12.5), tint);
-                    widgets::rich_text(ui, &summary, theme::regular(12.5), palette.secondary);
+                    widgets::rich_text(ui, &who, theme::semibold(12.5), colours.name);
+                    widgets::rich_text(ui, &summary, theme::regular(12.5), colours.text);
                 },
             );
         })
@@ -4802,7 +4889,7 @@ fn quote_block(
             ne: 0,
             se: 0,
         },
-        tint,
+        colours.bar,
     );
     ui.ctx().data_mut(|data| {
         data.insert_temp(
@@ -10741,6 +10828,28 @@ mod reaction_tests {
 
     /// Messages draws a photo alone in its message without a bubble, with
     /// a bubble's corners; anything else in the message keeps the bubble.
+    /// A quote on your own Messages balloon is white on its blue, in both
+    /// appearances; on others' balloons and in WhatsApp's style it keeps the
+    /// quoted sender's colour.
+    #[test]
+    fn quotes_on_own_messages_balloons_are_white() {
+        let tint = Color32::from_rgb(0x80, 0x40, 0xc0);
+        for palette in [Palette::messages(), Palette::messages_light()] {
+            let own = quote_colours(&palette.on_bubble(true), true, || tint);
+            assert_eq!(own.name, Color32::WHITE);
+            assert_eq!(own.text, Color32::WHITE.gamma_multiply(0.6));
+            assert_eq!(own.bar, Color32::WHITE.gamma_multiply(0.6));
+            assert_eq!(own.fill, Color32::WHITE.gamma_multiply(0.15));
+            let theirs = quote_colours(&palette.on_bubble(false), false, || tint);
+            assert_eq!((theirs.name, theirs.bar), (tint, tint));
+        }
+        for palette in [Palette::dark(), Palette::light()] {
+            let own = quote_colours(&palette.on_bubble(true), true, || tint);
+            assert_eq!((own.name, own.bar), (tint, tint));
+            assert_eq!(own.fill, palette.window.gamma_multiply(0.35));
+        }
+    }
+
     #[test]
     fn only_lone_pictures_stand_without_a_bubble_in_messages() {
         let photo = |caption: Option<&str>| Message {

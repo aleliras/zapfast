@@ -165,6 +165,7 @@ fn bubble(
             palette.bubble_out,
             Some(widgets::Side::Right),
             ui.ctx().pixels_per_point(),
+            ui.clip_rect().y_range(),
         ),
     );
 }

@@ -100,7 +100,9 @@ name or description, in the interface language or in English.
 - **Theme**: dark, light, follow the system, Messages, or a local JSON
   palette from the themes folder. See [Making a theme]({{ '/themes/' | relative_url }}).
   **Messages** follows the system's light or dark appearance in macOS's
-  greys, with bubbles shaped as Messages draws them, a frosted header that
+  greys, with bubbles shaped, spaced and coloured as Messages on the Mac
+  draws them (yours in iMessage blue, shading deeper down the window), the
+  Mac's system blue for buttons and highlights, a frosted header that
   messages scroll under, and photos without a bubble. Its sidebar and
   conversation show the desktop through the window where the platform
   offers a material: AppKit's on macOS, Mica on Windows 11 22H2 and later,

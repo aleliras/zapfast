@@ -135,9 +135,10 @@ impl Palette {
         }
     }
 
-    /// A dark theme in the neutral greys of macOS, with bubbles shaped as
-    /// Messages draws them and a green of its own for yours, livelier than
-    /// WhatsApp's `#005c4b` and still readable under white text.
+    /// A dark theme in the neutral greys of macOS, with bubbles shaped and
+    /// coloured as a default Mac's Messages draws them: others' in its grey,
+    /// yours in iMessage blue with white text, shaded down the view. The
+    /// accent is the system blue, as on the Mac.
     pub fn messages() -> Self {
         Self {
             dark: true,
@@ -150,25 +151,26 @@ impl Palette {
             text: Color32::from_rgb(0xf5, 0xf5, 0xf7),
             secondary: Color32::from_rgb(0xae, 0xae, 0xb2),
             dim: Color32::from_rgb(0xa4, 0xa4, 0xa9),
-            accent: Color32::from_rgb(0x30, 0xd1, 0x58),
-            accent_hover: Color32::from_rgb(0x5c, 0xe0, 0x7d),
-            on_accent: Color32::from_rgb(0x0b, 0x14, 0x1a),
+            // `NSColor.systemBlue` in Dark Aqua, lightening on hover to
+            // Messages' own lighter blue, white on it as on the Mac.
+            accent: Color32::from_rgb(0x00, 0x91, 0xff),
+            accent_hover: Color32::from_rgb(0x40, 0x9c, 0xff),
+            on_accent: Color32::WHITE,
             danger: Color32::from_rgb(0xff, 0x45, 0x3a),
             warning: Color32::from_rgb(0xff, 0xd6, 0x0a),
             overlay: Color32::from_rgb(0x2c, 0x2c, 0x2e),
             shadow: Color32::from_black_alpha(150),
             chat: Color32::from_rgb(0x1e, 0x1e, 0x1e),
-            bubble_in: Color32::from_rgb(0x3a, 0x3a, 0x3c),
-            bubble_out: Color32::from_rgb(0x13, 0x7a, 0x48),
+            bubble_in: MESSAGES_GRAY_DARK,
+            bubble_out: MESSAGES_BLUE_DARK[0],
             link: Color32::from_rgb(0x64, 0xd2, 0xff),
             read: Color32::from_rgb(0x64, 0xd2, 0xff),
             bubbles: BubbleStyle::Messages,
         }
     }
 
-    /// The Messages theme in macOS's light greys. Your own bubbles keep
-    /// the dark theme's green, with white text on it, as Messages draws its
-    /// blue ones.
+    /// The Messages theme in macOS's light greys, with Messages' light grey
+    /// and its light iMessage blue, white text on it.
     pub fn messages_light() -> Self {
         Self {
             dark: false,
@@ -181,16 +183,18 @@ impl Palette {
             text: Color32::from_rgb(0x1d, 0x1d, 0x1f),
             secondary: Color32::from_rgb(0x5e, 0x5e, 0x63),
             dim: Color32::from_rgb(0x64, 0x64, 0x69),
-            accent: Color32::from_rgb(0x13, 0x7a, 0x48),
-            accent_hover: Color32::from_rgb(0x0f, 0x6a, 0x3d),
+            // `NSColor.systemBlue` in Aqua, deepening on hover to the
+            // Mac's own deeper blue, `NSColor.linkColor`.
+            accent: Color32::from_rgb(0x00, 0x88, 0xff),
+            accent_hover: Color32::from_rgb(0x00, 0x68, 0xda),
             on_accent: Color32::WHITE,
             danger: Color32::from_rgb(0xd7, 0x00, 0x15),
             warning: Color32::from_rgb(0xa0, 0x5a, 0x00),
             overlay: Color32::WHITE,
             shadow: Color32::from_black_alpha(LIGHT_SHADOW_ALPHA),
             chat: Color32::WHITE,
-            bubble_in: Color32::from_rgb(0xe9, 0xe9, 0xeb),
-            bubble_out: Color32::from_rgb(0x13, 0x7a, 0x48),
+            bubble_in: MESSAGES_GRAY_LIGHT,
+            bubble_out: MESSAGES_BLUE_LIGHT[0],
             link: Color32::from_rgb(0x00, 0x66, 0xcc),
             read: Color32::from_rgb(0x00, 0x66, 0xcc),
             bubbles: BubbleStyle::Messages,
@@ -228,6 +232,22 @@ impl Palette {
             read: Color32::from_rgb(0x02, 0x7e, 0xb5),
             bubbles: BubbleStyle::WhatsApp,
         }
+    }
+
+    /// The two ends of the gradient your own bubbles run through in the
+    /// Messages style, top of the view to bottom: ChatKit draws them with a
+    /// dynamic gradient (`CKUIBehavior.shouldUseDynamicGradient`, on for the
+    /// Mac). [`Palette::bubble_out`] is the top, the lighter end, against
+    /// which the text on the bubble is checked. `None` elsewhere.
+    pub fn bubble_out_gradient(&self) -> Option<(Color32, Color32)> {
+        (self.bubbles == BubbleStyle::Messages).then(|| {
+            let [_, bottom] = if self.dark {
+                MESSAGES_BLUE_DARK
+            } else {
+                MESSAGES_BLUE_LIGHT
+            };
+            (self.bubble_out, bottom)
+        })
     }
 
     /// Whether this is the Messages theme's glass: a frosted header, glass
@@ -323,7 +343,7 @@ impl Palette {
     pub fn on_bubble(&self, own: bool) -> Self {
         let fill = if own { self.bubble_out } else { self.bubble_in };
         // Buttons and icons inside a bubble tint it with the accent, which in
-        // Messages is the bubble's own green: draw them white on your own.
+        // Messages is the bubble's own blue: draw them white on your own.
         let own_messages = own && self.bubbles == BubbleStyle::Messages;
         // Light Messages draws your own bubble saturated, with white on it.
         if own_messages && !self.dark {
@@ -335,7 +355,7 @@ impl Palette {
                 link: Color32::WHITE,
                 read: Color32::WHITE,
                 // Cards inside the bubble wash it with the window colour,
-                // and buttons tint it with the accent: darker green and white
+                // and buttons tint it with the accent: darker blue and white
                 // keep both visible under white text.
                 window: fill.lerp_to_gamma(Color32::BLACK, 0.55),
                 accent: Color32::WHITE,
@@ -361,8 +381,8 @@ impl Palette {
                 self.accent_hover
             },
             on_accent,
-            // The palette's cyan reads at about 3:1 on the green; white, as
-            // in the light palette, does.
+            // The palette's cyan all but vanishes on the blue; white, as in
+            // the light palette and in Messages, stands out.
             link: if own_messages {
                 Color32::WHITE
             } else {
@@ -519,6 +539,30 @@ impl fastframe_theme::Palette for Palette {
 pub const TINT_FIELD: f32 = 0.08;
 pub const TINT_HOVER: f32 = 0.06;
 pub const TINT_SELECTED: f32 = 0.12;
+// Messages' balloon colours, as ChatKit's asset catalogue defines them
+// (`/System/iOSSupport/System/Library/PrivateFrameworks/ChatKit.framework/
+// Resources/Assets.car`, macOS 27 build 26A428, `assetutil --info`) and
+// `CKUITheme` resolves them for light and dark. Others' balloons are
+// `gray_balloonColors`, flat. Your own are iMessage blue, `blue_balloonColors`
+// (`CKBlueBalloonColor0` to `CKBlueBalloonColor1`) in their default
+// appearances, as a Mac with default settings draws them. White text on
+// them is Apple's choice and falls short of WCAG AA (about 1.9:1 at the
+// light top, 3.3:1 at the dark bottom); see `own_messages_bubbles_follow_apple`.
+/// Messages' grey for others' balloons in the light appearance.
+pub const MESSAGES_GRAY_LIGHT: Color32 = Color32::from_rgb(0xe9, 0xe9, 0xeb);
+/// Messages' grey for others' balloons in the dark appearance.
+pub const MESSAGES_GRAY_DARK: Color32 = Color32::from_rgb(0x3b, 0x3b, 0x3d);
+/// iMessage blue, top and bottom, in the light appearance.
+pub const MESSAGES_BLUE_LIGHT: [Color32; 2] = [
+    Color32::from_rgb(0x5a, 0xc8, 0xfa),
+    Color32::from_rgb(0x00, 0x88, 0xff),
+];
+/// iMessage blue, top and bottom, in the dark appearance.
+pub const MESSAGES_BLUE_DARK: [Color32; 2] = [
+    Color32::from_rgb(0x40, 0x9c, 0xff),
+    Color32::from_rgb(0x00, 0x91, 0xff),
+];
+
 /// How opaque a vibrant theme's header is over the messages under it.
 const HEADER_TINT: f32 = 0.3;
 /// The same in a light palette, where a veil over dark content reads as fog.
@@ -1557,8 +1601,15 @@ mod tests {
                 ));
                 pairs.push(("dim on ".to_owned() + surface, p.dim, background));
             }
-            pairs.push(("accent text on panel".into(), p.accent, p.panel));
-            pairs.push(("button label on accent".into(), p.on_accent, p.accent));
+            // The Messages palettes take the Mac's system blue as their
+            // accent, with white labels on it, exactly as macOS draws its
+            // own controls; Apple accepts under 4.5:1 there, so they are
+            // checked against Apple's colours in `messages_accent_is_apples`
+            // instead. Their text colours above still reach AA.
+            if p.bubbles != BubbleStyle::Messages {
+                pairs.push(("accent text on panel".into(), p.accent, p.panel));
+                pairs.push(("button label on accent".into(), p.on_accent, p.accent));
+            }
             let pairs: Vec<_> = pairs
                 .iter()
                 .map(|(what, color, background)| (what.as_str(), *color, *background))
@@ -1576,25 +1627,53 @@ mod tests {
         );
     }
 
-    /// Links in the Messages palettes' bubbles reach WCAG AA, your own
-    /// green ones included.
+    /// Links in others' Messages bubbles reach WCAG AA, as does their
+    /// secondary text.
     #[test]
     fn links_read_on_messages_bubbles() {
         for palette in [Palette::messages(), Palette::messages_light()] {
-            for own in [false, true] {
-                let fill = if own {
-                    palette.bubble_out
-                } else {
-                    palette.bubble_in
-                };
-                let link = palette.on_bubble(own).link;
-                let ratio = contrast(link, fill);
-                assert!(
-                    ratio >= 4.5,
-                    "dark {}, own {own}: {ratio:.2}:1",
-                    palette.dark
-                );
+            let fill = palette.bubble_in;
+            let inside = palette.on_bubble(false);
+            for (what, color) in [("link", inside.link), ("secondary", inside.secondary)] {
+                let ratio = contrast(color, fill);
+                assert!(ratio >= 4.5, "dark {}, {what}: {ratio:.2}:1", palette.dark);
             }
+        }
+    }
+
+    /// The Messages palettes' accent is the Mac's system blue
+    /// (`NSColor.systemBlue`, macOS 27: `#0088FF` in Aqua, `#0091FF` in
+    /// Dark Aqua), with white on it, as macOS draws its controls.
+    #[test]
+    fn messages_accent_is_apples() {
+        let light = Palette::messages_light();
+        assert_eq!(light.accent, Color32::from_rgb(0x00, 0x88, 0xff));
+        assert_eq!(light.on_accent, Color32::WHITE);
+        let dark = Palette::messages();
+        assert_eq!(dark.accent, Color32::from_rgb(0x00, 0x91, 0xff));
+        assert_eq!(dark.on_accent, Color32::WHITE);
+    }
+
+    /// Your own Messages bubbles follow a default Mac exactly rather than
+    /// WCAG: iMessage blue with white text, links and ticks on it, which
+    /// Apple accepts at under 4.5:1 (about 1.9:1 at the light gradient's
+    /// cyan top). Their colours are Apple's, and everything on them is
+    /// white, the most any colour reaches on that blue.
+    #[test]
+    fn own_messages_bubbles_follow_apple() {
+        for (palette, blue) in [
+            (Palette::messages(), MESSAGES_BLUE_DARK),
+            (Palette::messages_light(), MESSAGES_BLUE_LIGHT),
+        ] {
+            assert_eq!(palette.bubble_out_gradient(), Some((blue[0], blue[1])));
+            let inside = palette.on_bubble(true);
+            let white = |c: Color32| {
+                contrast(c, palette.bubble_out)
+                    >= contrast(Color32::WHITE, palette.bubble_out) * 0.9
+            };
+            assert!(white(inside.text), "dark {}: text", palette.dark);
+            assert!(white(inside.link), "dark {}: link", palette.dark);
+            assert_eq!(inside.accent, Color32::WHITE);
         }
     }
 
@@ -1622,6 +1701,11 @@ mod tests {
         .chain(presets().map(|theme| (theme.filename.clone(), theme.palette)));
         for (name, palette) in palettes {
             for own in [false, true] {
+                // Your own Messages bubbles are Apple's white on iMessage
+                // blue: see `own_messages_bubbles_follow_apple`.
+                if own && palette.bubbles == BubbleStyle::Messages {
+                    continue;
+                }
                 let fill = if own {
                     palette.bubble_out
                 } else {

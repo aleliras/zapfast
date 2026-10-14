@@ -1626,6 +1626,89 @@ fn photos_sample(app: &mut App) {
     app.scroll_to_bottom = true;
 }
 
+/// Runs of bubbles from both sides, for the Messages style's balloons and
+/// their tails (`bubbles,messages` and `bubbles,messages-light`): single
+/// lines, a wrapped paragraph, a message of emoji alone, a quoted reply on
+/// our own blue balloon, and a lone photo, which leaves the tail to the text
+/// after it. Only each run's last balloon curls a tail. Every row fits
+/// a 1280 by 800 window, so all four runs show at once.
+fn bubbles_sample(app: &mut App) {
+    let id = SAMPLES[0].id;
+    let now = crate::util::now();
+    let dir = app.dirs.media_cache_dir();
+    let _ = std::fs::create_dir_all(&dir);
+    let wide = stock::save_photo(&dir, stock::DUSK);
+    let photo = || {
+        let mut media = media(
+            "image/jpeg",
+            stock::DUSK.bytes.len() as u64,
+            Some(stock::DUSK.width),
+            Some(stock::DUSK.height),
+        );
+        media.path = Some(wide.clone());
+        Content::Image {
+            motion: None,
+            caption: None,
+            media,
+        }
+    };
+    let text = Content::text;
+    let mut rows = vec![
+        message(
+            id,
+            "bubbles-in-1",
+            false,
+            0,
+            text("Are you around this afternoon?"),
+        ),
+        message(
+            id,
+            "bubbles-in-2",
+            false,
+            0,
+            text(
+                "The ferry leaves at four, so if we meet at the pier by half past three \
+                 there is time for a coffee first and nobody has to run for it.",
+            ),
+        ),
+        message(id, "bubbles-out-1", true, 0, text("Yes!")),
+        message(id, "bubbles-out-2", true, 0, text("🎉🙌")),
+        message(
+            id,
+            "bubbles-out-3",
+            true,
+            0,
+            text("Half past three works for me"),
+        ),
+        message(id, "bubbles-in-3", false, 0, photo()),
+        message(
+            id,
+            "bubbles-in-4",
+            false,
+            0,
+            text("The view from the pier yesterday"),
+        ),
+        message(id, "bubbles-out-4", true, 0, text("Then coffee is on me")),
+    ];
+    rows[4].quoted = Some(crate::model::Quoted {
+        id: "bubbles-in-2".into(),
+        sender: id.into(),
+        sender_name: None,
+        summary: "The ferry leaves at four".into(),
+        mentions: Vec::new(),
+        chat: None,
+    });
+    for (index, row) in rows.iter_mut().enumerate() {
+        row.timestamp = now - 1200 + index as i64 * 60;
+    }
+    let conversation = app.conversations.entry(id.into()).or_default();
+    conversation.messages = rows;
+    conversation.complete = true;
+    app.open_chat = Some(id.into());
+    app.typing.clear();
+    app.scroll_to_bottom = true;
+}
+
 /// A motion photo with its clip downloaded. `playing` plays it in the bubble.
 fn motion_sample(app: &mut App, playing: bool) {
     let id = SAMPLES[0].id;
@@ -1912,6 +1995,7 @@ pub fn apply_flags(app: &mut App, page: Option<&str>) {
             "poll-voted" => poll_sample(app, true, false),
             "poll-results" => poll_sample(app, true, true),
             "photos" => photos_sample(app),
+            "bubbles" => bubbles_sample(app),
             "drafts" => {
                 // Unsent text in two chats besides the open one, whose
                 // draft is in the composer.
@@ -16456,6 +16540,97 @@ mod bubble_detail_tests {
 
     fn rect(ctx: &egui::Context, id: egui::Id) -> Option<egui::Rect> {
         ctx.data(|data| data.get_temp::<egui::Rect>(id))
+    }
+
+    /// The `bubbles` page in both Messages palettes: every message of the
+    /// sample is drawn, and only each run's last balloon curls a tail out of
+    /// its side, as far as Apple's reaches at ZapFast's text size; a lone
+    /// photo leaves the tail to the balloon after it. All of it fits a 1280
+    /// by 800 window.
+    #[test]
+    fn messages_balloons_tail_only_the_last_of_each_run() {
+        const SIZE: egui::Vec2 = egui::vec2(1280.0, 800.0);
+        let reach = crate::ui::widgets::balloon::TIP[0] * crate::ui::widgets::MESSAGES_SCALE;
+        for page in ["bubbles,messages", "bubbles,messages-light"] {
+            let mut app = app();
+            let ctx = egui::Context::default();
+            app.attach(&ctx);
+            apply_flags(&mut app, Some(page));
+            let shapes = frames(&mut app, &ctx, SIZE);
+            let chat = SAMPLES[0].id;
+            let meshes: Vec<egui::Rect> = shapes
+                .iter()
+                .filter_map(|clipped| match &clipped.shape {
+                    egui::Shape::Mesh(mesh) if mesh.texture_id == egui::TextureId::default() => {
+                        Some(egui::Rect::from_points(
+                            &mesh.vertices.iter().map(|v| v.pos).collect::<Vec<_>>(),
+                        ))
+                    }
+                    _ => None,
+                })
+                .collect();
+            let out_past = |id: &str, own: bool| {
+                let bubble = rect(
+                    &ctx,
+                    crate::ui::conversation::bubble_id(chat, id).with("rect"),
+                )
+                .unwrap_or_else(|| panic!("{page}: {id} is drawn"));
+                let balloon = meshes
+                    .iter()
+                    .find(|mesh| {
+                        (mesh.top() - bubble.top()).abs() < 1.5
+                            && (mesh.bottom() - bubble.bottom()).abs() < 1.5
+                            && mesh.contains(bubble.center())
+                    })
+                    .unwrap_or_else(|| panic!("{page}: {id} has a balloon"));
+                if own {
+                    balloon.right() - bubble.right()
+                } else {
+                    bubble.left() - balloon.left()
+                }
+            };
+            for (id, own, tailed) in [
+                ("bubbles-in-1", false, false),
+                ("bubbles-in-2", false, true),
+                ("bubbles-out-1", true, false),
+                ("bubbles-out-2", true, false),
+                ("bubbles-out-3", true, true),
+                ("bubbles-in-4", false, true),
+                ("bubbles-out-4", true, true),
+            ] {
+                let past = out_past(id, own);
+                if tailed {
+                    assert!(
+                        (past - reach).abs() < 1.0,
+                        "{page}: {id}'s tail reaches {past}, not {reach}"
+                    );
+                } else {
+                    assert!(past < 1.0, "{page}: {id} has a tail ({past})");
+                }
+            }
+            // Every row, the lone photo included, shows in the window: the
+            // view is not scrolled past the first runs.
+            for id in [
+                "bubbles-in-1",
+                "bubbles-in-2",
+                "bubbles-out-1",
+                "bubbles-out-2",
+                "bubbles-out-3",
+                "bubbles-in-3",
+                "bubbles-in-4",
+                "bubbles-out-4",
+            ] {
+                let shown = rect(
+                    &ctx,
+                    crate::ui::conversation::bubble_id(chat, id).with("rect"),
+                )
+                .unwrap_or_else(|| panic!("{page}: {id} is drawn"));
+                assert!(
+                    shown.top() >= 0.0 && shown.bottom() <= SIZE.y,
+                    "{page}: {id} is off the 1280 by 800 window at {shown:?}"
+                );
+            }
+        }
     }
 
     fn photos() -> (App, egui::Context) {
