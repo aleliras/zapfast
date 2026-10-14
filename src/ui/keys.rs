@@ -64,7 +64,7 @@ pub fn handle(app: &mut App, ctx: &egui::Context) {
                 Action::ShowDialog(Dialog::Shortcuts),
             );
         }
-        if app.page == Page::Chats
+        if app.chat_view()
             && app.open_chat.is_some()
             && app.dialog.is_none()
             && !app.show_update
@@ -91,12 +91,22 @@ pub fn handle(app: &mut App, ctx: &egui::Context) {
         key(Modifiers::COMMAND, Key::Minus, Action::ZoomBy(-0.1));
         key(Modifiers::COMMAND, Key::Num0, Action::ResetZoom);
         key(Modifiers::COMMAND, Key::End, Action::ScrollToBottom);
+        // The rail's Chats and Calls, by the digit's place on the keyboard:
+        // with Shift held, layouts report the digits as their symbols.
+        // Ctrl+1..9 without Shift open chats by their place in the list.
+        if app.is_linked() {
+            match take_destination(input) {
+                Some(1) => actions.extend(super::rail::Destination::Chats.actions(app)),
+                Some(2) => actions.extend(super::rail::Destination::Calls.actions(app)),
+                _ => {}
+            }
+        }
     });
     // Escape cancels the topmost state. Menus handle Escape themselves.
     let menu_open = egui::Popup::is_any_open(ctx);
     let search_focused = ctx.memory(|memory| memory.has_focus(egui::Id::new("chat-search")));
     let composer_focused = ctx.memory(|memory| memory.has_focus(egui::Id::new("composer-text")));
-    if app.page == Page::Chats
+    if app.chat_view()
         && app.selection.as_ref().is_some_and(|(chat, selected)| {
             app.open_chat.as_ref() == Some(chat) && !selected.is_empty()
         })
@@ -125,7 +135,7 @@ pub fn handle(app: &mut App, ctx: &egui::Context) {
     // composer has focus, since egui's TextEdit does not handle them itself;
     // Home/End keep moving the text cursor in a non-empty field, as ↑ keeps
     // its normal meaning outside an empty composer.
-    if app.page == Page::Chats
+    if app.chat_view()
         && app.open_chat.is_some()
         && app.dialog.is_none()
         && !app.show_update
@@ -214,8 +224,10 @@ pub fn handle(app: &mut App, ctx: &egui::Context) {
             actions.push(Action::SearchSettings(String::new()));
         } else if app.page == Page::Calls && app.new_call {
             actions.push(Action::ShowNewCall(false));
-        } else if app.page == Page::Calls && app.call_info.is_some() {
-            actions.push(Action::CloseCallInfo);
+        } else if app.page == Page::Calls && super::narrow(ctx) && app.call_picked() {
+            // A narrow window shows the picked call's chat over the history:
+            // Escape goes back to it, as the chat's Back does.
+            actions.push(Action::CloseChat);
         } else if app.page == Page::Settings || app.page == Page::Calls {
             actions.push(Action::Open(Page::Chats));
         } else if search_focused || !app.search.is_empty() {
@@ -302,7 +314,7 @@ pub fn handle(app: &mut App, ctx: &egui::Context) {
     // else: it navigates open overlays and moves the cursor in a non-empty
     // field.
     let edit_previous = composer_focused
-        && app.page == Page::Chats
+        && app.chat_view()
         && app.open_chat.is_some()
         && app
             .open_chat
@@ -365,6 +377,34 @@ fn take_chat_number(input: &mut egui::InputState) -> Option<usize> {
         true
     });
     number
+}
+
+/// Takes Ctrl+Shift+1 or Ctrl+Shift+2 (Cmd on macOS), the rail's Chats and
+/// Calls, and says which. It goes by the key's place on the keyboard: with
+/// Shift held, each layout reports the digit as a symbol of its own.
+fn take_destination(input: &mut egui::InputState) -> Option<u8> {
+    let mut destination = None;
+    input.events.retain(|event| {
+        if destination.is_none()
+            && let egui::Event::Key {
+                key,
+                physical_key,
+                pressed: true,
+                modifiers,
+                ..
+            } = event
+            && modifiers.matches_exact(Modifiers::COMMAND | Modifiers::SHIFT)
+        {
+            destination = match physical_key.unwrap_or(*key) {
+                Key::Num1 => Some(1),
+                Key::Num2 => Some(2),
+                _ => None,
+            };
+            return destination.is_none();
+        }
+        true
+    });
+    destination
 }
 
 /// Removes this frame's first plain (unmodified) press of `key`, if any, and
@@ -539,7 +579,7 @@ fn sticker_view_keys(app: &mut App, ctx: &egui::Context) {
 fn find_action(app: &App) -> Action {
     match app.page {
         Page::Settings => Action::FocusSettingsSearch,
-        Page::Chats if app.open_chat.is_some() => Action::OpenChatSearch,
+        Page::Chats | Page::Calls if app.open_chat.is_some() => Action::OpenChatSearch,
         _ => Action::FocusSearch,
     }
 }
@@ -547,7 +587,7 @@ fn find_action(app: &App) -> Action {
 /// Ctrl+E archives the open chat, or unarchives an archived one, as in
 /// WhatsApp. Archiving closes the chat, as the chat menus do.
 fn archive_action(app: &App) -> Option<Action> {
-    if app.page != Page::Chats
+    if !app.chat_view()
         || app.dialog.is_some()
         || app.show_update
         || app.picker.is_some()
@@ -590,11 +630,13 @@ pub const SHORTCUTS: &[(&str, &str)] = &[
     ("Alt+↑ / Alt+↓", "Previous / next chat"),
     ("Ctrl+Shift+[ / ]", "Previous / next chat, as in WhatsApp"),
     ("Ctrl+1..9", "Open a chat by its position in the chat list"),
+    ("Ctrl+Shift+1", "Chats"),
+    ("Ctrl+Shift+2", "Calls"),
     ("↑", "Edit the previous message (when the input is empty)"),
     ("Enter", "Send (Shift+Enter for a new line)"),
     (
         "Escape",
-        "Dismiss the current action, return from search, or close the chat",
+        "Dismiss the current action, return from search, Calls or Starred, or close the chat",
     ),
     ("Ctrl+N", "New chat or message yourself"),
     ("Ctrl+E", "Archive or unarchive the open chat"),
@@ -695,7 +737,7 @@ mod tests {
     }
 
     #[test]
-    fn escape_closes_the_new_call_list_and_the_call_details_first() {
+    fn escape_closes_the_new_call_list_then_returns_to_the_chats() {
         let root = tempfile::tempdir().unwrap();
         let mut app = App::headless(
             crate::paths::AppDirs::under(root.path()),
@@ -704,7 +746,8 @@ mod tests {
         .0;
         app.page = Page::Calls;
         app.new_call = true;
-        app.call_info = Some(("ada@s.whatsapp.net".into(), "call-1".into()));
+        app.open_chat = Some("ada@s.whatsapp.net".into());
+        app.picked_call = Some(("ada@s.whatsapp.net".into(), "call-1".into()));
         let ctx = egui::Context::default();
         escape(&mut app, &ctx);
         assert!(matches!(
@@ -713,8 +756,12 @@ mod tests {
         ));
         app.actions.clear();
         app.new_call = false;
+        // Beside the history, the picked chat stays open on the way out.
         escape(&mut app, &ctx);
-        assert!(matches!(app.actions.as_slice(), [Action::CloseCallInfo]));
+        assert!(matches!(
+            app.actions.as_slice(),
+            [Action::Open(Page::Chats)]
+        ));
     }
 
     /// Escape leaves the call screen rather than the call.
@@ -1262,12 +1309,63 @@ mod tests {
             Modifiers::NONE,
             Modifiers::SHIFT,
             Modifiers::ALT,
-            Modifiers::COMMAND | Modifiers::SHIFT,
             Modifiers::COMMAND | Modifiers::ALT,
         ] {
             assert!(press(&mut app, &ctx, Key::Num1, modifiers));
             assert!(app.actions.is_empty());
         }
+    }
+
+    /// Ctrl+Shift+1 and Ctrl+Shift+2 (Cmd on macOS) lead to the rail's
+    /// Chats and Calls by where the digit sits, whatever symbol the layout
+    /// puts on it with Shift held; Ctrl+1 and Ctrl+2 still open chats.
+    #[test]
+    fn shifted_digits_lead_to_the_chats_and_the_calls() {
+        let (_root, mut app, ids) = app_with_chats(2);
+        app.link = crate::backend::LinkStatus::Connected;
+        let ctx = egui::Context::default();
+        let shifted = |app: &mut App, key: Key, physical: Key| {
+            app.actions.clear();
+            let mut output = ctx.run_ui(
+                egui::RawInput {
+                    events: vec![egui::Event::Key {
+                        key,
+                        physical_key: Some(physical),
+                        pressed: true,
+                        repeat: false,
+                        modifiers: Modifiers::COMMAND | Modifiers::SHIFT,
+                    }],
+                    ..Default::default()
+                },
+                |ui| handle(app, ui.ctx()),
+            );
+            output.textures_delta.clear();
+            std::mem::take(&mut app.actions)
+        };
+        // US layouts report Shift+2 as "@", which egui has no key for, and
+        // Shift+1 as "!".
+        assert_eq!(
+            shifted(&mut app, Key::Num2, Key::Num2),
+            [Action::Open(Page::Calls)]
+        );
+        app.page = Page::Calls;
+        assert!(
+            shifted(&mut app, Key::Num2, Key::Num2).is_empty(),
+            "Calls is not a toggle"
+        );
+        assert_eq!(
+            shifted(&mut app, Key::Exclamationmark, Key::Num1),
+            [Action::Open(Page::Chats)]
+        );
+        app.page = Page::Chats;
+        app.show_starred = true;
+        assert_eq!(
+            shifted(&mut app, Key::Exclamationmark, Key::Num1),
+            [Action::ToggleStarred]
+        );
+        app.show_starred = false;
+        assert!(!press(&mut app, &ctx, Key::Num2, Modifiers::COMMAND));
+        assert!(app.actions.contains(&Action::OpenChat(ids[1].clone())));
     }
 
     #[test]

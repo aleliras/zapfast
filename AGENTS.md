@@ -63,11 +63,20 @@ protocol. These notes are for coding agents and new contributors.
   `AccountId`. `src/app.rs` is the process shell (theme, window, tray,
   updates). Each `Account` in `src/account.rs` owns a `Backend`/`Worker`.
   Views draw the active account through `App`'s `Deref` to `Account`.
-  Our own avatar at the top of the chat list opens the account switcher
-  (`src/ui/accounts.rs`) on every platform: only the accounts (picture, name
-  or number, unread chats, a check on the one on screen) and Add account; the
-  settings keep their own button. A dot on the avatar means another account
-  has unread chats. Events from an account that is not on screen are
+  A navigation rail (`src/ui/rail.rs`) runs down the left of the chat list
+  on every platform, 52 points wide and a shade darker than the list:
+  Chats, Calls and Starred at the top, the one on screen lit (Calls and
+  Starred are left through Chats or Escape, never toggled); Archived and
+  Locked (while there are such chats; they open in the list column),
+  Settings and our own avatar at the bottom. While the list is hidden the
+  chats' avatars fill it between the two. On macOS the traffic lights reach
+  past it over the header beside it, which leaves `rail::lights_overhang`
+  free; a narrow window hides the rail with the list. The Calls tab keeps
+  the open chat beside its history (`App::chat_view`), and a picked call row
+  opens its chat there. Our avatar opens the account switcher
+  (`src/ui/accounts.rs`): only the accounts (picture, name or number, unread
+  chats, a check on the one on screen) and Add account. A dot on the avatar
+  means another account has unread chats. Events from an account that is not on screen are
   applied with `App::events_hidden` set: they update that account only, never
   the window's composer, dialogs, playback, or read state (a hidden account's
   remembered chat is not being read, so it sends no receipts). Process-wide

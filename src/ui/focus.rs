@@ -22,12 +22,19 @@ pub enum Stop {
     /// pointer and accessibility targets, like chat rows.
     InfoClose,
     InfoControl(u8),
-    Back,
-    Profile,
-    Sidebar,
+    /// The rail on the left, top to bottom, then the list header's Back
+    /// and buttons. Show the chat list takes the rail's top while the
+    /// list is hidden, and keeps Hide the chat list's place in the order.
+    Chats,
     Calls,
-    NewChat,
+    Starred,
+    Archived,
+    Locked,
     Settings,
+    Profile,
+    Back,
+    NewChat,
+    Sidebar,
     Search,
     All,
     Unread,
@@ -35,8 +42,6 @@ pub enum Stop {
     Favorites,
     Groups,
     Channels,
-    Archived,
-    Locked,
     /// One chip in the label row, by its position among the labels.
     Label(u8),
     ManageLabels,
@@ -239,7 +244,7 @@ mod tests {
             (Some(Stop::Composer), -1, 2),
             (Some(Stop::Attach), 1, 2),
             (Some(Stop::Attach), -1, 1),
-            (Some(Stop::Locked), 1, 0),
+            (Some(Stop::Channels), 1, 0),
             (None, 1, 0),
             (None, -1, 2),
             (Some(Stop::Composer), 5, 2),

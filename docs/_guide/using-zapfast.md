@@ -114,12 +114,13 @@ by sender, time, and a short summary.
 **Development builds** can star messages. Right-click a message and choose
 **Star**; once WhatsApp confirms it, a small star shows beside the message's
 time. Stars made on your phone or another linked device show up here too, and
-the other way round. The star button in the chat-list header opens
+the other way round. The star in the rail on the left of the chat list opens
 **Starred**, which lists every starred message, newest star first, with its
 chat's name and when it was starred. Text shows as written; a photo, video,
 document, or voice message shows the same label the chat list uses. Clicking a
 row opens the chat at that message, and right-clicking it offers the chat's own
 menu, including **Unstar**. Messages from locked chats stay out of the list.
+Click **Chats** in the rail, or press Escape, to go back to the chats.
 
 ## Pinned messages
 
@@ -471,22 +472,23 @@ the ones it reports as they happen, the calls missed while ZapFast was closed,
 and the call history it sends when the computer is linked. Right-click a call
 in a chat to call back from there.
 
-The phone button at the top of the chat list opens the **Calls** tab, laid out
-as in WhatsApp: the list on the left shows every call of the number on screen,
-newest first, with calls in a row from the same person folded into one row
-with a count. Each row says which way the call went (a missed call's name is
-red), when, and how it went, and its phone or camera button calls back the
-same way. The search field finds calls by name or number. Clicking a row shows
-the call info beside the list: **Message**, **Voice call**, **Video call**, and
-every call with that person by day; clicking a call there opens the chat at
-it. The **New call** button beside the phone button (or **Start call** in the
-empty pane) opens a list of the people you call most often and all your
-contacts, searchable by name or number, each with a voice and a video button.
-Click the lit phone button, or press Escape, to go back to the chats. Switching
+**Calls** in the rail on the left of the chat list (`Ctrl+Shift+2`, Command
+on macOS) opens the **Calls** tab, laid out as in WhatsApp: the list shows
+every call of the number on screen, newest first, with calls in a row from the
+same person folded into one row with a count. Each row says which way the call
+went (a missed call's name is red), when, and how it went, and its phone or
+camera button calls back the same way. The search field finds calls by name or
+number. The chat you had open stays beside the list; clicking a row opens that
+person's chat there instead, at the call, with the voice and video buttons in
+its header. With no chat open, the pane beside the list offers **Start call**.
+The **New call** button in the list's header (or **Start call**) opens a list
+of the people you call most often and all your contacts, searchable by name or
+number, each with a voice and a video button. Click **Chats** in the rail,
+press `Ctrl+Shift+1`, or press Escape to go back to the chats. Switching
 numbers keeps the Calls tab open on the other number's calls. In a narrow
-window the list takes the whole window and a call's info opens over it, with
-a Back button. Group calls show up in the history, but are placed and answered
-on the phone.
+window the list takes the whole window beside the rail, and a picked call's
+chat opens over both, with a Back button. Group calls show up in the history,
+but are placed and answered on the phone.
 
 ## Copying
 
@@ -554,8 +556,9 @@ disappear on your other devices.
 
 The chips under the search bar narrow the list to **Unread**, **Private**
 (one-to-one chats), **Favorites** (in your phone's order), or **Groups**.
-Followed channels have their own **Channels** chip, and **Archived** opens the
-archived chats. A chip with unread chats shows how many it
+Followed channels have their own **Channels** chip. **Archived**, in the rail
+on the left above **Settings**, opens the archived chats in the list, and
+shows how many of them are unread. A chip with unread chats shows how many it
 has. Click the active chip again, or **All**, to see every chat. The
 filter applies only to this list: search and the archive still show everything.
 ZapFast remembers the chip or label each account last showed and comes back
@@ -650,7 +653,8 @@ it guessed at.
 leaves the chat list, search, and the unread count, and never raises a
 notification. The lock syncs with your phone and other linked devices.
 
-Choose **Locked** beside the chat filters and type your local code to open
+Choose **Locked** in the rail on the left, above **Settings**, and type your
+local code to open
 them; the first time, ZapFast offers to set one up. The code is separate from
 your phone's and adds no encryption beyond the encrypted message archive.
 Leaving the tab, changing the code, or closing the window hides them again.
@@ -677,9 +681,15 @@ wearing it, channels included. A label is one more chip: picking it lets go of
 the other chips, it does not narrow search or the archive. Click the active
 label chip again, or **All**, to see every chat.
 
-The button beside **New chat** (`Ctrl+B`) collapses the list to a narrow column
-of avatars: unread chats show their badge, hovering names a chat, clicking opens
-it, and `Ctrl+B` brings the full list back.
+A thin rail runs down the left of the chat list: **Chats**, **Calls**
+(`Ctrl+Shift+1` and `Ctrl+Shift+2`, Command on macOS) and **Starred** at the
+top, the one on screen lit; **Archived** and **Locked** (while you have
+archived or locked chats), **Settings**, and your own picture (the account
+switcher) at the bottom. The chat list's header keeps its title, **New
+chat**, and the button beside it (`Ctrl+B`), which hides the list: the chats'
+avatars then fill the rail between its top and bottom buttons. Unread chats
+show their badge, hovering names a chat, clicking opens it, and `Ctrl+B` or
+the button under **Starred** brings the full list back.
 
 ## Notifications and the tray
 

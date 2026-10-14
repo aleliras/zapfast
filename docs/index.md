@@ -42,7 +42,7 @@ features:
     details: Closing the window keeps ZapFast linked in the tray. Notifications show the chat picture, and muted chats stay quiet.
   - icon: 👥
     title: Several numbers
-    details: Link more than one WhatsApp number and switch between them from your picture at the top of the chat list.
+    details: Link more than one WhatsApp number and switch between them from your picture at the foot of the rail beside the chat list.
   - icon: 🎨
     title: Themes
     details: Light, dark, or the system's appearance, custom colour themes, and on Omarchy your desktop theme.

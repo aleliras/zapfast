@@ -247,6 +247,27 @@ impl Palette {
         }
     }
 
+    /// The navigation rail's background: the chat list's, one shade darker,
+    /// so the two read as separate columns without a line between them. A
+    /// translucent sidebar darkens the same way, with a little more of it
+    /// opaque.
+    pub fn rail(&self) -> Color32 {
+        let sidebar = self.sidebar();
+        let shade = if self.dark {
+            DARK_RAIL_SHADE
+        } else {
+            RAIL_SHADE
+        };
+        let keep = 1.0 - shade;
+        let channel = |value: u8| (f32::from(value) * keep).round() as u8;
+        Color32::from_rgba_premultiplied(
+            channel(sidebar.r()),
+            channel(sidebar.g()),
+            channel(sidebar.b()),
+            (f32::from(sidebar.a()) + (255.0 - f32::from(sidebar.a())) * shade).round() as u8,
+        )
+    }
+
     /// The conversation's background on a vibrant theme: mostly `color`,
     /// with a little of the material behind the window showing through.
     pub fn vibrant_chat(&self, color: Color32) -> Color32 {
@@ -510,6 +531,11 @@ const LIGHT_PILL_TINT: f32 = 0.5;
 const CHAT_TINT: f32 = 0.82;
 /// How much of the panel colour tints a vibrant sidebar.
 const SIDEBAR_TINT: f32 = 0.35;
+/// How much black the rail lays over the chat list's colour in a light
+/// palette.
+const RAIL_SHADE: f32 = 0.05;
+/// The same in a dark palette, whose panel is already near black.
+const DARK_RAIL_SHADE: f32 = 0.22;
 /// How much denser than the palette's shadow colour a bubble's shadow is.
 const SHADOW_DENSITY: f32 = 1.04;
 /// How far a dark theme's raised edge moves from the surface toward the text.

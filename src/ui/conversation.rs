@@ -395,6 +395,11 @@ fn header(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> Rect {
                 // lights itself.
                 if narrow && theme::macos_chrome(ui.ctx()) {
                     ui.add_space(theme::traffic_light_inset(ui.ctx()));
+                } else if app.sidebar_mode() == crate::model::SidebarDisplayMode::CollapsedIconsOnly
+                    && app.page == crate::model::Page::Chats
+                {
+                    // Beside the rail alone, the lights reach over this header.
+                    ui.add_space(super::rail::lights_overhang(ui.ctx()));
                 }
                 let picture = app.avatar(&chat.id);
                 let (subtitle, color) = subtitle(app, chat);
@@ -786,13 +791,20 @@ fn header(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> Rect {
                             ui.add_space(BUTTON_GAP);
                         }
                         let back_glass = ui.painter().add(egui::Shape::Noop);
+                        // On the Calls tab the list underneath is the call
+                        // history.
+                        let back_label = if app.page == crate::model::Page::Calls {
+                            crate::i18n::gettext(app.locale, "Back to the calls").into_owned()
+                        } else {
+                            "Back to chats".to_owned()
+                        };
                         let back = theme::icon_button(
                             ui,
                             Icon::ArrowLeft,
                             18.0,
                             palette.secondary,
                             palette.text,
-                            "Back to chats",
+                            &back_label,
                         )
                         .tab_stop(Stop::Back);
                         if palette.vibrant() {

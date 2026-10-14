@@ -555,7 +555,7 @@ impl Default for Settings {
             custom_theme_cache: None,
             system_theme_cache: None,
             zoom: 1.0,
-            sidebar_width: 320.0,
+            sidebar_width: 300.0,
             search_pane_width: 380.0,
             info_pane_width: 380.0,
             enter_sends: true,
