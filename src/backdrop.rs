@@ -109,7 +109,10 @@ mod platform {
                 size_of_val(&backdrop) as u32,
             );
             // The backdrop shows only where the frame extends over the
-            // client area; all of it, while wanted.
+            // client area; all of it, while wanted. The custom title bar
+            // leaves the frame alone: without decorations the window has no
+            // caption for DWM to draw, and the buttons ZapFast draws sit in
+            // the client area over the same Mica.
             let inset = if wanted { -1 } else { 0 };
             let margins = MARGINS {
                 cxLeftWidth: inset,

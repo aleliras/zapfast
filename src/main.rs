@@ -73,6 +73,12 @@ struct Cli {
     #[arg(long, requires = "demo")]
     demo_macos: bool,
 
+    /// Draw ZapFast's own title bar and window buttons, as Settings >
+    /// Appearance > Custom title bar does, on Windows and Linux (demo only).
+    #[cfg(feature = "demo")]
+    #[arg(long, conflicts_with = "demo_macos")]
+    demo_titlebar: bool,
+
     /// Demo view: `chat`, `phone-menu`, `empty`, `settings`, `login`,
     /// `pair`, `shortcuts`, `about`, `info`, `mention`, `light`, or a comma-separated
     /// mix such as `chat,light`.
@@ -325,6 +331,14 @@ fn run() -> eframe::Result<()> {
         return Err(eframe::Error::AppCreation(error.into()));
     }
     let settings = settings::Settings::load(&dirs.settings_file());
+    // The drawn title bar (Windows and Linux): GNOME's button layout and
+    // icons, read once, and the choice every window is made with.
+    fastframe_titlebar::init();
+    #[cfg(feature = "demo")]
+    let custom_titlebar = settings.custom_titlebar || cli.demo_titlebar;
+    #[cfg(not(feature = "demo"))]
+    let custom_titlebar = settings.custom_titlebar;
+    fastframe_titlebar::set_enabled(custom_titlebar);
     let demo_persistence = demo.then(|| dirs.state.join("window.ron"));
 
     #[allow(unused_mut)]
@@ -602,7 +616,10 @@ fn native_options(
         // its sidebar; every other theme paints the window opaque.
         .with_transparent(transparent)
         .with_titlebar_shown(false)
-        .with_title_shown(false);
+        .with_title_shown(false)
+        // Windows and Linux: no frame when ZapFast draws its own title bar.
+        // Fixed for the window's life; a new choice replaces the window.
+        .with_decorations(!fastframe_titlebar::enabled());
     eframe::NativeOptions {
         viewport,
         persistence_path: demo_persistence,
