@@ -148,7 +148,7 @@ fn header(app: &mut App, ui: &mut egui::Ui) {
                 |ui| {
                     let buttons = list_header_buttons(app, ui.ctx(), false);
                     if app.page == Page::Calls && app.new_call {
-                        new_call_header(app, ui, 20.0);
+                        new_call_header(app, ui, 20.0, header_buttons_width(ui, &buttons));
                     } else if app.page != Page::Calls && app.show_starred {
                         if theme::icon_button(
                             ui,
@@ -163,11 +163,12 @@ fn header(app: &mut App, ui: &mut egui::Ui) {
                         {
                             app.actions.push(Action::ToggleStarred);
                         }
-                        theme::text(
+                        header_title(
                             ui,
                             crate::i18n::gettext(app.locale, "Starred").as_ref(),
                             theme::bold(20.0),
                             palette.text,
+                            header_buttons_width(ui, &buttons),
                         );
                     } else if app.page != Page::Calls && (app.show_archived || app.locked_folder) {
                         if theme::icon_button(
@@ -234,7 +235,7 @@ fn tab_title(page: &Page) -> &'static str {
 
 /// The new-call list's header, as WhatsApp's drawer has it: Back and "New
 /// call" in place of the avatar and the tab's title.
-fn new_call_header(app: &mut App, ui: &mut egui::Ui, title: f32) {
+fn new_call_header(app: &mut App, ui: &mut egui::Ui, title: f32, buttons: f32) {
     let palette = app.palette;
     if theme::icon_button(
         ui,
@@ -249,11 +250,12 @@ fn new_call_header(app: &mut App, ui: &mut egui::Ui, title: f32) {
     {
         app.actions.push(Action::ShowNewCall(false));
     }
-    theme::text(
+    header_title(
         ui,
         crate::i18n::gettext(app.locale, "New call").as_ref(),
         theme::bold(title),
         palette.text,
+        buttons,
     );
 }
 
@@ -557,7 +559,7 @@ fn macos_header(app: &mut App, ui: &mut egui::Ui) {
                 ui.add_space((inset - 14.0).max(0.0));
                 let buttons = list_header_buttons(app, ui.ctx(), true);
                 if app.page == Page::Calls && app.new_call {
-                    new_call_header(app, ui, 16.0);
+                    new_call_header(app, ui, 16.0, header_buttons_width(ui, &buttons));
                 } else if app.page != Page::Calls && app.show_starred {
                     if theme::icon_button(
                         ui,
@@ -572,11 +574,12 @@ fn macos_header(app: &mut App, ui: &mut egui::Ui) {
                     {
                         app.actions.push(Action::ToggleStarred);
                     }
-                    theme::text(
+                    header_title(
                         ui,
                         crate::i18n::gettext(app.locale, "Starred").as_ref(),
                         theme::bold(16.0),
                         palette.text,
+                        header_buttons_width(ui, &buttons),
                     );
                 } else if app.page != Page::Calls && (app.show_archived || app.locked_folder) {
                     if theme::icon_button(
@@ -858,7 +861,10 @@ fn starred_row(
         ui.allocate_exact_size(vec2(width, 26.0 + bubble_height + 10.0), Sense::hover());
     let response = ui.interact(rect, row_id, Sense::click());
     theme::reveal_focus(&response);
-    let label = format!("{}, {words}", app.display_name_or(&message.chat, None));
+    // The chat's own title, as the chat list writes it: a group without a
+    // subject is named after its members, never "Unknown".
+    let name = app.chat_title_of(&message.chat);
+    let label = format!("{name}, {words}");
     response.widget_info(|| {
         egui::WidgetInfo::labeled(egui::WidgetType::Button, ui.is_enabled(), &label)
     });
@@ -869,7 +875,6 @@ fn starred_row(
         ui.painter()
             .rect_filled(rect, 6.0, palette.surface_hover.gamma_multiply(0.5));
     }
-    let name = app.display_name_or(&message.chat, None);
     let when = crate::util::moment_stamp(app.locale, marked_at);
     let name_line = widgets::line(
         ui,
