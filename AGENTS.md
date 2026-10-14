@@ -142,7 +142,17 @@ protocol. These notes are for coding agents and new contributors.
 - Calls use whatsapp-rust's `voip` feature (`Client::voip()`): signaling,
   keys, the relay transport and the codecs are the library's, never ours.
   `src/calls.rs` is one call's phase machine, fed only by the protocol's own
-  stanzas and media events (a relay alone is not an answered call);
+  stanzas and media events (a relay alone is not an answered call). The one
+  local phase is `Placing`: the window draws it ("Connecting…") the moment a
+  call button is pressed, under a generation it takes from
+  `calls::next_generation` and hands the worker in `Command::StartCall`, with
+  a cancel flag that keeps a call hung up while placing from being offered;
+  every way placing stops short answers with that generation failed. Ringing
+  is the peer's `<preaccept>`. A call hung up or declined here leaves the
+  screen at once, any other end after `CALL_FAREWELL` (1.5 s).
+  `src/call_tones.rs` synthesises the ETSI ringback (while `Ringing`) and
+  the incoming ringtone (while the call's notification may sound) on the
+  default output, and only tracks them in tests and demos;
   `src/call_audio.rs` bridges the engine's 16 kHz frames to rodio's
   microphone and speaker behind stable channels, so a device change rebinds
   a stream instead of the call. `backend/worker/calls.rs` owns at most one

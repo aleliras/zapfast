@@ -5856,7 +5856,12 @@ impl Worker {
             return;
         }
         match command {
-            Command::StartCall { chat, video } => self.start_call(chat, video).await,
+            Command::StartCall {
+                chat,
+                video,
+                generation,
+                cancel,
+            } => self.start_call(chat, video, generation, cancel).await,
             Command::AnswerCall => self.answer_call().await,
             Command::DeclineCall => self.decline_call().await,
             Command::HangupCall => self.hangup_call().await,

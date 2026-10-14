@@ -2448,6 +2448,24 @@ pub fn apply_flags(app: &mut App, page: Option<&str>) {
                     call.started = None;
                 }
             }
+            // A call whose button was just pressed: on screen at once, before
+            // its offer has gone out.
+            "call-connecting" => {
+                call_sample(app, false, false);
+                if let Some(call) = app.call.as_mut() {
+                    call.phase = CallPhase::Placing;
+                    call.started = None;
+                }
+            }
+            // A call that could not be placed, saying so before it goes.
+            "call-failed" => {
+                call_sample(app, false, false);
+                if let Some(call) = app.call.as_mut() {
+                    call.phase = CallPhase::Failed;
+                    call.started = None;
+                    call.outcome = Some(crate::calls::CallOutcome::Failed);
+                }
+            }
             "call-devices" => {
                 call_sample(app, false, false);
                 app.call_devices = crate::calls::DeviceList {
@@ -5952,6 +5970,8 @@ mod tests {
             "call",
             "call-active",
             "call-outgoing",
+            "call-connecting",
+            "call-failed",
             "call-devices",
             "call-ended",
             "call-strip",

@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-14 18:38+0200\n"
+"POT-Creation-Date: 2026-10-14 18:58+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Italian\n"
@@ -214,7 +214,7 @@ msgstr "{hours} h"
 msgid "{hours} h {minutes} min"
 msgstr "{hours} h {minutes} min"
 
-#: src/ui/chats.rs:165 src/ui/chats.rs:492 src/app.rs:3138
+#: src/ui/chats.rs:165 src/ui/chats.rs:492 src/app.rs:3157
 msgid "Starred"
 msgstr "Contrassegnati"
 
@@ -248,7 +248,7 @@ msgstr ""
 msgid "No favorites yet"
 msgstr "Ancora nessun preferito"
 
-#: src/ui/chats.rs:1334 src/app.rs:2522
+#: src/ui/chats.rs:1334 src/app.rs:2541
 msgid "Message yourself"
 msgstr "Invia un messaggio a te stesso"
 
@@ -292,7 +292,7 @@ msgstr "Ctrl+K per cercare · ? per le scorciatoie da tastiera"
 msgid "Select messages"
 msgstr "Seleziona messaggi"
 
-#: src/ui/conversation.rs:719 src/ui/call.rs:111 src/ui/call.rs:524
+#: src/ui/conversation.rs:719 src/ui/call.rs:111 src/ui/call.rs:527
 msgid "Hang up"
 msgstr "Riaggancia"
 
@@ -408,7 +408,7 @@ msgid_plural "{} unread messages"
 msgstr[0] "{} messaggio non letto"
 msgstr[1] "{} messaggi non letti"
 
-#: src/ui/conversation.rs:3060 src/app.rs:2504 src/app.rs:2523
+#: src/ui/conversation.rs:3060 src/app.rs:2523 src/app.rs:2542
 msgid "You"
 msgstr "Tu"
 
@@ -567,11 +567,11 @@ msgstr "Torna al messaggio (Esc)"
 msgid "Fill the window"
 msgstr "Riempi la finestra"
 
-#: src/ui/conversation.rs:8778 src/ui/call.rs:469
+#: src/ui/conversation.rs:8778 src/ui/call.rs:472
 msgid "Unmute"
 msgstr "Riattiva audio"
 
-#: src/ui/conversation.rs:8780 src/ui/call.rs:476
+#: src/ui/conversation.rs:8780 src/ui/call.rs:479
 msgid "Mute"
 msgstr "Disattiva audio"
 
@@ -949,7 +949,7 @@ msgstr ""
 msgid "Wallpaper"
 msgstr "Sfondo"
 
-#: src/ui/settings.rs:348 src/app.rs:2998 src/ui/image_preview.rs:204
+#: src/ui/settings.rs:348 src/app.rs:3017 src/ui/image_preview.rs:204
 msgid "Image"
 msgstr "Immagine"
 
@@ -1451,7 +1451,7 @@ msgstr "Suono dei messaggi"
 msgid "Pidgin alert"
 msgstr "Avviso di Pidgin"
 
-#: src/ui/settings.rs:1902 src/ui/call.rs:544
+#: src/ui/settings.rs:1902 src/ui/call.rs:547
 msgid "System default"
 msgstr "Predefinito di sistema"
 
@@ -1489,128 +1489,128 @@ msgstr "Esci da schermo intero"
 msgid "Full screen"
 msgstr "Schermo intero"
 
-#: src/ui/call.rs:329
-msgid "Calling…"
-msgstr "Chiamata in corso…"
-
-#: src/ui/call.rs:331
-msgid "Ringing…"
-msgstr "Squilla…"
-
-#: src/ui/call.rs:333 src/ui/call.rs:338
+#: src/ui/call.rs:330 src/ui/call.rs:336 src/ui/call.rs:341
 msgid "Connecting…"
 msgstr "Connessione…"
 
-#: src/ui/call.rs:342 src/ui/call.rs:351
+#: src/ui/call.rs:332
+msgid "Calling…"
+msgstr "Chiamata in corso…"
+
+#: src/ui/call.rs:334
+msgid "Ringing…"
+msgstr "Squilla…"
+
+#: src/ui/call.rs:345 src/ui/call.rs:354
 msgid "Call ended"
 msgstr "Chiamata terminata"
 
-#: src/ui/call.rs:343 src/app/calls.rs:274
+#: src/ui/call.rs:346 src/app/calls.rs:383
 msgid "Incoming video call"
 msgstr "Videochiamata in arrivo"
 
-#: src/ui/call.rs:344 src/app/calls.rs:276
+#: src/ui/call.rs:347 src/app/calls.rs:385
 msgid "Incoming voice call"
 msgstr "Chiamata vocale in arrivo"
 
-#: src/ui/call.rs:352
+#: src/ui/call.rs:355
 msgid "Missed call"
 msgstr "Chiamata persa"
 
-#: src/ui/call.rs:353 src/ui/calls.rs:115
+#: src/ui/call.rs:356 src/ui/calls.rs:115
 msgid "Declined"
 msgstr "Rifiutata"
 
-#: src/ui/call.rs:354 src/ui/calls.rs:117
+#: src/ui/call.rs:357 src/ui/calls.rs:117
 msgid "Busy"
 msgstr "Occupato"
 
-#: src/ui/call.rs:355 src/ui/call.rs:360 src/ui/calls.rs:118
+#: src/ui/call.rs:358 src/ui/call.rs:363 src/ui/calls.rs:118
 msgid "Could not connect"
 msgstr "Impossibile connettersi"
 
-#: src/ui/call.rs:356 src/ui/calls.rs:119
+#: src/ui/call.rs:359 src/ui/calls.rs:119
 msgid "No answer"
 msgstr "Nessuna risposta"
 
-#: src/ui/call.rs:358 src/ui/calls.rs:120 src/app.rs:4044
+#: src/ui/call.rs:361 src/ui/calls.rs:120 src/app.rs:4063
 msgid "Connection lost"
 msgstr "Connessione persa"
 
-#: src/ui/call.rs:362 src/ui/calls.rs:114
+#: src/ui/call.rs:365 src/ui/calls.rs:114
 msgid "Answered on another device"
 msgstr "Risposta su un altro dispositivo"
 
-#: src/ui/call.rs:365 src/ui/calls.rs:116
+#: src/ui/call.rs:368 src/ui/calls.rs:116
 msgid "Declined on another device"
 msgstr "Rifiutata su un altro dispositivo"
 
-#: src/ui/call.rs:386
+#: src/ui/call.rs:389
 #, rust-format
 msgid "Microphone “{name}” is not available; using the system default"
 msgstr ""
 "Il microfono «{name}» non è disponibile; uso quello predefinito di sistema"
 
-#: src/ui/call.rs:390
+#: src/ui/call.rs:393
 #, rust-format
 msgid "Speaker “{name}” is not available; using the system default"
 msgstr ""
 "L'altoparlante «{name}» non è disponibile; uso quello predefinito di sistema"
 
-#: src/ui/call.rs:392
+#: src/ui/call.rs:395
 #, rust-format
 msgid "Camera “{name}” is not available"
 msgstr "La fotocamera «{name}» non è disponibile"
 
-#: src/ui/call.rs:415
+#: src/ui/call.rs:418
 msgid "No audio is arriving from this call"
 msgstr "Da questa chiamata non arriva audio"
 
-#: src/ui/call.rs:417
+#: src/ui/call.rs:420
 msgid "This call's audio cannot be decoded"
 msgstr "Impossibile decodificare l'audio di questa chiamata"
 
-#: src/ui/call.rs:425
+#: src/ui/call.rs:428
 msgid "The other side's audio is not getting through"
 msgstr "L'audio dell'altra persona non arriva"
 
-#: src/ui/call.rs:490
+#: src/ui/call.rs:493
 msgid "Start video"
 msgstr "Avvia video"
 
-#: src/ui/call.rs:497
+#: src/ui/call.rs:500
 msgid "Turn the camera off"
 msgstr "Spegni la fotocamera"
 
-#: src/ui/call.rs:504
+#: src/ui/call.rs:507
 msgid "Turn the camera on"
 msgstr "Accendi la fotocamera"
 
-#: src/ui/call.rs:514
+#: src/ui/call.rs:517
 msgid "Devices"
 msgstr "Dispositivi"
 
-#: src/ui/call.rs:571
+#: src/ui/call.rs:574
 msgid "Microphone"
 msgstr "Microfono"
 
-#: src/ui/call.rs:582
+#: src/ui/call.rs:585
 msgid "Speaker"
 msgstr "Altoparlante"
 
-#: src/ui/call.rs:594
+#: src/ui/call.rs:597
 msgid "Camera"
 msgstr "Fotocamera"
 
-#: src/ui/call.rs:595
+#: src/ui/call.rs:598
 msgid "First camera"
 msgstr "Prima fotocamera"
 
-#: src/ui/call.rs:698
+#: src/ui/call.rs:701
 msgid "Decline"
 msgstr "Rifiuta"
 
-#: src/ui/call.rs:711
+#: src/ui/call.rs:714
 msgid "Accept"
 msgstr "Accetta"
 
@@ -1701,15 +1701,15 @@ msgstr ""
 "Chiama una persona in voce o in video, oppure scegli una chiamata "
 "nell'elenco per vederla."
 
-#: src/app/calls.rs:86
+#: src/app/calls.rs:98
 msgid "Locked chat"
 msgstr "Chat bloccata"
 
-#: src/app/calls.rs:267
+#: src/app/calls.rs:376
 msgid "Incoming call"
 msgstr "Chiamata in arrivo"
 
-#: src/app/calls.rs:362
+#: src/app/calls.rs:470
 msgid "Hang up the current call first"
 msgstr "Prima riaggancia la chiamata in corso"
 
@@ -1778,73 +1778,73 @@ msgstr[1] "{} in attesa"
 msgid "No one yet"
 msgstr "Ancora nessuno"
 
-#: src/app.rs:856
+#: src/app.rs:871
 msgid "Could not check the number. Please try again."
 msgstr "Impossibile verificare il numero. Riprova."
 
-#: src/app.rs:860
+#: src/app.rs:875
 msgid "This number is not on WhatsApp"
 msgstr "Questo numero non è su WhatsApp"
 
-#: src/app.rs:863
+#: src/app.rs:878
 msgid "Not connected to WhatsApp"
 msgstr "Non connesso a WhatsApp"
 
-#: src/app.rs:866 src/app.rs:7601
+#: src/app.rs:881 src/app.rs:7620
 msgid "Enter a valid international phone number"
 msgstr "Inserisci un numero di telefono internazionale valido"
 
-#: src/app.rs:1781
+#: src/app.rs:1800
 msgid "Could not delete the removed account's files"
 msgstr "Impossibile eliminare i file dell’account rimosso"
 
-#: src/app.rs:2414
+#: src/app.rs:2433
 #, rust-format
 msgid "A label named “{name}” already exists."
 msgstr "Esiste già un’etichetta chiamata «{name}»."
 
-#: src/app.rs:2503
+#: src/app.rs:2522
 #, rust-format
 msgid "{name} (You)"
 msgstr "{name} (Tu)"
 
-#: src/app.rs:3065
+#: src/app.rs:3084
 msgid "Media cache cleared"
 msgstr "Cache dei media svuotata"
 
-#: src/app.rs:3140
+#: src/app.rs:3159
 msgid "Star removed"
 msgstr "Contrassegno rimosso"
 
-#: src/app.rs:3176
+#: src/app.rs:3195
 msgid "Pinned for 7 days"
 msgstr "Fissato per 7 giorni"
 
-#: src/app.rs:3178
+#: src/app.rs:3197
 msgid "Pin removed"
 msgstr "Fissaggio rimosso"
 
-#: src/app.rs:3668
+#: src/app.rs:3687
 msgid "Loading chat history"
 msgstr "Caricamento della cronologia della chat"
 
-#: src/app.rs:3762
+#: src/app.rs:3781
 msgid "Could not use this image"
 msgstr "Impossibile usare questa immagine"
 
-#: src/app.rs:3984 src/app.rs:7504
+#: src/app.rs:4003 src/app.rs:7523
 msgid "This chat already has three pinned messages"
 msgstr "Questa chat ha già tre messaggi fissati"
 
-#: src/app.rs:4054
+#: src/app.rs:4073
 msgid "Connecting"
 msgstr "Connessione in corso"
 
-#: src/app.rs:4685
+#: src/app.rs:4704
 msgid "Not sent: ZapFast is not connected to WhatsApp."
 msgstr "Non inviato: ZapFast non è connesso a WhatsApp."
 
-#: src/app.rs:4689
+#: src/app.rs:4708
 msgid ""
 "Not sent: the message you’re replying to isn’t available on this computer. "
 "Cancel the reply to send without a quote."
@@ -1853,47 +1853,47 @@ msgstr ""
 "computer. Annulla la risposta per inviare senza citazione."
 
 #
-#: src/app.rs:6729
+#: src/app.rs:6748
 msgid "A selected chat is no longer writable"
 msgstr "Non è più possibile inviare messaggi a una delle chat selezionate"
 
-#: src/app.rs:7262
+#: src/app.rs:7281
 msgid "Added to favorites"
 msgstr "Aggiunto ai preferiti"
 
-#: src/app.rs:7339
+#: src/app.rs:7358
 msgid "Sending the sticker pack…"
 msgstr "Invio del pacchetto di sticker…"
 
-#: src/app.rs:7721 src/ui/labels.rs:257
+#: src/app.rs:7740 src/ui/labels.rs:257
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "Hai {limit} etichette, il massimo che ZapFast conserva."
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:8248
+#: src/app.rs:8267
 #, rust-format
 msgid "{}: {}"
 msgstr "{}: {}"
 
-#: src/app.rs:8604
+#: src/app.rs:8623
 msgid "App lock password saved"
 msgstr "Password di blocco salvata"
 
-#: src/app.rs:8612
+#: src/app.rs:8631
 msgid "App lock turned off"
 msgstr "Blocco dell’app disattivato"
 
-#: src/app.rs:8746
+#: src/app.rs:8765
 msgid "This video opens in your system player"
 msgstr "Questo video si apre nel lettore di sistema"
 
-#: src/app.rs:9324
+#: src/app.rs:9344
 msgid "Copied image"
 msgstr "Immagine copiata"
 
-#: src/app.rs:9327 src/app.rs:9332
+#: src/app.rs:9347 src/app.rs:9352
 msgid "Failed to copy image"
 msgstr "Impossibile copiare l'immagine"
 
