@@ -6162,7 +6162,16 @@ mod tests {
     /// and in each layout: GNOME's buttons at the right or the left, and
     /// Windows' taller row. Headers that reach a corner leave the buttons
     /// room beside their own controls, or move them down when narrow.
+    ///
+    /// Not on macOS, which never draws them: its headers keep the traffic
+    /// lights' layout under any preview, and drag the window from their top
+    /// (fastframe-titlebar's drag area, which senses clicks) wherever the
+    /// caption buttons would stand.
     #[test]
+    #[cfg_attr(
+        target_os = "macos",
+        ignore = "macOS has the traffic lights, never the drawn caption buttons"
+    )]
     fn header_controls_keep_clear_of_the_drawn_caption_buttons() {
         use fastframe_titlebar::Footprint;
         let footprints = [
