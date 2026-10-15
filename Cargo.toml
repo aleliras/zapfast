@@ -64,7 +64,7 @@ image = { version = "0.25", default-features = false, features = ["jpeg", "png",
 # `zapfast`); move to crates.io at the first release that carries it. `voip` is
 # the call stack: signaling, the sans-IO media engine with MLOW and libopus
 # codecs, and the native UDP relay transport.
-whatsapp-rust = { git = "https://github.com/crmne/whatsapp-rust", rev = "6769a2c9c8c29927f90d33072d5110904daeb63c", default-features = false, features = ["sqlite-storage", "tokio-transport", "tokio-runtime", "ureq-client", "tokio-native", "voip"] }
+whatsapp-rust = { git = "https://github.com/crmne/whatsapp-rust", rev = "70ddc5f1b32297da52233d0a69c11943555ba0d2", default-features = false, features = ["sqlite-storage", "tokio-transport", "tokio-runtime", "ureq-client", "tokio-native", "voip"] }
 tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros", "fs", "net", "io-util"] }
 # Queue between the call's audio streams and the engine.
 async-channel = "2.5"
