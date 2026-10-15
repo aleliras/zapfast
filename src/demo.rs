@@ -17987,7 +17987,8 @@ mod rail_tests {
             );
             assert_eq!(settings.size(), egui::vec2(36.0, 36.0));
             assert_eq!(me.size(), egui::vec2(32.0, 32.0));
-            if macos {
+            // A Mac lays out its own way whichever the preview says.
+            if crate::theme::macos_chrome(&ctx) {
                 assert!(
                     top[0].top() >= 36.0 && top[0].top() < 60.0,
                     "just below the traffic lights: {:?}",
