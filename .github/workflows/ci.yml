@@ -18,7 +18,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  # Dependencies come only from crates.io or from crmne repositories, and
+  # Dependencies come only from the approved sources in CONTRIBUTING.md, and
   # review evidence (captures, comparison pages, recordings) stays in the pull
   # request instead of the tree. See CONTRIBUTING.md.
   policy:

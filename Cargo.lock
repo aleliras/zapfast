@@ -7293,7 +7293,7 @@ dependencies = [
 [[package]]
 name = "wacore"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "aes 0.9.3",
  "aes-gcm",
@@ -7343,7 +7343,7 @@ dependencies = [
 [[package]]
 name = "wacore-appstate"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "anyhow",
  "buffa",
@@ -7364,7 +7364,7 @@ dependencies = [
 [[package]]
 name = "wacore-binary"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "bytes",
  "compact_str",
@@ -7381,7 +7381,7 @@ dependencies = [
 [[package]]
 name = "wacore-derive"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -7391,7 +7391,7 @@ dependencies = [
 [[package]]
 name = "wacore-libsignal"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "aes 0.9.3",
  "async-lock",
@@ -7422,7 +7422,7 @@ dependencies = [
 [[package]]
 name = "wacore-noise"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "anyhow",
  "buffa",
@@ -7459,7 +7459,7 @@ dependencies = [
 [[package]]
 name = "waproto"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "buffa",
  "buffa-build",
@@ -7861,7 +7861,7 @@ dependencies = [
 [[package]]
 name = "whatsapp-rust"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -7908,7 +7908,7 @@ dependencies = [
 [[package]]
 name = "whatsapp-rust-sqlite-storage"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "async-trait",
  "buffa",
@@ -7931,7 +7931,7 @@ dependencies = [
 [[package]]
 name = "whatsapp-rust-tokio-transport"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -7951,7 +7951,7 @@ dependencies = [
 [[package]]
 name = "whatsapp-rust-ureq-http-client"
 version = "0.7.0"
-source = "git+https://github.com/crmne/whatsapp-rust?rev=a64c846ce676d1e8d04b2a144714361d05ecc1d0#a64c846ce676d1e8d04b2a144714361d05ecc1d0"
+source = "git+https://github.com/oxidezap/whatsapp-rust?rev=5e72baf000aa4fb65ed89d1c955a54029a7f29a6#5e72baf000aa4fb65ed89d1c955a54029a7f29a6"
 dependencies = [
  "anyhow",
  "async-trait",
