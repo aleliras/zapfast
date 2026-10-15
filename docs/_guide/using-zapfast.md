@@ -735,9 +735,11 @@ Shift+Tab bring the focused button into view, too.
 
 ## Notifications and the tray
 
-Closing the window keeps ZapFast linked in the tray. Click the tray icon or
-launch the app again to reopen it. To quit, use **Quit** in the tray menu, or
-**Quit** in the Dock icon's menu on macOS, or on Linux **Quit ZapFast** in the
+Closing the window keeps ZapFast linked in the tray. On macOS, click the menu
+bar icon to open its menu, then choose **Show or hide ZapFast** to reopen the
+window. On Linux and Windows, click the tray icon to reopen it. Launching the
+app again reopens the window on every platform. To quit, use **Quit** in the
+tray menu, or **Quit** in the Dock icon's menu on macOS, or on Linux **Quit ZapFast** in the
 launcher's right-click menu (KDE Plasma's task manager and application menu,
 GNOME's Dash). On every platform, `zapfast quit` in a terminal or a script quits
 the running copy the same way, and does nothing when none runs. A copy from

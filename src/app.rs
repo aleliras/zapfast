@@ -1051,9 +1051,9 @@ const TRAY_SHOW: &str = "show";
 const TRAY_LOCK: &str = "lock";
 const TRAY_QUIT: &str = "quit";
 
-/// What a tray click asks for: a left click on Linux and macOS, or the menu's
-/// first entry, toggles the window; a left click on Windows and a Dock click
-/// on macOS show it.
+/// What a tray click asks for: a left click on Linux, or the menu's first
+/// entry, toggles the window; a left click on Windows and a Dock click on
+/// macOS show it. Clicking the macOS menu-bar icon opens its menu.
 fn tray_action(event: fastframe_tray::Event, window_hidden: bool) -> Option<Action> {
     use fastframe_tray::Event;
     Some(match event {
@@ -1082,8 +1082,6 @@ fn tray_config(lockable: bool) -> fastframe_tray::Config {
         // The tray icon is the app icon, so hosts that draw only named icons
         // may use the installed one.
         themed_icon: true,
-        // A left click on macOS toggles the window, as on Linux.
-        menu_on_click: false,
         menu: vec![
             MenuItem::action(TRAY_SHOW, "Show or hide ZapFast"),
             MenuItem::action(TRAY_LOCK, "Lock ZapFast").visible(lockable),
