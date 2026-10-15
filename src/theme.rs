@@ -922,6 +922,7 @@ fastframe_icons::icons! {
         Image => "image",
         Info => lucide "info",
         Keyboard => "keyboard",
+        Link => "link",
         Lock => lucide "lock",
         LockOpen => "lock-open",
         LogOut => lucide "log-out",

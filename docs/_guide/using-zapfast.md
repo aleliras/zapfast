@@ -478,12 +478,13 @@ headphones, or your system's echo cancellation, when the speaker is loud.
 
 A group call rings under the group's name and picture and says who is calling
 ("Group voice call from Jonas"), with the faces of those already on it. Once
-you answer, everyone on the call has a tile with their picture and name; someone
-who was asked but has not joined yet reads **Invited**, and the tiles follow
-people as they join and leave. Mute, the device pickers and hang up work as in
+you answer, everyone on the call has a tile with their picture and name, and
+so do you, as **You** (with a red microphone while you are muted); someone who
+was asked but has not joined yet reads **Invited**, and the tiles follow people
+as they join and leave. Mute, the device pickers and hang up work as in
 any call, and hanging up leaves the call to the others. In a group's video
-call each member's camera fills their tile, and yours takes a tile of its own
-labelled **You**; someone whose camera is off keeps their photo. The camera
+call each member's camera fills their tile, and yours fills your own tile;
+someone whose camera is off keeps their photo. The camera
 button turns yours off and on. A group's voice call stays a voice call. ZapFast does not start group calls: WhatsApp refuses them
 from linked devices, so a group's header has no call button, and a group call is
 started on the phone.
@@ -493,7 +494,9 @@ that call here rather than opening the browser. The call screen says
 **Connecting…** until the call lets you in, which can take a while when its
 creator admits people one by one, then shows everyone on it as in a group call.
 Hanging up while you wait stops the join. A call joined through a link belongs
-to no chat, so it is not filed in one.
+to no chat: it is not filed in one, and shows on the Calls page as **Call
+link** with a link sign for a picture. That row only records the call; there
+is no chat to open from it and no one to call back.
 
 One call at a time: a call to another of your numbers while one is up is
 declined there. With several numbers linked, a call to a number that is not on

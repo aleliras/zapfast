@@ -175,13 +175,16 @@ protocol. These notes are for coding agents and new contributors.
   let go), converts at tile size, and `VideoTick::RemoteFrom` reaches the
   window as `Event::CallVideo { from }` under the member's chat id;
   `Participant::video` follows their first frame, their own video state and
-  the roster. Our camera is a tile of its own in the grid, and
+  the roster. We have a tile of our own in the grid (`App::call_self`): our
+  camera, else our photo, with a muted sign when we are muted, and
   `request_peer_keyframe` does nothing in a group call. A call link
   (`safety::call_link`, `/voice/`, `/audio/` or `/video/`) clicked in a message
   is joined with `voip().call_link(token, ..)` on a task of its own, since the
   waiting room may hold it indefinitely; its answer returns as
   `CallRuntimeEvent::LinkJoined`, and hanging up aborts it. Such a call has an
-  empty chat and `GroupCall::link`, and is filed nowhere. The library has no
+  empty chat and `GroupCall::link`, and its local entry is filed under
+  `model::CALL_LINK_CHAT`, an id no chat has: it reaches the Calls page
+  (`Event::CallLog`) and nothing else, and its row there opens nothing. The library has no
   way to join a group's ongoing call uninvited, so there is no Join banner.
   Linked devices cannot start group calls (the server answers 427), so a group
   has no call button, and a group's voice call cannot gain video. Call
