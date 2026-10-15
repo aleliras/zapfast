@@ -6601,7 +6601,9 @@ impl App {
                 }
             }
             Action::OpenUrl(url) => {
-                if let Some(code) = crate::safety::group_invite_code(&url) {
+                if let Some((token, video)) = crate::safety::call_link(&url) {
+                    self.join_call_link(token, video);
+                } else if let Some(code) = crate::safety::group_invite_code(&url) {
                     self.invite = Some(crate::model::GroupInvite {
                         code: code.clone(),
                         state: crate::model::InviteState::Loading,

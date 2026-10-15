@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-15 12:04+0200\n"
+"POT-Creation-Date: 2026-10-15 12:11+0200\n"
 "PO-Revision-Date: 2026-09-25 23:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -1668,17 +1668,21 @@ msgid ""
 "Call one person by voice or video, or choose a call in the list to see it."
 msgstr "通过语音或视频呼叫一个人，或在列表中选择一个通话来查看。"
 
-#: src/app/calls.rs:111
+#: src/app/calls.rs:112
+msgid "Call link"
+msgstr "通话链接"
+
+#: src/app/calls.rs:116
 msgid "Locked chat"
 msgstr "已锁定的聊天"
 
-#: src/app/calls.rs:443
-msgid "Incoming call"
-msgstr "来电"
-
-#: src/app/calls.rs:535
+#: src/app/calls.rs:375 src/app/calls.rs:572
 msgid "Hang up the current call first"
 msgstr "请先挂断当前通话"
+
+#: src/app/calls.rs:480
+msgid "Incoming call"
+msgstr "来电"
 
 #. Translators: {name} is replaced by the author's name, shown as a link.
 #: src/ui/widgets.rs:886
@@ -1752,7 +1756,7 @@ msgstr "此号码未注册 WhatsApp"
 msgid "Not connected to WhatsApp"
 msgstr "未连接到 WhatsApp"
 
-#: src/app.rs:880 src/app.rs:7623
+#: src/app.rs:880 src/app.rs:7625
 msgid "Enter a valid international phone number"
 msgstr "请输入有效的国际电话号码"
 
@@ -1794,7 +1798,7 @@ msgstr "正在加载聊天记录"
 msgid "Could not use this image"
 msgstr "无法使用此图片"
 
-#: src/app.rs:4007 src/app.rs:7526
+#: src/app.rs:4007 src/app.rs:7528
 msgid "This chat already has three pinned messages"
 msgstr "此聊天已有三条置顶消息"
 
@@ -1813,47 +1817,47 @@ msgid ""
 msgstr "未发送：你要回复的消息不在这台电脑上。取消回复即可不带引用发送。"
 
 #
-#: src/app.rs:6751
+#: src/app.rs:6753
 msgid "A selected chat is no longer writable"
 msgstr "无法再向某个所选聊天发送消息"
 
-#: src/app.rs:7284
+#: src/app.rs:7286
 msgid "Added to favorites"
 msgstr "已添加到收藏"
 
-#: src/app.rs:7361
+#: src/app.rs:7363
 msgid "Sending the sticker pack…"
 msgstr "正在发送贴图包…"
 
-#: src/app.rs:7743 src/ui/labels.rs:257
+#: src/app.rs:7745 src/ui/labels.rs:257
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "你已有 {limit} 个标签，这是 ZapFast 的上限。"
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:8288
+#: src/app.rs:8290
 #, rust-format
 msgid "{}: {}"
 msgstr "{}：{}"
 
-#: src/app.rs:8644
+#: src/app.rs:8646
 msgid "App lock password saved"
 msgstr "应用锁密码已保存"
 
-#: src/app.rs:8652
+#: src/app.rs:8654
 msgid "App lock turned off"
 msgstr "应用锁已关闭"
 
-#: src/app.rs:8786
+#: src/app.rs:8788
 msgid "This video opens in your system player"
 msgstr "此视频将用系统播放器打开"
 
-#: src/app.rs:9365
+#: src/app.rs:9367
 msgid "Copied image"
 msgstr "已复制图片"
 
-#: src/app.rs:9368 src/app.rs:9373
+#: src/app.rs:9370 src/app.rs:9375
 msgid "Failed to copy image"
 msgstr "复制图片失败"
 
@@ -2508,9 +2512,6 @@ msgstr "还原"
 
 #~ msgid "Back to the chats"
 #~ msgstr "返回聊天"
-
-#~ msgid "Call info"
-#~ msgstr "通话信息"
 
 #~ msgid "Show in chat"
 #~ msgstr "在聊天中显示"

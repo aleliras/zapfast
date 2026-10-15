@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-15 12:04+0200\n"
+"POT-Creation-Date: 2026-10-15 12:11+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Spanish\n"
@@ -1732,17 +1732,21 @@ msgstr ""
 "Llama a una persona por voz o video, o elige una llamada de la lista para "
 "verla."
 
-#: src/app/calls.rs:111
+#: src/app/calls.rs:112
+msgid "Call link"
+msgstr "Enlace de llamada"
+
+#: src/app/calls.rs:116
 msgid "Locked chat"
 msgstr "Chat bloqueado"
 
-#: src/app/calls.rs:443
-msgid "Incoming call"
-msgstr "Llamada entrante"
-
-#: src/app/calls.rs:535
+#: src/app/calls.rs:375 src/app/calls.rs:572
 msgid "Hang up the current call first"
 msgstr "Primero cuelga la llamada en curso"
+
+#: src/app/calls.rs:480
+msgid "Incoming call"
+msgstr "Llamada entrante"
 
 #. Translators: {name} is replaced by the author's name, shown as a link.
 #: src/ui/widgets.rs:886
@@ -1821,7 +1825,7 @@ msgstr "Este número no está en WhatsApp"
 msgid "Not connected to WhatsApp"
 msgstr "Sin conexión a WhatsApp"
 
-#: src/app.rs:880 src/app.rs:7623
+#: src/app.rs:880 src/app.rs:7625
 msgid "Enter a valid international phone number"
 msgstr "Introduce un número de teléfono internacional válido"
 
@@ -1863,7 +1867,7 @@ msgstr "Cargando el historial del chat"
 msgid "Could not use this image"
 msgstr "No se pudo usar esta imagen"
 
-#: src/app.rs:4007 src/app.rs:7526
+#: src/app.rs:4007 src/app.rs:7528
 msgid "This chat already has three pinned messages"
 msgstr "Este chat ya tiene tres mensajes fijados"
 
@@ -1884,47 +1888,47 @@ msgstr ""
 "Cancela la respuesta para enviarlo sin cita."
 
 #
-#: src/app.rs:6751
+#: src/app.rs:6753
 msgid "A selected chat is no longer writable"
 msgstr "Ya no se pueden enviar mensajes a uno de los chats seleccionados"
 
-#: src/app.rs:7284
+#: src/app.rs:7286
 msgid "Added to favorites"
 msgstr "Añadido a favoritos"
 
-#: src/app.rs:7361
+#: src/app.rs:7363
 msgid "Sending the sticker pack…"
 msgstr "Enviando el paquete de stickers…"
 
-#: src/app.rs:7743 src/ui/labels.rs:257
+#: src/app.rs:7745 src/ui/labels.rs:257
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "Tienes {limit} etiquetas, el máximo que guarda ZapFast."
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:8288
+#: src/app.rs:8290
 #, rust-format
 msgid "{}: {}"
 msgstr "{}: {}"
 
-#: src/app.rs:8644
+#: src/app.rs:8646
 msgid "App lock password saved"
 msgstr "Contraseña de bloqueo guardada"
 
-#: src/app.rs:8652
+#: src/app.rs:8654
 msgid "App lock turned off"
 msgstr "Bloqueo de la app desactivado"
 
-#: src/app.rs:8786
+#: src/app.rs:8788
 msgid "This video opens in your system player"
 msgstr "Este vídeo se abre en el reproductor del sistema"
 
-#: src/app.rs:9365
+#: src/app.rs:9367
 msgid "Copied image"
 msgstr "Imagen copiada"
 
-#: src/app.rs:9368 src/app.rs:9373
+#: src/app.rs:9370 src/app.rs:9375
 msgid "Failed to copy image"
 msgstr "Error al copiar la imagen"
 
@@ -2598,9 +2602,6 @@ msgstr "Restaurar"
 
 #~ msgid "Back to the chats"
 #~ msgstr "Volver a los chats"
-
-#~ msgid "Call info"
-#~ msgstr "Info. de la llamada"
 
 #~ msgid "Show in chat"
 #~ msgstr "Ver en el chat"

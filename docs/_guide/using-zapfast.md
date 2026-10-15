@@ -488,6 +488,13 @@ button turns yours off and on. A group's voice call stays a voice call. ZapFast 
 from linked devices, so a group's header has no call button, and a group call is
 started on the phone.
 
+A call link in a message (`call.whatsapp.com/voice/…` or `/video/…`) joins
+that call here rather than opening the browser. The call screen says
+**Connecting…** until the call lets you in, which can take a while when its
+creator admits people one by one, then shows everyone on it as in a group call.
+Hanging up while you wait stops the join. A call joined through a link belongs
+to no chat, so it is not filed in one.
+
 One call at a time: a call to another of your numbers while one is up is
 declined there. With several numbers linked, a call to a number that is not on
 screen still rings, under that number's own names.
