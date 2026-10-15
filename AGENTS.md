@@ -170,6 +170,13 @@ protocol. These notes are for coding agents and new contributors.
   under canonical chat ids and drops our own entry (`canonical_call`), and the
   call's entry goes in the group under the member who rang. The library
   reports no per-person speaking level or mute, so the tiles show neither.
+  Group video frames name their sender (`VideoFrame::sender`):
+  `decode_remote` keeps a decoder per sender (`MAX_REMOTE_STREAMS`, the oldest
+  let go), converts at tile size, and `VideoTick::RemoteFrom` reaches the
+  window as `Event::CallVideo { from }` under the member's chat id;
+  `Participant::video` follows their first frame, their own video state and
+  the roster. Our camera is a tile of its own in the grid, and
+  `request_peer_keyframe` does nothing in a group call.
   Linked devices cannot start group calls (the server answers 427), so a group
   has no call button, and a group's voice call cannot gain video. Call
   updates are withheld during privacy recovery like other private content,

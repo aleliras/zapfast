@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-15 11:53+0200\n"
+"POT-Creation-Date: 2026-10-15 12:04+0200\n"
 "PO-Revision-Date: 2026-10-02 03:00+0300\n"
 "Last-Translator: Barış Berke Çetin <brsberkectn@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -213,7 +213,7 @@ msgstr "{hours} sa"
 msgid "{hours} h {minutes} min"
 msgstr "{hours} sa {minutes} dk"
 
-#: src/ui/chats.rs:185 src/ui/chats.rs:517 src/app.rs:3151
+#: src/ui/chats.rs:185 src/ui/chats.rs:517 src/app.rs:3161
 msgid "Starred"
 msgstr "Yıldızlı"
 
@@ -245,7 +245,7 @@ msgstr "Bir mesajı burada tutmak için sağ tıklayıp Yıldızla'yı seçin."
 msgid "No favorites yet"
 msgstr "Henüz favori yok"
 
-#: src/ui/chats.rs:1359 src/app.rs:2535
+#: src/ui/chats.rs:1359 src/app.rs:2541
 msgid "Message yourself"
 msgstr "Kendinize mesaj gönderin"
 
@@ -403,7 +403,8 @@ msgid_plural "{} unread messages"
 msgstr[0] "{} okunmamış mesaj"
 msgstr[1] "{} okunmamış mesaj"
 
-#: src/ui/conversation.rs:3069 src/app.rs:2517 src/app.rs:2536
+#: src/ui/conversation.rs:3069 src/ui/call.rs:993 src/app.rs:2523
+#: src/app.rs:2542
 msgid "You"
 msgstr "Siz"
 
@@ -944,7 +945,7 @@ msgstr ""
 msgid "Wallpaper"
 msgstr "Sohbet duvar kâğıdı"
 
-#: src/ui/settings.rs:369 src/app.rs:3011 src/ui/image_preview.rs:212
+#: src/ui/settings.rs:369 src/app.rs:3017 src/ui/image_preview.rs:212
 msgid "Image"
 msgstr "Görsel"
 
@@ -1536,7 +1537,7 @@ msgstr "Bağlanılamadı"
 msgid "No answer"
 msgstr "Yanıt yok"
 
-#: src/ui/call.rs:399 src/ui/calls.rs:120 src/app.rs:4057
+#: src/ui/call.rs:399 src/ui/calls.rs:120 src/app.rs:4067
 msgid "Connection lost"
 msgstr "Bağlantı koptu"
 
@@ -1641,7 +1642,7 @@ msgstr "Reddet"
 msgid "Accept"
 msgstr "Kabul et"
 
-#: src/ui/call.rs:1069
+#: src/ui/call.rs:1170
 msgid "Invited"
 msgstr "Davet edildi"
 
@@ -1733,15 +1734,15 @@ msgstr ""
 "Bir kişiyi sesli veya görüntülü arayın ya da görmek için listeden bir arama "
 "seçin."
 
-#: src/app/calls.rs:109
+#: src/app/calls.rs:111
 msgid "Locked chat"
 msgstr "Kilitli sohbet"
 
-#: src/app/calls.rs:421
+#: src/app/calls.rs:443
 msgid "Incoming call"
 msgstr "Gelen arama"
 
-#: src/app/calls.rs:513
+#: src/app/calls.rs:535
 msgid "Hang up the current call first"
 msgstr "Önce mevcut aramayı sonlandırın"
 
@@ -1810,73 +1811,73 @@ msgstr[1] "{} kaldı"
 msgid "No one yet"
 msgstr "Henüz kimse yok"
 
-#: src/app.rs:866
+#: src/app.rs:870
 msgid "Could not check the number. Please try again."
 msgstr "Numara kontrol edilemedi. Lütfen tekrar deneyin."
 
-#: src/app.rs:870
+#: src/app.rs:874
 msgid "This number is not on WhatsApp"
 msgstr "Bu numara WhatsApp'ta kayıtlı değil"
 
-#: src/app.rs:873
+#: src/app.rs:877
 msgid "Not connected to WhatsApp"
 msgstr "WhatsApp'a bağlı değil"
 
-#: src/app.rs:876 src/app.rs:7613
+#: src/app.rs:880 src/app.rs:7623
 msgid "Enter a valid international phone number"
 msgstr "Geçerli bir uluslararası telefon numarası girin"
 
-#: src/app.rs:1794
+#: src/app.rs:1800
 msgid "Could not delete the removed account's files"
 msgstr "Kaldırılan hesabın dosyaları silinemedi"
 
-#: src/app.rs:2427
+#: src/app.rs:2433
 #, rust-format
 msgid "A label named “{name}” already exists."
 msgstr "“{name}” adında bir etiket zaten var."
 
-#: src/app.rs:2516
+#: src/app.rs:2522
 #, rust-format
 msgid "{name} (You)"
 msgstr "{name} (Siz)"
 
-#: src/app.rs:3078
+#: src/app.rs:3084
 msgid "Media cache cleared"
 msgstr "Medya önbelleği temizlendi"
 
-#: src/app.rs:3153
+#: src/app.rs:3163
 msgid "Star removed"
 msgstr "Yıldız kaldırıldı"
 
-#: src/app.rs:3189
+#: src/app.rs:3199
 msgid "Pinned for 7 days"
 msgstr "7 günlüğüne sabitlendi"
 
-#: src/app.rs:3191
+#: src/app.rs:3201
 msgid "Pin removed"
 msgstr "Sabitleme kaldırıldı"
 
-#: src/app.rs:3681
+#: src/app.rs:3691
 msgid "Loading chat history"
 msgstr "Sohbet geçmişi yükleniyor"
 
-#: src/app.rs:3775
+#: src/app.rs:3785
 msgid "Could not use this image"
 msgstr "Bu görsel kullanılamadı"
 
-#: src/app.rs:3997 src/app.rs:7516
+#: src/app.rs:4007 src/app.rs:7526
 msgid "This chat already has three pinned messages"
 msgstr "Bu sohbette zaten üç sabitlenmiş mesaj var"
 
-#: src/app.rs:4067
+#: src/app.rs:4077
 msgid "Connecting"
 msgstr "Bağlanıyor"
 
-#: src/app.rs:4698
+#: src/app.rs:4708
 msgid "Not sent: ZapFast is not connected to WhatsApp."
 msgstr "Gönderilmedi: ZapFast WhatsApp'a bağlı değil."
 
-#: src/app.rs:4702
+#: src/app.rs:4712
 msgid ""
 "Not sent: the message you’re replying to isn’t available on this computer. "
 "Cancel the reply to send without a quote."
@@ -1885,47 +1886,47 @@ msgstr ""
 "göndermek için yanıtı iptal edin."
 
 #
-#: src/app.rs:6741
+#: src/app.rs:6751
 msgid "A selected chat is no longer writable"
 msgstr "Seçilen sohbetlerden birine artık mesaj gönderilemiyor"
 
-#: src/app.rs:7274
+#: src/app.rs:7284
 msgid "Added to favorites"
 msgstr "Favorilere eklendi"
 
-#: src/app.rs:7351
+#: src/app.rs:7361
 msgid "Sending the sticker pack…"
 msgstr "Çıkartma paketi gönderiliyor…"
 
-#: src/app.rs:7733 src/ui/labels.rs:257
+#: src/app.rs:7743 src/ui/labels.rs:257
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "ZapFast'in tutabileceği maksimum sınır olan {limit} etikete ulaştınız."
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:8278
+#: src/app.rs:8288
 #, rust-format
 msgid "{}: {}"
 msgstr "{}: {}"
 
-#: src/app.rs:8634
+#: src/app.rs:8644
 msgid "App lock password saved"
 msgstr "Uygulama kilidi parolası kaydedildi"
 
-#: src/app.rs:8642
+#: src/app.rs:8652
 msgid "App lock turned off"
 msgstr "Uygulama kilidi kapatıldı"
 
-#: src/app.rs:8776
+#: src/app.rs:8786
 msgid "This video opens in your system player"
 msgstr "Bu video sistem oynatıcınızda açılır"
 
-#: src/app.rs:9355
+#: src/app.rs:9365
 msgid "Copied image"
 msgstr "Görsel kopyalandı"
 
-#: src/app.rs:9358 src/app.rs:9363
+#: src/app.rs:9368 src/app.rs:9373
 msgid "Failed to copy image"
 msgstr "Görsel kopyalanamadı"
 

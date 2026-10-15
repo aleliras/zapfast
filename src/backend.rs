@@ -1246,6 +1246,9 @@ pub enum Event {
     CallVideo {
         local: Option<Arc<egui::ColorImage>>,
         remote: Option<Arc<egui::ColorImage>>,
+        /// Whose picture `remote` is on a group call, by chat id; `None` for the peer of a
+        /// one-to-one call.
+        from: Option<String>,
     },
     /// Informational toast message.
     Info(String),

@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-15 11:53+0200\n"
+"POT-Creation-Date: 2026-10-15 12:04+0200\n"
 "PO-Revision-Date: 2026-09-22 00:00-0300\n"
 "Last-Translator: ZapFast contributors\n"
 "Language-Team: Italian\n"
@@ -214,7 +214,7 @@ msgstr "{hours} h"
 msgid "{hours} h {minutes} min"
 msgstr "{hours} h {minutes} min"
 
-#: src/ui/chats.rs:185 src/ui/chats.rs:517 src/app.rs:3151
+#: src/ui/chats.rs:185 src/ui/chats.rs:517 src/app.rs:3161
 msgid "Starred"
 msgstr "Contrassegnati"
 
@@ -248,7 +248,7 @@ msgstr ""
 msgid "No favorites yet"
 msgstr "Ancora nessun preferito"
 
-#: src/ui/chats.rs:1359 src/app.rs:2535
+#: src/ui/chats.rs:1359 src/app.rs:2541
 msgid "Message yourself"
 msgstr "Invia un messaggio a te stesso"
 
@@ -408,7 +408,8 @@ msgid_plural "{} unread messages"
 msgstr[0] "{} messaggio non letto"
 msgstr[1] "{} messaggi non letti"
 
-#: src/ui/conversation.rs:3069 src/app.rs:2517 src/app.rs:2536
+#: src/ui/conversation.rs:3069 src/ui/call.rs:993 src/app.rs:2523
+#: src/app.rs:2542
 msgid "You"
 msgstr "Tu"
 
@@ -949,7 +950,7 @@ msgstr ""
 msgid "Wallpaper"
 msgstr "Sfondo"
 
-#: src/ui/settings.rs:369 src/app.rs:3011 src/ui/image_preview.rs:212
+#: src/ui/settings.rs:369 src/app.rs:3017 src/ui/image_preview.rs:212
 msgid "Image"
 msgstr "Immagine"
 
@@ -1536,7 +1537,7 @@ msgstr "Impossibile connettersi"
 msgid "No answer"
 msgstr "Nessuna risposta"
 
-#: src/ui/call.rs:399 src/ui/calls.rs:120 src/app.rs:4057
+#: src/ui/call.rs:399 src/ui/calls.rs:120 src/app.rs:4067
 msgid "Connection lost"
 msgstr "Connessione persa"
 
@@ -1643,7 +1644,7 @@ msgstr "Rifiuta"
 msgid "Accept"
 msgstr "Accetta"
 
-#: src/ui/call.rs:1069
+#: src/ui/call.rs:1170
 msgid "Invited"
 msgstr "Invitato"
 
@@ -1734,15 +1735,15 @@ msgstr ""
 "Chiama una persona in voce o in video, oppure scegli una chiamata "
 "nell'elenco per vederla."
 
-#: src/app/calls.rs:109
+#: src/app/calls.rs:111
 msgid "Locked chat"
 msgstr "Chat bloccata"
 
-#: src/app/calls.rs:421
+#: src/app/calls.rs:443
 msgid "Incoming call"
 msgstr "Chiamata in arrivo"
 
-#: src/app/calls.rs:513
+#: src/app/calls.rs:535
 msgid "Hang up the current call first"
 msgstr "Prima riaggancia la chiamata in corso"
 
@@ -1811,73 +1812,73 @@ msgstr[1] "{} in attesa"
 msgid "No one yet"
 msgstr "Ancora nessuno"
 
-#: src/app.rs:866
+#: src/app.rs:870
 msgid "Could not check the number. Please try again."
 msgstr "Impossibile verificare il numero. Riprova."
 
-#: src/app.rs:870
+#: src/app.rs:874
 msgid "This number is not on WhatsApp"
 msgstr "Questo numero non è su WhatsApp"
 
-#: src/app.rs:873
+#: src/app.rs:877
 msgid "Not connected to WhatsApp"
 msgstr "Non connesso a WhatsApp"
 
-#: src/app.rs:876 src/app.rs:7613
+#: src/app.rs:880 src/app.rs:7623
 msgid "Enter a valid international phone number"
 msgstr "Inserisci un numero di telefono internazionale valido"
 
-#: src/app.rs:1794
+#: src/app.rs:1800
 msgid "Could not delete the removed account's files"
 msgstr "Impossibile eliminare i file dell’account rimosso"
 
-#: src/app.rs:2427
+#: src/app.rs:2433
 #, rust-format
 msgid "A label named “{name}” already exists."
 msgstr "Esiste già un’etichetta chiamata «{name}»."
 
-#: src/app.rs:2516
+#: src/app.rs:2522
 #, rust-format
 msgid "{name} (You)"
 msgstr "{name} (Tu)"
 
-#: src/app.rs:3078
+#: src/app.rs:3084
 msgid "Media cache cleared"
 msgstr "Cache dei media svuotata"
 
-#: src/app.rs:3153
+#: src/app.rs:3163
 msgid "Star removed"
 msgstr "Contrassegno rimosso"
 
-#: src/app.rs:3189
+#: src/app.rs:3199
 msgid "Pinned for 7 days"
 msgstr "Fissato per 7 giorni"
 
-#: src/app.rs:3191
+#: src/app.rs:3201
 msgid "Pin removed"
 msgstr "Fissaggio rimosso"
 
-#: src/app.rs:3681
+#: src/app.rs:3691
 msgid "Loading chat history"
 msgstr "Caricamento della cronologia della chat"
 
-#: src/app.rs:3775
+#: src/app.rs:3785
 msgid "Could not use this image"
 msgstr "Impossibile usare questa immagine"
 
-#: src/app.rs:3997 src/app.rs:7516
+#: src/app.rs:4007 src/app.rs:7526
 msgid "This chat already has three pinned messages"
 msgstr "Questa chat ha già tre messaggi fissati"
 
-#: src/app.rs:4067
+#: src/app.rs:4077
 msgid "Connecting"
 msgstr "Connessione in corso"
 
-#: src/app.rs:4698
+#: src/app.rs:4708
 msgid "Not sent: ZapFast is not connected to WhatsApp."
 msgstr "Non inviato: ZapFast non è connesso a WhatsApp."
 
-#: src/app.rs:4702
+#: src/app.rs:4712
 msgid ""
 "Not sent: the message you’re replying to isn’t available on this computer. "
 "Cancel the reply to send without a quote."
@@ -1886,47 +1887,47 @@ msgstr ""
 "computer. Annulla la risposta per inviare senza citazione."
 
 #
-#: src/app.rs:6741
+#: src/app.rs:6751
 msgid "A selected chat is no longer writable"
 msgstr "Non è più possibile inviare messaggi a una delle chat selezionate"
 
-#: src/app.rs:7274
+#: src/app.rs:7284
 msgid "Added to favorites"
 msgstr "Aggiunto ai preferiti"
 
-#: src/app.rs:7351
+#: src/app.rs:7361
 msgid "Sending the sticker pack…"
 msgstr "Invio del pacchetto di sticker…"
 
-#: src/app.rs:7733 src/ui/labels.rs:257
+#: src/app.rs:7743 src/ui/labels.rs:257
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr "Hai {limit} etichette, il massimo che ZapFast conserva."
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:8278
+#: src/app.rs:8288
 #, rust-format
 msgid "{}: {}"
 msgstr "{}: {}"
 
-#: src/app.rs:8634
+#: src/app.rs:8644
 msgid "App lock password saved"
 msgstr "Password di blocco salvata"
 
-#: src/app.rs:8642
+#: src/app.rs:8652
 msgid "App lock turned off"
 msgstr "Blocco dell’app disattivato"
 
-#: src/app.rs:8776
+#: src/app.rs:8786
 msgid "This video opens in your system player"
 msgstr "Questo video si apre nel lettore di sistema"
 
-#: src/app.rs:9355
+#: src/app.rs:9365
 msgid "Copied image"
 msgstr "Immagine copiata"
 
-#: src/app.rs:9358 src/app.rs:9363
+#: src/app.rs:9368 src/app.rs:9373
 msgid "Failed to copy image"
 msgstr "Impossibile copiare l'immagine"
 

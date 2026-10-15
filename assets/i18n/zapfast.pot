@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ZapFast\n"
 "Report-Msgid-Bugs-To: https://github.com/crmne/zapfast/issues/new?"
 "template=translation.yml\n"
-"POT-Creation-Date: 2026-10-15 11:53+0200\n"
+"POT-Creation-Date: 2026-10-15 12:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -217,7 +217,7 @@ msgstr ""
 msgid "{hours} h {minutes} min"
 msgstr ""
 
-#: src/ui/chats.rs:185 src/ui/chats.rs:517 src/app.rs:3151
+#: src/ui/chats.rs:185 src/ui/chats.rs:517 src/app.rs:3161
 msgid "Starred"
 msgstr ""
 
@@ -249,7 +249,7 @@ msgstr ""
 msgid "No favorites yet"
 msgstr ""
 
-#: src/ui/chats.rs:1359 src/app.rs:2535
+#: src/ui/chats.rs:1359 src/app.rs:2541
 msgid "Message yourself"
 msgstr ""
 
@@ -403,7 +403,8 @@ msgid_plural "{} unread messages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/conversation.rs:3069 src/app.rs:2517 src/app.rs:2536
+#: src/ui/conversation.rs:3069 src/ui/call.rs:993 src/app.rs:2523
+#: src/app.rs:2542
 msgid "You"
 msgstr ""
 
@@ -895,7 +896,7 @@ msgstr ""
 msgid "Wallpaper"
 msgstr ""
 
-#: src/ui/settings.rs:369 src/app.rs:3011 src/ui/image_preview.rs:212
+#: src/ui/settings.rs:369 src/app.rs:3017 src/ui/image_preview.rs:212
 msgid "Image"
 msgstr ""
 
@@ -1458,7 +1459,7 @@ msgstr ""
 msgid "No answer"
 msgstr ""
 
-#: src/ui/call.rs:399 src/ui/calls.rs:120 src/app.rs:4057
+#: src/ui/call.rs:399 src/ui/calls.rs:120 src/app.rs:4067
 msgid "Connection lost"
 msgstr ""
 
@@ -1563,7 +1564,7 @@ msgstr ""
 msgid "Accept"
 msgstr ""
 
-#: src/ui/call.rs:1069
+#: src/ui/call.rs:1170
 msgid "Invited"
 msgstr ""
 
@@ -1651,15 +1652,15 @@ msgid ""
 "Call one person by voice or video, or choose a call in the list to see it."
 msgstr ""
 
-#: src/app/calls.rs:109
+#: src/app/calls.rs:111
 msgid "Locked chat"
 msgstr ""
 
-#: src/app/calls.rs:421
+#: src/app/calls.rs:443
 msgid "Incoming call"
 msgstr ""
 
-#: src/app/calls.rs:513
+#: src/app/calls.rs:535
 msgid "Hang up the current call first"
 msgstr ""
 
@@ -1724,119 +1725,119 @@ msgstr[1] ""
 msgid "No one yet"
 msgstr ""
 
-#: src/app.rs:866
+#: src/app.rs:870
 msgid "Could not check the number. Please try again."
 msgstr ""
 
-#: src/app.rs:870
+#: src/app.rs:874
 msgid "This number is not on WhatsApp"
 msgstr ""
 
-#: src/app.rs:873
+#: src/app.rs:877
 msgid "Not connected to WhatsApp"
 msgstr ""
 
-#: src/app.rs:876 src/app.rs:7613
+#: src/app.rs:880 src/app.rs:7623
 msgid "Enter a valid international phone number"
 msgstr ""
 
-#: src/app.rs:1794
+#: src/app.rs:1800
 msgid "Could not delete the removed account's files"
 msgstr ""
 
-#: src/app.rs:2427
+#: src/app.rs:2433
 #, rust-format
 msgid "A label named “{name}” already exists."
 msgstr ""
 
-#: src/app.rs:2516
+#: src/app.rs:2522
 #, rust-format
 msgid "{name} (You)"
 msgstr ""
 
-#: src/app.rs:3078
+#: src/app.rs:3084
 msgid "Media cache cleared"
 msgstr ""
 
-#: src/app.rs:3153
+#: src/app.rs:3163
 msgid "Star removed"
 msgstr ""
 
-#: src/app.rs:3189
+#: src/app.rs:3199
 msgid "Pinned for 7 days"
 msgstr ""
 
-#: src/app.rs:3191
+#: src/app.rs:3201
 msgid "Pin removed"
 msgstr ""
 
-#: src/app.rs:3681
+#: src/app.rs:3691
 msgid "Loading chat history"
 msgstr ""
 
-#: src/app.rs:3775
+#: src/app.rs:3785
 msgid "Could not use this image"
 msgstr ""
 
-#: src/app.rs:3997 src/app.rs:7516
+#: src/app.rs:4007 src/app.rs:7526
 msgid "This chat already has three pinned messages"
 msgstr ""
 
-#: src/app.rs:4067
+#: src/app.rs:4077
 msgid "Connecting"
 msgstr ""
 
-#: src/app.rs:4698
+#: src/app.rs:4708
 msgid "Not sent: ZapFast is not connected to WhatsApp."
 msgstr ""
 
-#: src/app.rs:4702
+#: src/app.rs:4712
 msgid ""
 "Not sent: the message you’re replying to isn’t available on this computer. "
 "Cancel the reply to send without a quote."
 msgstr ""
 
-#: src/app.rs:6741
+#: src/app.rs:6751
 msgid "A selected chat is no longer writable"
 msgstr ""
 
-#: src/app.rs:7274
+#: src/app.rs:7284
 msgid "Added to favorites"
 msgstr ""
 
-#: src/app.rs:7351
+#: src/app.rs:7361
 msgid "Sending the sticker pack…"
 msgstr ""
 
-#: src/app.rs:7733 src/ui/labels.rs:257
+#: src/app.rs:7743 src/ui/labels.rs:257
 #, rust-format
 msgid "You have {limit} labels, the most ZapFast keeps."
 msgstr ""
 
 #. Translators: an announcement from an account that is not on screen:
 #. the account's name, then what it announced.
-#: src/app.rs:8278
+#: src/app.rs:8288
 #, rust-format
 msgid "{}: {}"
 msgstr ""
 
-#: src/app.rs:8634
+#: src/app.rs:8644
 msgid "App lock password saved"
 msgstr ""
 
-#: src/app.rs:8642
+#: src/app.rs:8652
 msgid "App lock turned off"
 msgstr ""
 
-#: src/app.rs:8776
+#: src/app.rs:8786
 msgid "This video opens in your system player"
 msgstr ""
 
-#: src/app.rs:9355
+#: src/app.rs:9365
 msgid "Copied image"
 msgstr ""
 
-#: src/app.rs:9358 src/app.rs:9363
+#: src/app.rs:9368 src/app.rs:9373
 msgid "Failed to copy image"
 msgstr ""
 

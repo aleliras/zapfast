@@ -481,8 +481,10 @@ A group call rings under the group's name and picture and says who is calling
 you answer, everyone on the call has a tile with their picture and name; someone
 who was asked but has not joined yet reads **Invited**, and the tiles follow
 people as they join and leave. Mute, the device pickers and hang up work as in
-any call, and hanging up leaves the call to the others. A group's voice call
-stays a voice call. ZapFast does not start group calls: WhatsApp refuses them
+any call, and hanging up leaves the call to the others. In a group's video
+call each member's camera fills their tile, and yours takes a tile of its own
+labelled **You**; someone whose camera is off keeps their photo. The camera
+button turns yours off and on. A group's voice call stays a voice call. ZapFast does not start group calls: WhatsApp refuses them
 from linked devices, so a group's header has no call button, and a group call is
 started on the phone.
 
