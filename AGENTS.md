@@ -158,7 +158,20 @@ protocol. These notes are for coding agents and new contributors.
   a stream instead of the call. `backend/worker/calls.rs` owns at most one
   call per account; the window (`app/calls.rs`) holds one call across all
   accounts with its `AccountId`, routes call actions to that account's
-  backend, and declines another account's offer while one is up. Call
+  backend, and declines another account's offer while one is up. Group
+  calls: an offer carrying a roster (`IncomingCall::group`) or a `group-jid`
+  rings under its group (a call among several people with no group, under its
+  creator's chat), named by `chat_title_of` with the member who rang, and is
+  answered through the same `voip().accept`, which joins the shared relay and
+  epoch key; the library mixes everyone's audio into the one speaker stream.
+  `calls::GroupRoster` keeps the newest roster snapshot by transaction
+  (`CallAction::GroupUpdate` while ringing, `CallEvent::GroupUpdated` once up),
+  and one member's `<reject>` never ends the call. The worker files roster ids
+  under canonical chat ids and drops our own entry (`canonical_call`), and the
+  call's entry goes in the group under the member who rang. The library
+  reports no per-person speaking level or mute, so the tiles show neither.
+  Linked devices cannot start group calls (the server answers 427), so a group
+  has no call button, and a group's voice call cannot gain video. Call
   updates are withheld during privacy recovery like other private content,
   and a locked chat's call shows only "Locked chat" until its folder opens.
   Calls open the system default devices; the call screen's pickers apply to

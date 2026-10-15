@@ -474,6 +474,18 @@ Calls use your platform's own audio (PipeWire or ALSA on Linux, Core Audio on
 macOS, WASAPI on Windows), with no echo cancellation of their own: use
 headphones, or your system's echo cancellation, when the speaker is loud.
 
+### Group calls
+
+A group call rings under the group's name and picture and says who is calling
+("Group voice call from Jonas"), with the faces of those already on it. Once
+you answer, everyone on the call has a tile with their picture and name; someone
+who was asked but has not joined yet reads **Invited**, and the tiles follow
+people as they join and leave. Mute, the device pickers and hang up work as in
+any call, and hanging up leaves the call to the others. A group's voice call
+stays a voice call. ZapFast does not start group calls: WhatsApp refuses them
+from linked devices, so a group's header has no call button, and a group call is
+started on the phone.
+
 One call at a time: a call to another of your numbers while one is up is
 declined there. With several numbers linked, a call to a number that is not on
 screen still rings, under that number's own names.
@@ -503,8 +515,8 @@ number, each with a voice and a video button. Click **Chats** in the rail,
 press `Ctrl+Shift+1`, or press Escape to go back to the chats. Switching
 numbers keeps the Calls tab open on the other number's calls. In a narrow
 window the list takes the whole window beside the rail, and a picked call's
-chat opens over both, with a Back button. Group calls show up in the history,
-but are placed and answered on the phone.
+chat opens over both, with a Back button. Group calls show up in the history
+under their group, named by who called; they are started on the phone.
 
 ## Copying
 
