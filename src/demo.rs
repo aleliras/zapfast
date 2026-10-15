@@ -16048,56 +16048,73 @@ mod tests {
         assert!(reached_hidden, "Tab reached chats that were out of view");
     }
 
+    /// The same with the list hidden, at the window's least height: the
+    /// chats' avatars scroll between the rail's groups, and the macOS layout,
+    /// which starts the rail under the traffic lights, leaves them least.
     #[test]
     fn tab_scrolls_a_focused_collapsed_avatar_into_view() {
-        let mut app = app();
-        apply_flags(&mut app, Some("settings,rail"));
-        let ctx = egui::Context::default();
-        app.attach(&ctx);
-        let height = 300.0;
-        for _ in 0..3 {
-            frame_sized(&mut app, &ctx, height, Vec::new());
-        }
-        let avatar = |ctx: &egui::Context, id: &str| {
-            ctx.data(|data| data.get_temp::<egui::Rect>(crate::ui::chats::compact_chat_id(id)))
-        };
-        let ids: Vec<String> = app.chats.iter().map(|chat| chat.id.clone()).collect();
-        let hidden: Vec<&String> = ids
-            .iter()
-            .filter(|id| avatar(&ctx, id).is_none_or(|rect| rect.top() >= height))
-            .collect();
-        assert!(
-            !hidden.is_empty(),
-            "the window is short enough to hide avatars"
-        );
-        let mut reached_hidden = false;
-        for _ in 0..40 {
-            frame_sized(&mut app, &ctx, height, tab());
+        for macos in [false, true] {
+            let mut app = app();
+            apply_flags(&mut app, Some("settings,rail"));
+            let ctx = egui::Context::default();
+            app.attach(&ctx);
+            if macos {
+                crate::theme::preview_macos(&ctx);
+            }
+            // `main`'s least window height.
+            let height = 300.0;
             for _ in 0..3 {
                 frame_sized(&mut app, &ctx, height, Vec::new());
             }
-            let Some(focused) = ctx
-                .memory(|memory| memory.focused())
-                .and_then(|id| ctx.read_response(id))
-            else {
-                continue;
+            let avatar = |ctx: &egui::Context, id: &str| {
+                ctx.data(|data| data.get_temp::<egui::Rect>(crate::ui::chats::compact_chat_id(id)))
             };
-            // Settings has its own scrolling; only the rail is under test.
-            if !ids
+            let ids: Vec<String> = app.chats.iter().map(|chat| chat.id.clone()).collect();
+            let hidden: Vec<&String> = ids
                 .iter()
-                .any(|id| avatar(&ctx, id).is_some_and(|rect| rect == focused.rect))
-            {
-                continue;
-            }
-            assert_eq!(
-                focused.interact_rect, focused.rect,
-                "the focused avatar is fully visible"
+                .filter(|id| avatar(&ctx, id).is_none_or(|rect| rect.top() >= height))
+                .collect();
+            assert!(
+                !hidden.is_empty(),
+                "{macos}: the window is short enough to hide avatars"
             );
-            reached_hidden |= hidden
-                .iter()
-                .any(|id| avatar(&ctx, id).is_some_and(|rect| rect == focused.rect));
+            let mut reached_hidden = false;
+            for _ in 0..40 {
+                frame_sized(&mut app, &ctx, height, tab());
+                for _ in 0..3 {
+                    frame_sized(&mut app, &ctx, height, Vec::new());
+                }
+                let Some(focused) = ctx
+                    .memory(|memory| memory.focused())
+                    .and_then(|id| ctx.read_response(id))
+                else {
+                    continue;
+                };
+                // Settings has its own scrolling; only the rail is under test.
+                if !ids
+                    .iter()
+                    .any(|id| avatar(&ctx, id).is_some_and(|rect| rect == focused.rect))
+                {
+                    continue;
+                }
+                assert_eq!(
+                    focused.interact_rect, focused.rect,
+                    "{macos}: the focused avatar is fully visible"
+                );
+                assert!(
+                    focused.rect.bottom() <= height,
+                    "{macos}: inside the window: {:?}",
+                    focused.rect
+                );
+                reached_hidden |= hidden
+                    .iter()
+                    .any(|id| avatar(&ctx, id).is_some_and(|rect| rect == focused.rect));
+            }
+            assert!(
+                reached_hidden,
+                "{macos}: Tab reached avatars that were out of view"
+            );
         }
-        assert!(reached_hidden, "Tab reached avatars that were out of view");
     }
 
     /// Records the images the UI asks for, answering at once so a frame can be

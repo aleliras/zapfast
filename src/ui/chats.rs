@@ -1767,9 +1767,12 @@ pub(super) fn compact_list(app: &mut App, ui: &mut egui::Ui) {
         return;
     }
     let chats: Vec<Chat> = app.visible_chats().into_iter().cloned().collect();
+    // Exactly the height the rail gives it: egui's least scrolled height
+    // would reach past the window's bottom in a short one.
     let mut scroll_area = egui::ScrollArea::vertical()
         .id_salt("chat-rail")
-        .auto_shrink([false, false]);
+        .auto_shrink([false, false])
+        .min_scrolled_height(0.0);
     if to_top && near_top(ui, "chat-rail", COMPACT_CELL) {
         scroll_area = scroll_area.vertical_scroll_offset(0.0);
     }
@@ -1897,7 +1900,8 @@ fn compact_row(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> egui::Response 
     let selected = app.open_chat.as_deref() == Some(chat.id.as_str());
     let (rect, response) =
         ui.allocate_exact_size(vec2(ui.available_width(), COMPACT_CELL), Sense::click());
-    theme::reveal_focus(&response);
+    // A short window leaves the rail's avatars little more than one row.
+    theme::reveal_focus_in(ui, &response);
     response.widget_info(|| {
         egui::WidgetInfo::selected(
             egui::WidgetType::SelectableLabel,

@@ -29,6 +29,9 @@ const AVATAR: f32 = 32.0;
 /// Space above the first destination, as the list header's own margin, and
 /// between the bottom group's plates, the avatar and the window's edge.
 const GAP: f32 = 8.0;
+/// The least height the chats' avatars take in a window too short for the
+/// rail, unless less is left above the window's bottom edge.
+const MIN_AVATARS: f32 = 64.0;
 /// Width of the line between the destinations and the chats' avatars.
 const DIVIDER: f32 = 24.0;
 /// How far below the window's top the macOS traffic lights end, centred as
@@ -198,7 +201,11 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, hidden: bool) {
             ui.painter().rect_filled(line, 0.0, palette.outline);
             ui.add_space(GAP / 2.0);
             // The avatars take what the two groups leave, and scroll there.
-            let middle = (ui.available_height() - foot).max(0.0);
+            // A window too short for both groups still gives them a little,
+            // never past its bottom edge: an avatar Tab brings into view
+            // must not land under it.
+            let room = ui.available_height();
+            let middle = (room - foot).max(room.clamp(0.0, MIN_AVATARS));
             ui.allocate_ui_with_layout(
                 vec2(width, middle),
                 egui::Layout::top_down(egui::Align::Center),
