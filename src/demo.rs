@@ -17013,6 +17013,14 @@ mod bubble_detail_tests {
     /// by 800 window.
     #[test]
     fn messages_balloons_tail_only_the_last_of_each_run() {
+        // These runs belong to one day. Near midnight a real clock puts a
+        // day boundary between them, correctly giving another bubble a tail.
+        let _clock = crate::util::fixed_clock::set(crate::util::fixed_clock::Clock {
+            // 14:00 UTC on Wednesday 11 March 2026.
+            now: 1_773_237_600,
+            zone: jiff::tz::TimeZone::UTC,
+            twelve_hour: false,
+        });
         const SIZE: egui::Vec2 = egui::vec2(1280.0, 800.0);
         let reach = crate::ui::widgets::balloon::TIP[0] * crate::ui::widgets::MESSAGES_SCALE;
         for page in ["bubbles,messages", "bubbles,messages-light"] {
