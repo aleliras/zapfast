@@ -140,48 +140,48 @@ libwebp-sys2 = { version = "0.2", features = ["1_2"] }
 # Shared foundation of Carmine's egui apps (github.com/crmne/fastframe). Every
 # crate comes from the same revision.
 # Bundled gettext catalogs: lookups and system language detection.
-fastframe-i18n = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-i18n = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # The icons! table, a loader that survives reduce_texture_memory, and the Lucide
 # icons shared with Spotifast.
-fastframe-icons = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-icons = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # The platform's interface font (Inter where there is none), and installed
 # fonts for other scripts.
-fastframe-fonts = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-fonts = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # Colour emoji in the platform's own style, with the bundled Noto behind
 # them, drawn off the interface thread.
-fastframe-emoji = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-emoji = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # Follows the desktop's hinting and glyph coverage, live through the portal.
-fastframe-text = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae", features = ["watch"] }
+fastframe-text = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5", features = ["watch"] }
 # Palette files, the shared presets, and following Omarchy's theme live.
-fastframe-theme = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-theme = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # Logs to stderr and a per-run file, and records panics without their payload.
-fastframe-log = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-log = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # The tray item: StatusNotifier on Linux, tray-icon on Windows and macOS.
-fastframe-tray = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-tray = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # Keeps ZapFast running without a window, remembers its geometry, recovers it
 # off screen, and brings it forward on niri.
-fastframe-shell = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-shell = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # Window chrome: centres the macOS traffic lights on ZapFast's own header and
 # lets its headers move the window.
-fastframe-titlebar = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-titlebar = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # One running copy per user: the lock, and the channel a second launch uses.
-fastframe-instance = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-instance = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # The wheel step, and on Linux touchpad scale, glide and axis lock.
-fastframe-scroll = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-scroll = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # The desktop entry name (Flatpak-aware), the GNOME check, and GNOME's clock
 # format through the desktop portal.
-fastframe-desktop = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-desktop = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # Process-wide Dock icon and unread badge, plus the Windows taskbar overlay.
-fastframe-dock = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-dock = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # One native notification API for delivery, permissions, clicks and withdrawal.
-fastframe-notifications = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-notifications = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # Sleep and wake as the system reports them, so the link reconnects after a
 # wake (Linux and Windows).
-fastframe-power = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-power = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # Saves that are never half written: settings and the chosen wallpaper.
-fastframe-file = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae" }
+fastframe-file = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5" }
 # Self-update from GitHub releases with signed checksums, a helper and rollback.
-fastframe-update = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae", features = ["reqwest"] }
+fastframe-update = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5", features = ["reqwest"] }
 
 [patch.crates-io]
 # crmne/egui apps-0.36, shared with Spotifast, RekordFlash and TonePush: egui
@@ -220,8 +220,9 @@ epaint_default_fonts = { git = "https://github.com/crmne/egui", rev = "ba6790fe7
 # macOS window is ordered out before it closes, so a Touch Bar exception
 # cannot leave it on screen (#260, rust-windowing/winit#4728). Only winit
 # windows close when its loop exits, preserving the macOS tray across hide
-# and recreation (rust-windowing/winit#4754, crmne/winit#2).
-winit = { git = "https://github.com/crmne/winit", rev = "63c7c72ae6dc81520f04a2c5d996665f3c9ba4fd" }
+# and recreation (rust-windowing/winit#4754, crmne/winit#2), and a first
+# window opens after the headless AppKit loop has already launched (#4770).
+winit = { git = "https://github.com/crmne/winit", rev = "0bed9dc0a7db02590a279fb8bac795fa39ee6948" }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 zbus-secret-service-keyring-store = { version = "1.0.1", features = ["rt-tokio-crypto-rust"] }
@@ -309,4 +310,4 @@ opt-level = 2
 [build-dependencies]
 # Compiles the PO catalogs to Rust, leaving out unfinished entries. Ordinary
 # builds do not need gettext tools.
-fastframe-i18n = { git = "https://github.com/crmne/fastframe", rev = "97ceedda528f5c8f688ff37d001cbaf0a1d930ae", features = ["build"] }
+fastframe-i18n = { git = "https://github.com/crmne/fastframe", rev = "3339a8bc524a51c47f87ca78c368dde3569d90f5", features = ["build"] }

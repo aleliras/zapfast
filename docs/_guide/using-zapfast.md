@@ -753,7 +753,8 @@ its regular taskbar icon size for overlays to appear. The count
 does not count toasts remaining in Windows notification history. On macOS, the
 Dock icon shows the number of unread chats in a red badge. The icon and
 badge stay with the app when its window is closed and reopened. A macOS
-source build run through Cargo uses ZapFast's icon too. On Linux and
+source build run through Cargo uses ZapFast's icon too. Starting hidden
+lets you open the first window from the menu-bar menu. On Linux and
 Windows, notifications show the chat picture. On Linux, Windows, and macOS, a
 click on a notification opens the chat at the message it announced. This holds for the 32 most recent tracked notifications on all three platforms;
 older notifications remain in system history without a message click listener.
