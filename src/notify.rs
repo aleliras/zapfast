@@ -9,28 +9,15 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-#[cfg(target_os = "linux")]
-mod badge;
-#[cfg(target_os = "macos")]
-mod badge_macos;
+pub use fastframe_dock::Badge;
 #[cfg(target_os = "windows")]
-mod badge_windows;
-#[cfg(target_os = "linux")]
-pub use badge::Badge;
-#[cfg(target_os = "macos")]
-pub use badge_macos::Badge;
-#[cfg(target_os = "windows")]
-pub use badge_windows::{Badge, Taskbar};
+pub use fastframe_dock::Taskbar;
 
-/// A no-op taskbar badge on platforms without a taskbar badge implementation.
-#[cfg(not(any(target_os = "linux", target_os = "windows", target_os = "macos")))]
-#[derive(Default)]
-pub struct Badge;
-
-#[cfg(not(any(target_os = "linux", target_os = "windows", target_os = "macos")))]
-impl Badge {
-    /// Does nothing; no supported desktop here reads a taskbar badge.
-    pub fn set(&mut self, _count: u32) {}
+/// The localized accessible text for the Windows unread overlay.
+#[cfg(any(target_os = "windows", test))]
+pub fn badge_description(count: u32, locale: crate::i18n::Locale) -> String {
+    crate::i18n::ngettext(locale, "{} unread message", "{} unread messages", count)
+        .replace("{}", &count.to_string())
 }
 
 /// Chat and message a clicked notification opens. The message id travels with
@@ -514,6 +501,19 @@ fn deliver(
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn badge_description_agrees_with_the_count() {
+        use crate::i18n::Locale;
+        assert_eq!(
+            super::badge_description(1, Locale::English),
+            "1 unread message"
+        );
+        assert_eq!(
+            super::badge_description(3, Locale::English),
+            "3 unread messages"
+        );
+    }
+
     use super::*;
     use crate::model::AccountId;
 

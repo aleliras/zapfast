@@ -428,6 +428,9 @@ protocol. These notes are for coding agents and new contributors.
   fastframe-tray (ksni on Linux, tray-icon on Windows and macOS; on macOS
   made with the first window and pumped by `fastframe_tray::idle` while none
   exists), and `src/macos.rs` hands its menu events to `fastframe_tray::claim_menu_event` first.
+  The process Dock icon and unread badge use fastframe-dock; a Cargo run
+  gets the embedded icon, while a packaged app keeps its bundle icon. The
+  unread-chat count stays in ZapFast and survives window replacement.
   Clicking the macOS menu-bar icon opens its menu; **Show or hide ZapFast**
   toggles the window, and clicking the Dock icon shows it.
   Closing keeps ZapFast running only while `Tray::is_shown`: on Linux the
