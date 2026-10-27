@@ -109,6 +109,41 @@ verify desktop and theme assets. Run the same check locally with
 from the same configuration with `--defer-recipes`, leaving Linux inputs and AUR
 recipe generation to the Linux packaging job after release assets exist.
 
+## Windows signing
+
+Tag releases sign `zapfast.exe`, the setup program and the MSI with Azure
+Artifact Signing, as **PlentyLabs UG (haftungsbeschränkt) & Co. KG**, through
+native-packages: `windows.signing` in `native-packages.yaml` turns it on,
+`native-packages sign-windows` signs `zapfast.exe` before the zip, the setup
+program and the MSI pack it, and the setup program once Inno has built it, and
+`native-packages build` signs the MSI before recording its checksum. Each
+signature is SHA-256 Authenticode with Microsoft's RFC 3161 timestamp, checked
+to be `Valid` and PlentyLabs' before anything is attested or uploaded (see
+native-packages'
+[Windows code signing](https://github.com/crmne/native-packages/blob/v0.11.0/docs/_guides/windows-signing.md)).
+The account, `plentylabs` in West Europe,
+is shared by Carmine's Windows apps and managed in `crmne/terraform`
+(`azure/signing.tf`, its README's "Code signing").
+
+No secret is involved. The Windows build jobs run in this repository's
+`windows-signing` environment, which deploys only from `v*` tags, and sign in
+through GitHub's OIDC token as the Entra app `GitHub zapfast Windows signing`.
+That app trusts only `repo:crmne@106617/zapfast@1350713137:environment:windows-signing` (GitHub's immutable subject, with the owner's and repository's ids) and holds
+the "Artifact Signing Certificate Profile Signer" role on the account. The
+environment's variables, none of them secret, are `AZURE_CLIENT_ID`,
+`AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`, `AZURE_SIGNING_ENDPOINT`,
+`AZURE_SIGNING_ACCOUNT` and `AZURE_SIGNING_PROFILE`.
+
+`AZURE_SIGNING_PROFILE` names the Public Trust certificate profile
+`plentylabs`, created once PlentyLabs' identity validation completed
+(2026-10-26), so every tag release signs. Without the environment's signing
+variables releases build unsigned; with only some of them, the Windows build
+fails rather than ship unsigned.
+
+A signature doesn't silence SmartScreen at once: reputation builds as people
+download releases signed by the same publisher, so keep signing every release
+with this identity.
+
 ## Flatpak
 
 `packaging/flatpak/rocks.zapfast.ZapFast.yml` builds from source, with offline Cargo
