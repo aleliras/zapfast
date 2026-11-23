@@ -183,6 +183,52 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, hidden: bool) {
         } else {
             ui.add_space(GAP);
         }
+        // Privacy blur quick toggle at the top of the rail.
+        {
+            let enabled = app.settings.privacy_blur.enabled;
+            let tooltip = if enabled {
+                crate::i18n::gettext(app.locale, "Disable privacy blur (Ctrl+Shift+P)")
+            } else {
+                crate::i18n::gettext(app.locale, "Enable privacy blur (Ctrl+Shift+P)")
+            };
+            let (icon, color) = if enabled {
+                (Icon::Shield, palette.accent)
+            } else {
+                (Icon::EyeOff, palette.secondary)
+            };
+            let (cell, _) =
+                ui.allocate_exact_size(vec2(ui.available_width(), CELL), Sense::hover());
+            let plate = Rect::from_center_size(cell.center(), Vec2::splat(PLATE));
+            let response = ui
+                .interact(plate, egui::Id::new("privacy-blur-toggle"), Sense::click())
+                .on_hover_cursor(egui::CursorIcon::PointingHand);
+            theme::reveal_focus(&response);
+            let hovered = response.hovered() || response.has_focus();
+            if hovered {
+                widgets::highlight_card(ui, &palette, plate, palette.surface_hover);
+            }
+            let tint = if hovered { palette.text } else { color };
+            let scale = if response.is_pointer_button_down_on() {
+                0.92
+            } else {
+                1.0
+            };
+            theme::paint_icon(ui, icon, plate, ICON * scale, tint);
+            let response_clone = response.clone();
+            response_clone.on_hover_text(tooltip.clone());
+            if response.clicked() {
+                app.actions.push(Action::TogglePrivacyBlur);
+            }
+            response.widget_info(|| {
+                egui::WidgetInfo::selected(
+                    egui::WidgetType::SelectableLabel,
+                    ui.is_enabled(),
+                    enabled,
+                    &tooltip,
+                )
+            });
+            ui.add_space(GAP);
+        }
         let bottom: Vec<Destination> = [
             Destination::Starred,
             Destination::Archived,

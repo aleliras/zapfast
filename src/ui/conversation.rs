@@ -18,6 +18,7 @@ use crate::model::{
     Message, PickerTab, Scroll,
 };
 use crate::theme::{self, Icon, Palette};
+use crate::ui::privacy_blur::paint_blur_mask;
 use crate::wallpaper;
 
 use super::focus::{self, Stop, TabStop};
@@ -511,14 +512,56 @@ fn header(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> Rect {
                             ),
                             Layout::left_to_right(Align::Center),
                             |ui| {
-                                let avatar_response = widgets::avatar(
-                                    ui,
-                                    &palette,
-                                    &title,
-                                    &chat.id,
-                                    40.0,
-                                    picture.as_deref(),
+                                // Privacy blur for header avatar.
+                                let should_blur_avatar = app.settings.privacy_blur.enabled
+                                    && app
+                                        .privacy_blur
+                                        .should_blur_chat(&app.settings.privacy_blur, &chat.id)
+                                    && app.settings.privacy_blur.blur_avatars;
+                                let avatar_rect_for_blur = Rect::from_center_size(
+                                    ui.cursor().min + vec2(20.0, HEADER_ROW / 2.0),
+                                    vec2(40.0, 40.0),
                                 );
+                                let avatar_revealed =
+                                    app.privacy_blur.is_revealed(avatar_rect_for_blur, ui);
+                                let avatar_response = if should_blur_avatar
+                                    && !avatar_revealed
+                                    && picture.is_some()
+                                {
+                                    // Paint blurred avatar placeholder.
+                                    let (rect, response) =
+                                        ui.allocate_exact_size(vec2(40.0, 40.0), Sense::hover());
+                                    let color = Color32::from_rgba_unmultiplied(
+                                        palette.surface.r(),
+                                        palette.surface.g(),
+                                        palette.surface.b(),
+                                        153, // 0.6 * 255
+                                    );
+                                    ui.painter().circle_filled(
+                                        rect.center(),
+                                        rect.width() / 2.0,
+                                        color,
+                                    );
+                                    let initials = crate::util::initials(&title);
+                                    let font = crate::theme::semibold(14.0);
+                                    let galley =
+                                        ui.painter().layout_no_wrap(initials, font, palette.text);
+                                    ui.painter().galley(
+                                        rect.center() - galley.size() / 2.0,
+                                        galley,
+                                        palette.text,
+                                    );
+                                    response
+                                } else {
+                                    widgets::avatar(
+                                        ui,
+                                        &palette,
+                                        &title,
+                                        &chat.id,
+                                        40.0,
+                                        picture.as_deref(),
+                                    )
+                                };
                                 avatar = avatar_response.rect;
                                 if chat.disappearing_timer().is_some() {
                                     widgets::paint_disappearing_badge(
@@ -634,6 +677,29 @@ fn header(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> Rect {
                     );
                     ui.painter()
                         .set(name_pill, glass(&palette, glass_rect, NAME_GLASS_RADIUS));
+                }
+                // Privacy blur for contact name in header.
+                if app.settings.privacy_blur.enabled
+                    && app
+                        .privacy_blur
+                        .should_blur_chat(&app.settings.privacy_blur, &chat.id)
+                    && app.settings.privacy_blur.blur_contact_names
+                {
+                    let name_revealed = app.privacy_blur.is_revealed(text, ui);
+                    if !name_revealed {
+                        paint_blur_mask(ui, &palette, text, 0.7);
+                        // Draw placeholder dots.
+                        let dots = "●●●";
+                        let font = if palette.vibrant() {
+                            theme::medium(15.0)
+                        } else {
+                            theme::semibold(17.0)
+                        };
+                        let dots_galley =
+                            ui.painter()
+                                .layout_no_wrap(dots.to_string(), font, palette.dim);
+                        ui.painter().galley(text.min, dots_galley, palette.dim);
+                    }
                 }
                 let block = ui
                     .interact(block.rect, ui.id().with("chat-header-info"), Sense::click())
@@ -1864,6 +1930,24 @@ fn composer(app: &mut App, ui: &mut egui::Ui, chat: &Chat, review_send: Option<b
                                     })
                                     .layouter(&mut layouter)
                                     .show(ui);
+                                // Privacy blur for composer text.
+                                if app.settings.privacy_blur.enabled
+                                    && app.settings.privacy_blur.blur_composer
+                                {
+                                    let composer_rect = output.response.response.rect;
+                                    let composer_revealed = app.privacy_blur.is_revealed(composer_rect, ui);
+                                    if !composer_revealed {
+                                        paint_blur_mask(ui, &palette, composer_rect, 0.7);
+                                        // Draw placeholder dots over the text area.
+                                        let painted = Rect::from_min_size(
+                                            output.galley_pos,
+                                            output.galley.size(),
+                                        );
+                                        let dots = "●".repeat(app.composer.chars().count().min(20));
+                                        let dots_galley = ui.painter().layout_no_wrap(dots, theme::regular(BODY_SIZE), palette.dim);
+                                        ui.painter().galley(painted.min, dots_galley, palette.dim);
+                                    }
+                                }
                                 // egui moves the caret on any pointer press, including a
                                 // secondary click. A modal menu also disables the field.
                                 // Keep the selection the menu acts on until it closes.
@@ -2678,6 +2762,10 @@ struct View<'a> {
     copy_rows: Option<&'a std::sync::Mutex<Vec<crate::transcript::Row>>>,
     /// How far this chat's downloading attachments have got, by message.
     download_progress: Option<&'a HashMap<String, u8>>,
+    /// Privacy blur settings for this chat.
+    privacy_blur: Option<&'a crate::settings::PrivacyBlurSettings>,
+    /// Privacy blur state.
+    privacy_blur_state: Option<&'a crate::ui::privacy_blur::PrivacyBlurState>,
 }
 
 /// How far `message`'s attachment download has got, once the worker has said.
@@ -3142,6 +3230,8 @@ fn messages(app: &mut App, ui: &mut egui::Ui, chat: &Chat, under: f32) {
         copy_rows: (!app.selection.as_ref().is_some_and(|(id, _)| *id == chat.id))
             .then_some(app.copy_rows.as_ref()),
         download_progress: app.download_progress.get(&chat.id),
+        privacy_blur: Some(&app.settings.privacy_blur),
+        privacy_blur_state: Some(&app.privacy_blur),
     };
     let mut actions = Vec::new();
     let mut anchored = false;
@@ -5733,6 +5823,23 @@ fn bubble_frame(
             ),
         );
     }
+    // Privacy blur overlay for message bubble.
+    if let (Some(settings), Some(state)) = (view.privacy_blur, view.privacy_blur_state)
+        && settings.enabled
+        && state.should_blur_chat(settings, &view.chat.id)
+        && settings.blur_messages
+    {
+        let bubble_revealed = state.is_revealed(inner.response.rect, ui);
+        if !bubble_revealed {
+            paint_blur_mask(ui, &palette, inner.response.rect, 0.8);
+            // Subtle eye-off icon hint at top-right.
+            let icon_rect = Rect::from_min_size(
+                inner.response.rect.right_top() + vec2(-24.0, 4.0),
+                vec2(20.0, 20.0),
+            );
+            theme::paint_icon(ui, Icon::EyeOff, icon_rect, 16.0, palette.dim);
+        }
+    }
     ui.ctx()
         .data_mut(|data| data.insert_temp(rect_id, inner.response.rect));
     let bubble = early.unwrap_or_else(|| ui.interact(inner.response.rect, bubble_id, Sense::CLICK));
@@ -7125,6 +7232,8 @@ pub(crate) fn list_menu(
         starred: marks.starred.then_some(&stars),
         pins: app.pins.get(&message.chat),
         pin_notices: &[],
+        privacy_blur: Some(&app.settings.privacy_blur),
+        privacy_blur_state: Some(&app.privacy_blur),
     };
     context_menu(ui, &view, message, MenuOrigin::List, actions);
 }
@@ -12858,6 +12967,8 @@ mod tests {
             starred: None,
             pins: None,
             pin_notices: &[],
+            privacy_blur: Some(&app.settings.privacy_blur),
+            privacy_blur_state: Some(&app.privacy_blur),
         };
         check(&view);
     }

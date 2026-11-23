@@ -12,6 +12,7 @@ use crate::audio::{Player, Recorder};
 use crate::backend::{Backend, Command, Event, LinkStatus, Refusal, Unsent, Waker};
 use crate::i18n::Locale;
 use crate::image_preview::PreviewState;
+use crate::model::PrivacyBlurElement;
 use crate::model::{
     AccountId, Action, Chat, ChatFilter, ChatId, ChatMedia, Contact, Content, Delivery, Dialog,
     Gif, GifError, InfoPanel, InfoView, Label, Media, MediaState, Message, Page, PickerTab, Scroll,
@@ -19,7 +20,7 @@ use crate::model::{
 };
 use crate::nav::{History, Location};
 use crate::paths::AppDirs;
-use crate::settings::{AccountRoster, NotificationSound, Settings, ThemeChoice};
+use crate::settings::{AccountRoster, BlurScope, NotificationSound, Settings, ThemeChoice};
 use crate::single_instance::{ControlCommand, Guard};
 use crate::theme::{self, Palette};
 
@@ -746,6 +747,8 @@ pub struct App {
     pub(crate) scrolling: fastframe_scroll::Scrolling,
     /// Keeps a scroll gesture with the pane it began over.
     pub scroll_route: ScrollRoute,
+    /// Privacy blur (anti-spy) overlay state.
+    pub privacy_blur: crate::ui::privacy_blur::PrivacyBlurState,
 
     pub page: Page,
     pub dialog: Option<Dialog>,
@@ -1707,6 +1710,7 @@ impl App {
             picture_texture: None,
             scrolling: fastframe_scroll::Scrolling::default(),
             scroll_route: ScrollRoute::default(),
+            privacy_blur: crate::ui::privacy_blur::PrivacyBlurState::default(),
             page: Page::Chats,
             dialog: None,
             nav_history: History::default(),
@@ -7495,6 +7499,62 @@ impl App {
                 };
                 self.apply(Action::Open(page), ctx);
             }
+            Action::TogglePrivacyBlur => {
+                self.settings.privacy_blur.enabled = !self.settings.privacy_blur.enabled;
+                self.mark_settings_dirty();
+            }
+            Action::TogglePrivacyBlurChat(chat_id) => {
+                if let BlurScope::SpecificChats(ref mut jids) = self.settings.privacy_blur.scope {
+                    if jids.contains(&chat_id) {
+                        jids.remove(&chat_id);
+                    } else {
+                        jids.insert(chat_id);
+                    }
+                    self.mark_settings_dirty();
+                }
+            }
+            Action::SetPrivacyBlurScope(scope) => {
+                self.settings.privacy_blur.scope = scope;
+                self.mark_settings_dirty();
+            }
+            Action::SetPrivacyBlurElement { element, enabled } => {
+                match element {
+                    PrivacyBlurElement::ContactNames => {
+                        self.settings.privacy_blur.blur_contact_names = enabled
+                    }
+                    PrivacyBlurElement::Avatars => {
+                        self.settings.privacy_blur.blur_avatars = enabled
+                    }
+                    PrivacyBlurElement::ChatPreviews => {
+                        self.settings.privacy_blur.blur_chat_previews = enabled
+                    }
+                    PrivacyBlurElement::Messages => {
+                        self.settings.privacy_blur.blur_messages = enabled
+                    }
+                    PrivacyBlurElement::Composer => {
+                        self.settings.privacy_blur.blur_composer = enabled
+                    }
+                }
+                self.mark_settings_dirty();
+            }
+            Action::SetPrivacyBlurAutoTimer(secs) => {
+                self.settings.privacy_blur.auto_blur_after_secs = secs;
+                self.mark_settings_dirty();
+            }
+            Action::SetPresentationMode(on) => {
+                if on {
+                    self.settings.privacy_blur.enabled = true;
+                    self.settings.privacy_blur.scope = BlurScope::AllChats;
+                    self.settings.privacy_blur.blur_contact_names = true;
+                    self.settings.privacy_blur.blur_avatars = true;
+                    self.settings.privacy_blur.blur_chat_previews = true;
+                    self.settings.privacy_blur.blur_messages = true;
+                    self.settings.privacy_blur.blur_composer = true;
+                } else {
+                    self.settings.privacy_blur.enabled = false;
+                }
+                self.mark_settings_dirty();
+            }
             Action::OpenChat(id) => {
                 // A chat where someone mentioned us opens at the mention, as
                 // on WhatsApp, rather than at the first unread message.
@@ -11433,6 +11493,18 @@ impl App {
         let user_input = ctx.input(|input| input.events.iter().any(is_user_input));
         if user_input {
             self.app_lock.note_input();
+            self.privacy_blur.note_input();
+        }
+        // Update privacy blur Alt-held state.
+        self.privacy_blur.update_alt_held(ctx);
+        // Auto-enable blur after inactivity timer (only if not already enabled).
+        if !self.settings.privacy_blur.enabled
+            && self
+                .privacy_blur
+                .auto_blur_elapsed(&self.settings.privacy_blur)
+        {
+            self.settings.privacy_blur.enabled = true;
+            self.mark_settings_dirty();
         }
         let _cursor_style = crate::motion::idle_text_cursor(ui, user_input);
         let locked = self.app_lock.is_locked();

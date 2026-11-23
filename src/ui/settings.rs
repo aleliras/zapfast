@@ -6,7 +6,7 @@ use egui::{Align, CornerRadius, Frame, Layout, Margin, Rect, Sense, Stroke, Vec2
 
 use crate::app::App;
 use crate::i18n::Locale;
-use crate::model::{Action, Dialog, Page};
+use crate::model::{Action, Dialog, Page, PrivacyBlurElement};
 use crate::privacy::{PrivacyChoice, PrivacyKind};
 use crate::settings::{Settings, ThemeChoice, WallpaperColor};
 use crate::theme::{self, Icon, Palette};
@@ -39,6 +39,16 @@ impl From<String> for Text {
         Self {
             source: text.clone().into(),
             shown: text.into(),
+        }
+    }
+}
+
+impl<'a> From<std::borrow::Cow<'a, str>> for Text {
+    fn from(text: std::borrow::Cow<'a, str>) -> Self {
+        let owned = text.into_owned();
+        Self {
+            shown: owned.clone().into(),
+            source: owned.into(),
         }
     }
 }
@@ -335,7 +345,7 @@ fn search(app: &mut App, ui: &mut egui::Ui) {
 }
 
 /// Every settings section, in page order, with the rows this setup offers.
-fn sections(app: &App) -> Vec<Section> {
+fn sections(app: &mut App) -> Vec<Section> {
     let locale = app.locale;
     let palette = app.palette;
 
@@ -589,6 +599,8 @@ fn sections(app: &App) -> Vec<Section> {
         |settings| &mut settings.send_typing,
     );
     app_lock_rows(app, &mut privacy);
+    // Privacy Blur (Anti-Spy) section.
+    privacy_blur_rows(app, &mut privacy, locale, &palette);
     privacy.row(
         translated(locale, "Blocked contacts"),
         "",
@@ -982,6 +994,198 @@ fn app_lock_rows(app: &App, privacy: &mut Section) {
                         }
                     });
                 theme::reveal_focus(&response.response);
+            },
+        );
+    }
+}
+
+/// Privacy Blur (Anti-Spy) settings rows.
+fn privacy_blur_rows(
+    app: &mut App,
+    privacy: &mut Section,
+    locale: crate::i18n::Locale,
+    palette: &Palette,
+) {
+    use crate::i18n::gettext;
+    let settings = &app.settings.privacy_blur;
+    // Palette is Copy, so we can make a local copy for the 'static closures.
+    let palette = *palette;
+
+    // Master toggle.
+    privacy.row(
+        gettext(locale, "Privacy blur (anti-spy)"),
+        gettext(locale, "Blur names, avatars, previews, messages, and the composer. Hover to reveal; hold Alt to peek."),
+        move |ui, app| {
+            let mut enabled = app.settings.privacy_blur.enabled;
+            let response = widgets::switch(ui, &palette, &mut enabled);
+            theme::reveal_focus(&response);
+            if response.changed() {
+                app.actions.push(Action::TogglePrivacyBlur);
+            }
+        },
+    );
+
+    if settings.enabled {
+        // Scope selector.
+        privacy.row(
+            gettext(locale, "Scope"),
+            gettext(locale, "Which chats are blurred."),
+            move |ui, app| {
+                let current = &app.settings.privacy_blur.scope;
+                let response = egui::ComboBox::from_id_salt("privacy_blur_scope")
+                    .selected_text(match current {
+                        crate::settings::BlurScope::AllChats => gettext(locale, "All chats"),
+                        crate::settings::BlurScope::SpecificChats(_) => {
+                            gettext(locale, "Specific chats only")
+                        }
+                    })
+                    .width(220.0_f32.min(ui.available_width()))
+                    .show_ui(ui, |ui| {
+                        if theme_option(
+                            ui,
+                            &palette,
+                            gettext(locale, "All chats").as_ref(),
+                            matches!(current, crate::settings::BlurScope::AllChats),
+                        ) {
+                            app.actions.push(Action::SetPrivacyBlurScope(
+                                crate::settings::BlurScope::AllChats,
+                            ));
+                        }
+                        if theme_option(
+                            ui,
+                            &palette,
+                            gettext(locale, "Specific chats only").as_ref(),
+                            matches!(current, crate::settings::BlurScope::SpecificChats(_)),
+                        ) {
+                            app.actions.push(Action::SetPrivacyBlurScope(
+                                crate::settings::BlurScope::SpecificChats(Default::default()),
+                            ));
+                        }
+                    });
+                theme::reveal_focus(&response.response);
+            },
+        );
+
+        // Granular toggles.
+        // Use owned strings so the 'static closures can capture them.
+        let toggles: [(String, String, PrivacyBlurElement, bool); 5] = [
+            (
+                gettext(locale, "Blur contact names").into_owned(),
+                gettext(
+                    locale,
+                    "Names in the sidebar, chat header, and group senders.",
+                )
+                .into_owned(),
+                PrivacyBlurElement::ContactNames,
+                settings.blur_contact_names,
+            ),
+            (
+                gettext(locale, "Blur avatars").into_owned(),
+                gettext(locale, "Profile pictures everywhere.").into_owned(),
+                PrivacyBlurElement::Avatars,
+                settings.blur_avatars,
+            ),
+            (
+                gettext(locale, "Blur chat previews").into_owned(),
+                gettext(locale, "Last-message preview in the sidebar.").into_owned(),
+                PrivacyBlurElement::ChatPreviews,
+                settings.blur_chat_previews,
+            ),
+            (
+                gettext(locale, "Blur messages").into_owned(),
+                gettext(
+                    locale,
+                    "Message bubbles (text, images, videos, stickers) in the conversation.",
+                )
+                .into_owned(),
+                PrivacyBlurElement::Messages,
+                settings.blur_messages,
+            ),
+            (
+                gettext(locale, "Blur composer").into_owned(),
+                gettext(locale, "Text being typed in the message input.").into_owned(),
+                PrivacyBlurElement::Composer,
+                settings.blur_composer,
+            ),
+        ];
+
+        for (title, desc, element, current) in toggles {
+            privacy.row(title, desc, move |ui, app| {
+                let mut value = current;
+                let response = widgets::switch(ui, &palette, &mut value);
+                theme::reveal_focus(&response);
+                if response.changed() {
+                    app.actions.push(Action::SetPrivacyBlurElement {
+                        element,
+                        enabled: value,
+                    });
+                }
+            });
+        }
+
+        // Auto-blur timer.
+        privacy.row(
+            gettext(locale, "Auto-enable after inactivity"),
+            gettext(locale, "Automatically turn on privacy blur after this many seconds without mouse or keyboard input."),
+            move |ui, app| {
+                let current = app.settings.privacy_blur.auto_blur_after_secs;
+                let secs_text = |secs: u64| crate::i18n::ngettext(locale, "{secs} second", "{secs} seconds", secs as u32).replace("{secs}", &secs.to_string());
+                let response = egui::ComboBox::from_id_salt("privacy_blur_auto_timer")
+                    .selected_text(match current {
+                        Some(secs) => secs_text(secs),
+                        None => gettext(locale, "Off").into_owned(),
+                    })
+                    .width(220.0_f32.min(ui.available_width()))
+                    .show_ui(ui, |ui| {
+                        if theme_option(
+                            ui,
+                            &palette,
+                            gettext(locale, "Off").as_ref(),
+                            current.is_none(),
+                        ) {
+                            app.actions.push(Action::SetPrivacyBlurAutoTimer(None));
+                        }
+                        for secs in [15u64, 30, 60, 300] {
+                            if theme_option(
+                                ui,
+                                &palette,
+                                secs_text(secs).as_ref(),
+                                current == Some(secs),
+                            ) {
+                                app.actions.push(Action::SetPrivacyBlurAutoTimer(Some(secs)));
+                            }
+                        }
+                    });
+                theme::reveal_focus(&response.response);
+            },
+        );
+
+        // Presentation mode button.
+        privacy.row(
+            gettext(locale, "Presentation mode"),
+            gettext(locale, "One click: enable all blur on all chats."),
+            move |ui, app| {
+                if theme::pill_button(
+                    ui,
+                    &palette,
+                    gettext(locale, "Enable presentation mode").as_ref(),
+                    true,
+                )
+                .clicked()
+                {
+                    app.actions.push(Action::SetPresentationMode(true));
+                }
+                ui.add_space(8.0);
+                if theme::pill_button(
+                    ui,
+                    &palette,
+                    gettext(locale, "Disable presentation mode").as_ref(),
+                    false,
+                )
+                .clicked()
+                {
+                    app.actions.push(Action::SetPresentationMode(false));
+                }
             },
         );
     }

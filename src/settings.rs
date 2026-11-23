@@ -404,6 +404,55 @@ pub enum NotificationSound {
     Custom(std::path::PathBuf),
 }
 
+/// Scope of the privacy blur: all chats or a specific set.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case", tag = "type", content = "jids")]
+pub enum BlurScope {
+    /// Blur every chat.
+    #[default]
+    AllChats,
+    /// Blur only the listed chats (canonical JIDs).
+    SpecificChats(HashSet<String>),
+}
+
+/// Per-element privacy blur toggles and auto-blur timer.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct PrivacyBlurSettings {
+    /// Master switch. Off by default to preserve current behaviour.
+    pub enabled: bool,
+    /// Which chats are blurred.
+    pub scope: BlurScope,
+    /// Blur contact names in the sidebar, chat header and group senders.
+    pub blur_contact_names: bool,
+    /// Blur profile pictures (avatars) everywhere.
+    pub blur_avatars: bool,
+    /// Blur the last-message preview in the sidebar.
+    pub blur_chat_previews: bool,
+    /// Blur message bubbles (text, images, videos, stickers) in the conversation.
+    pub blur_messages: bool,
+    /// Blur the text being typed in the composer.
+    pub blur_composer: bool,
+    /// Automatically enable blur after this many seconds of user inactivity.
+    /// `None` disables the timer.
+    pub auto_blur_after_secs: Option<u64>,
+}
+
+impl Default for PrivacyBlurSettings {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            scope: BlurScope::default(),
+            blur_contact_names: true,
+            blur_avatars: true,
+            blur_chat_previews: true,
+            blur_messages: true,
+            blur_composer: true,
+            auto_blur_after_secs: None,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Settings {
@@ -476,6 +525,8 @@ pub struct Settings {
     pub reaction_emoji: Vec<(String, u32)>,
     /// User GIPHY API key. Empty uses the optional built-in key.
     pub giphy_key: String,
+    /// Privacy blur (anti-spy) settings.
+    pub privacy_blur: PrivacyBlurSettings,
     /// Keep the app linked in the tray when the window closes. On macOS,
     /// where a closed ZapFast always stays in the Dock, whether it has a
     /// menu-bar item.
@@ -579,6 +630,7 @@ impl Default for Settings {
             recent_emoji: Vec::new(),
             reaction_emoji: Vec::new(),
             giphy_key: String::new(),
+            privacy_blur: PrivacyBlurSettings::default(),
             keep_running_in_background: true,
             notifications: true,
             notification_content: true,

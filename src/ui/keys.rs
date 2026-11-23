@@ -107,6 +107,11 @@ pub fn handle(app: &mut App, ctx: &egui::Context) {
         }
         key(Modifiers::COMMAND, Key::B, Action::ToggleSidebar);
         key(Modifiers::COMMAND, Key::Comma, Action::ToggleSettings);
+        key(
+            Modifiers::COMMAND | Modifiers::SHIFT,
+            Key::P,
+            Action::TogglePrivacyBlur,
+        );
         key(Modifiers::COMMAND, Key::Q, Action::Quit);
         key(Modifiers::COMMAND, Key::W, Action::CloseWindow);
         key(
@@ -1131,6 +1136,7 @@ pub const SHORTCUTS: &[(&str, &str)] = &[
         "Top / bottom of the open chat (when the input is empty)",
     ),
     ("Ctrl+,", "Settings"),
+    ("Ctrl+Shift+P", "Toggle privacy blur (anti-spy)"),
     ("Ctrl++ / Ctrl+-", "Zoom in / out"),
     ("Ctrl+0", "Reset zoom"),
     ("← / →", "Previous / next item in the media viewer"),

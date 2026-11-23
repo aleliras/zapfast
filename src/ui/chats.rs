@@ -1,10 +1,11 @@
 //! The left panel: the chat list.
 
-use egui::{Align, Frame, Key, Layout, Margin, Rect, Sense, Vec2, pos2, vec2};
+use egui::{Align, Color32, Frame, Key, Layout, Margin, Rect, Sense, Vec2, pos2, vec2};
 
 use crate::app::App;
 use crate::model::{Action, Chat, ChatActivity, ChatFilter, Contact, Dialog, Message, Page};
 use crate::theme::{self, Icon, Palette};
+use crate::ui::privacy_blur::paint_blur_mask;
 
 use super::conversation;
 use super::focus::{Stop, TabStop};
@@ -1563,14 +1564,41 @@ fn row(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> egui::Response {
         let avatar_rect =
             Rect::from_center_size(pos2(rect.left() + 38.0, rect.center().y), Vec2::splat(48.0));
         let picture = app.avatar(&chat.id);
-        widgets::paint_avatar(
-            ui,
-            &palette,
-            avatar_rect,
-            &title,
-            &chat.id,
-            picture.as_deref(),
-        );
+        // Privacy blur for avatar.
+        let should_blur_avatar = app.settings.privacy_blur.enabled
+            && app
+                .privacy_blur
+                .should_blur_chat(&app.settings.privacy_blur, &chat.id)
+            && app.settings.privacy_blur.blur_avatars;
+        let avatar_revealed = app.privacy_blur.is_revealed(avatar_rect, ui);
+        if should_blur_avatar && !avatar_revealed && picture.is_some() {
+            // Paint blurred avatar placeholder.
+            let color = Color32::from_rgba_unmultiplied(
+                palette.surface.r(),
+                palette.surface.g(),
+                palette.surface.b(),
+                153, // 0.6 * 255
+            );
+            ui.painter()
+                .circle_filled(avatar_rect.center(), avatar_rect.width() / 2.0, color);
+            let initials = crate::util::initials(&title);
+            let font = crate::theme::semibold(avatar_rect.width() * 0.35);
+            let galley = ui.painter().layout_no_wrap(initials, font, palette.text);
+            ui.painter().galley(
+                avatar_rect.center() - galley.size() / 2.0,
+                galley,
+                palette.text,
+            );
+        } else {
+            widgets::paint_avatar(
+                ui,
+                &palette,
+                avatar_rect,
+                &title,
+                &chat.id,
+                picture.as_deref(),
+            );
+        }
         if chat.disappearing_timer().is_some() {
             widgets::paint_disappearing_badge(ui, &palette, avatar_rect);
         }
@@ -1603,8 +1631,24 @@ fn row(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> egui::Response {
         } else {
             theme::medium(14.5)
         };
-        let name = widgets::line(ui, &title, name_font, palette.text, name_width, 1);
-        name.paint(ui, pos2(left, name_top), palette.text);
+        // Privacy blur for contact name.
+        let name_rect = Rect::from_min_size(pos2(left, name_top), vec2(name_width, name_font.size));
+        let should_blur_name = app.settings.privacy_blur.enabled
+            && app
+                .privacy_blur
+                .should_blur_chat(&app.settings.privacy_blur, &chat.id)
+            && app.settings.privacy_blur.blur_contact_names;
+        let name_revealed = app.privacy_blur.is_revealed(name_rect, ui);
+        if should_blur_name && !name_revealed {
+            let dots = "●".repeat(title.chars().count().min(12));
+            let dots_galley = ui.painter().layout_no_wrap(dots, name_font, palette.dim);
+            ui.painter()
+                .galley(pos2(left, name_top), dots_galley, palette.dim);
+            paint_blur_mask(ui, &palette, name_rect, 0.7);
+        } else {
+            let name = widgets::line(ui, &title, name_font, palette.text, name_width, 1);
+            name.paint(ui, pos2(left, name_top), palette.text);
+        }
 
         // Leave room for badges beside the latest-message preview.
         let mut badge_right = right;
@@ -1746,7 +1790,25 @@ fn row(app: &mut App, ui: &mut egui::Ui, chat: &Chat) -> egui::Response {
         } else {
             widgets::line(ui, "", theme::regular(13.0), preview_color, 1.0, 1)
         };
-        preview.paint(ui, pos2(x, line_y), preview_color);
+        // Privacy blur for chat preview.
+        let preview_rect = Rect::from_min_size(pos2(x, line_y), preview.size());
+        let should_blur_preview = app.settings.privacy_blur.enabled
+            && app
+                .privacy_blur
+                .should_blur_chat(&app.settings.privacy_blur, &chat.id)
+            && app.settings.privacy_blur.blur_chat_previews;
+        let preview_revealed = app.privacy_blur.is_revealed(preview_rect, ui);
+        if should_blur_preview && !preview_revealed {
+            let dots = "●●●";
+            let dots_galley =
+                ui.painter()
+                    .layout_no_wrap(dots.to_string(), theme::regular(13.0), palette.dim);
+            ui.painter()
+                .galley(pos2(x, line_y), dots_galley, palette.dim);
+            paint_blur_mask(ui, &palette, preview_rect, 0.7);
+        } else {
+            preview.paint(ui, pos2(x, line_y), preview_color);
+        }
     }
     let response = response.on_hover_cursor(egui::CursorIcon::PointingHand);
     if let Some((area, prefix, full)) = full_preview {
@@ -2224,6 +2286,20 @@ fn context_menu(app: &mut App, ui: &mut egui::Ui, chat: &Chat, palette: &Palette
         } else {
             Action::ShowDialog(Dialog::ConfirmLockChat(chat.id.clone()))
         });
+    }
+    // Privacy blur toggle for this specific chat.
+    let is_blurred = match &app.settings.privacy_blur.scope {
+        crate::settings::BlurScope::SpecificChats(jids) => jids.contains(&chat.id),
+        _ => false,
+    };
+    let blur_label = if is_blurred {
+        crate::i18n::gettext(locale, "Desativar desfoque nesta conversa")
+    } else {
+        crate::i18n::gettext(locale, "Ativar desfoque nesta conversa")
+    };
+    if widgets::menu_item(ui, palette, Some(Icon::Shield), blur_label.as_ref()) {
+        app.actions
+            .push(Action::TogglePrivacyBlurChat(chat.id.clone()));
     }
     widgets::menu_separator(ui, palette);
     if let Some(phone) = chat.phone()

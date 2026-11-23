@@ -2055,6 +2055,16 @@ pub enum SidebarDisplayMode {
     CollapsedIconsOnly,
 }
 
+/// Which privacy blur element a granular toggle controls.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PrivacyBlurElement {
+    ContactNames,
+    Avatars,
+    ChatPreviews,
+    Messages,
+    Composer,
+}
+
 /// Which list the sticker tab shows.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub enum StickerShelf {
@@ -2716,6 +2726,21 @@ pub enum Action {
     Open(Page),
     /// Opens settings, or closes them when they are already showing.
     ToggleSettings,
+    /// Toggles the global privacy blur master switch.
+    TogglePrivacyBlur,
+    /// Toggles privacy blur for a specific chat (adds/removes from SpecificChats scope).
+    TogglePrivacyBlurChat(ChatId),
+    /// Sets the privacy blur scope (AllChats or SpecificChats).
+    SetPrivacyBlurScope(crate::settings::BlurScope),
+    /// Sets a granular privacy blur element toggle.
+    SetPrivacyBlurElement {
+        element: PrivacyBlurElement,
+        enabled: bool,
+    },
+    /// Sets the auto-blur timer (seconds, or None to disable).
+    SetPrivacyBlurAutoTimer(Option<u64>),
+    /// Enables "Presentation mode": all blur on, AllChats scope.
+    SetPresentationMode(bool),
     /// Steps back to the previously visited page, chat, or dialog, as a
     /// browser's back button does.
     NavigateBack,

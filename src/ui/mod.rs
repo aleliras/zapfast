@@ -26,6 +26,7 @@ pub(crate) mod overlay;
 pub mod pane;
 pub mod picker;
 pub mod polls;
+pub mod privacy_blur;
 pub mod rail;
 pub mod settings;
 pub mod update;
