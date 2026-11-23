@@ -16,7 +16,7 @@ use crate::model::{
     Chat, ChatMedia, Contact, Content, Delivery, Dialog, InfoPanel, InfoView, LinkPreview, Media,
     MediaTab, MentionRef, Message, Page, Quoted, Reaction,
 };
-use crate::settings::ThemeChoice;
+use crate::settings::{BlurScope, ThemeChoice};
 
 const ME: &str = "15550001111@s.whatsapp.net";
 /// Family, the sample group we run.
@@ -2621,6 +2621,39 @@ pub fn apply_flags(app: &mut App, page: Option<&str>) {
             choice if choice.starts_with("settings-search=") => {
                 app.page = Page::Settings;
                 app.settings_search = choice["settings-search=".len()..].to_owned();
+            }
+            // Privacy blur (anti-spy) demo pages.
+            "privacy-blur" => {
+                app.settings.privacy_blur.enabled = true;
+                app.settings.privacy_blur.scope = BlurScope::AllChats;
+                app.settings.privacy_blur.blur_contact_names = true;
+                app.settings.privacy_blur.blur_avatars = true;
+                app.settings.privacy_blur.blur_chat_previews = true;
+                app.settings.privacy_blur.blur_messages = true;
+                app.settings.privacy_blur.blur_composer = true;
+            }
+            "privacy-blur-off" => {
+                app.settings.privacy_blur.enabled = false;
+            }
+            "privacy-blur-specific" => {
+                app.settings.privacy_blur.enabled = true;
+                app.settings.privacy_blur.scope =
+                    BlurScope::SpecificChats([SAMPLES[0].id.to_owned()].into());
+                app.settings.privacy_blur.blur_contact_names = true;
+                app.settings.privacy_blur.blur_avatars = true;
+                app.settings.privacy_blur.blur_chat_previews = true;
+                app.settings.privacy_blur.blur_messages = true;
+                app.settings.privacy_blur.blur_composer = true;
+            }
+            "privacy-blur-presentation" => {
+                app.settings.privacy_blur.enabled = true;
+                app.settings.privacy_blur.scope = BlurScope::AllChats;
+                app.settings.privacy_blur.blur_contact_names = true;
+                app.settings.privacy_blur.blur_avatars = true;
+                app.settings.privacy_blur.blur_chat_previews = true;
+                app.settings.privacy_blur.blur_messages = true;
+                app.settings.privacy_blur.blur_composer = true;
+                app.settings.privacy_blur.auto_blur_after_secs = Some(5);
             }
             "wallpaper" => app.page = Page::Wallpaper,
             // The call surface itself: the incoming call waiting to be answered, and a call that
@@ -10016,6 +10049,13 @@ mod tests {
             ("calls-link", wide),
             ("settings", wide),
             ("settings", narrow),
+            // Privacy blur demo pages.
+            ("privacy-blur", wide),
+            ("privacy-blur", narrow),
+            ("privacy-blur-off", wide),
+            ("privacy-blur-off", narrow),
+            ("privacy-blur-specific", wide),
+            ("privacy-blur-presentation", wide),
             ("calls", wide),
             ("calls-info", wide),
             ("calls-info", narrow),
